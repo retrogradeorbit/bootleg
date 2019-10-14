@@ -28,20 +28,30 @@
         options-summary]
        (string/join \newline)))
 
-(defn load-template [path file]
-  (cond
-    (string/ends-with? file ".md")
-    (let [body (java.io.ByteArrayOutputStream.)]
+(defmulti load-template
+  (fn [path file]
+    (->  file
+         (string/split #"\.")
+         last)))
+
+(defn load-markdown [path file]
+  (let [body (java.io.ByteArrayOutputStream.)]
       (markdown/md-to-html (io/input-stream (file/path-join path file)) body)
       (-> (.toString body)
           java.io.StringReader.
           enlive/html-resource
-          first :content first :content))
+          first :content first :content)))
 
-    :else
-    (-> (slurp (file/path-join path file))
+(defmethod load-template "markdown" [path file] (load-markdown path file))
+(defmethod load-template "mdown" [path file] (load-markdown path file))
+(defmethod load-template "mkdn" [path file] (load-markdown path file))
+(defmethod load-template "mkd" [path file] (load-markdown path file))
+(defmethod load-template "md" [path file] (load-markdown path file))
+
+(defmethod load-template :default [path file]
+  (-> (slurp (file/path-join path file))
         java.io.StringReader.
-        enlive/html-resource)))
+        enlive/html-resource))
 
 (defn load-and-process [{:keys [path load process vars] :as context}]
   (let [body-html
