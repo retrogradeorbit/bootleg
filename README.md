@@ -73,7 +73,7 @@ Next it would load the `site-template.html` file and render it with `title`, `au
 
 This final rendered template would be output.
 
-*Note* in order to prevent the escaping of all html tags in the embedded content when it is injected as a var into the parent, *use the triple brace format* `{{{ body }}}`. So for above the site-template may look like:
+**Note** in order to prevent the escaping of all html tags in the embedded content when it is injected as a var into the parent, *use the triple brace format* `{{{ body }}}`. So for above the site-template may look like:
 
 ```html
 <html>
@@ -103,9 +103,42 @@ vars:
 
 Here, the rendered contents of `blogpost.md` will be injected into `template.html`
 
-## Options
+## Enlive
 
-FIXME: listing of options this app accepts.
+Often after loading a template or content you want to post process the markup. You can specify enlive processing steps with the `process` key.
+
+Under process we have a list of transforms. Each transform has a `selector`, `transform` and `args`.
+
+`selector` is a css selector to select the elements.
+
+`transform` in the name of the enlive transform to apply
+
+`args` is the extra arguments you wish to pass to the transformer as a list.
+
+For example, here we load some markdown and then add some style to the `pre` and `code` tags, and add some extra classes to all the `img` tags:
+
+```yaml
+load: body.md
+process:
+  - selector: img
+    transform: add-class
+    args:
+      - image
+      - fit
+
+  - selector: pre
+    transform: set-attr
+    args:
+      - style
+      - border-radius:8px;margin-bottom:32px;
+
+  - selector: code
+    transform: set-attr
+    args:
+      - style
+      - padding:0px;
+```
+
 
 ## Examples
 
