@@ -139,18 +139,73 @@ process:
       - padding:0px;
 ```
 
+Here are the supported enlive tranforms
+
+**content** replace the content of the element with the argument
+**html-content** replace the content of the element with raw html
+**add-class** add one or more names to the element's class list
+**remove-class** remove one or more names from the element's class
+**set-attr** set an attribute of the element to a value. First argument is the attribute name. Second argument is the value.
+**remove-attr** remove an attribute from the element.
+**prefix-path-to-attr** prefix the directory path of the yaml file to the specified attribute. This is useful for prefixing paths to images for example.
 
 ## Examples
 
-...
+Here is a real example from my static blog. This file lives at `blog/posts/1/main.yml`.
 
-### Bugs
+```yaml
+---
+load: ../template.html
+process:
+  - selector: img.blog-splash
+    transform: add-class
+    args:
+      - image
+      - fit
 
-...
+  - selector: img.blog-splash
+    transform: prefix-path-to-attr
+    args:
+      - src
 
-### Any Other Sections
-### That You Think
-### Might be Useful
+vars:
+  title: Setting Up Acmetool With Route53 Hooks
+  blurb: "Get free Let's Encrypt SSL certificates using Acmetool's DNS Hooks option when using Amazon Route53 as your DNS service provider."
+  author: Crispin Wellington
+  date: Oct 6, 2019
+
+  splash:
+    image: splash.png
+    author: Robert Anasch
+    url: "https://unsplash.com/@diesektion?utm_medium=referral&utm_campaign=photographer-credit&utm_content=creditBadge"
+
+  body:
+    load: body.md
+    process:
+      - selector: img
+        transform: add-class
+        args:
+          - image
+          - fit
+
+      - selector: img
+        transform: prefix-path-to-attr
+        args:
+          - src
+
+      - selector: pre
+        transform: set-attr
+        args:
+          - style
+          - border-radius:8px;margin-bottom:32px;
+
+      - selector: code
+        transform: set-attr
+        args:
+          - style
+          - padding:0px;
+
+```
 
 ## License
 
