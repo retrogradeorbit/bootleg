@@ -33,13 +33,39 @@ As siblings to the `load` keyword are `vars` and `process`. `vars` contains all 
 At the most basic, you may have a yaml like this:
 
 ```yaml
----
-
 load: my-template.html
 vars:
-  title: my page title
-  author: retrogradeorbit
+  title: My page title
+  author: Joe Average
 ```
+
+Here, bootleg would load `my-template.html` from the same directory the yaml file is in. It would then substitute `{{ title }}` with "My page title" and `{{ author }}` with "Joe Average". The final rendered template would then be written out to standard out.
+
+You could render it like:
+
+    $ bootleg site/pages/main.yml > site/pages/index.html
+
+If we want a nested example consider the following:
+
+```yaml
+load: ../site-template.html
+vars:
+    title: My page title
+    author: Joe Average
+    body:
+        load: ../body-template.html
+        vars:
+            title: Monday, October 14, 2019
+            blurb: My day
+            body: Lorum ipsum etc.
+    footer:
+        load: ../footer-template.html
+        vars:
+            company: Little Ball Bearing Corp
+            years: 2018-2019
+```
+
+
 
 ## Options
 
