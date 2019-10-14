@@ -142,11 +142,17 @@ process:
 Here are the supported enlive tranforms
 
 **content** replace the content of the element with the argument
+
 **html-content** replace the content of the element with raw html
+
 **add-class** add one or more names to the element's class list
+
 **remove-class** remove one or more names from the element's class
+
 **set-attr** set an attribute of the element to a value. First argument is the attribute name. Second argument is the value.
+
 **remove-attr** remove an attribute from the element.
+
 **prefix-path-to-attr** prefix the directory path of the yaml file to the specified attribute. This is useful for prefixing paths to images for example.
 
 ## Examples
@@ -206,6 +212,10 @@ vars:
           - padding:0px;
 
 ```
+
+The page is rendered like:
+
+    $ bootleg blog/posts/1/main.yml > blog-1.html
 
 ## License
 
