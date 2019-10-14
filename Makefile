@@ -1,20 +1,20 @@
 GRAALVM = ~/graalvm-ce-19.2.0.1
 SRC = src/bootleg/core.clj
 
-all: bootleg
+all: build/bootleg
 
 clean:
-	-rm -rf build target bootleg
+	-rm -rf build target
+	lein clean
 
 target/uberjar/bootleg-0.1.0-SNAPSHOT-standalone.jar: $(SRC)
-	lein clean
 	lein uberjar
 
 analyse:
 	$(GRAALVM)/bin/java -agentlib:native-image-agent=config-output-dir=config-dir \
 		-jar target/uberjar/bootleg-0.1.0-SNAPSHOT-standalone.jar
 
-native-binary: target/uberjar/bootleg-0.1.0-SNAPSHOT-standalone.jar
+build/bootleg: target/uberjar/bootleg-0.1.0-SNAPSHOT-standalone.jar
 	-mkdir build
 	$(GRAALVM)/bin/native-image \
 		-jar target/uberjar/bootleg-0.1.0-SNAPSHOT-standalone.jar \
@@ -32,9 +32,3 @@ native-binary: target/uberjar/bootleg-0.1.0-SNAPSHOT-standalone.jar
 		--no-server \
 		"-J-Xmx3g" \
 		-H:+TraceClassInitialization -H:+PrintClassInitialization
-	cp build/bootleg ./
-
-bootleg: $(SRC)
-	lein bin
-	-mkdir build
-	cp target/default/bootleg-0.1.0-SNAPSHOT ./build/bootleg
