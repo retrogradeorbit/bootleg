@@ -49,9 +49,10 @@
 (defmethod load-template "md" [path file] (load-markdown path file))
 
 (defmethod load-template :default [path file]
-  (-> (slurp (file/path-join path file))
-        java.io.StringReader.
-        enlive/html-resource))
+  (-> (file/path-join path file)
+      slurp
+      java.io.StringReader.
+      enlive/html-resource))
 
 (defn load-and-process [{:keys [path load process vars] :as context}]
   (let [body-html
