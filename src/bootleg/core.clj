@@ -87,7 +87,7 @@
   (let [{:keys [options summary arguments]} (parse-opts args cli-options)]
     (cond
       (:help options)
-      (println summary)
+      (println (usage summary))
 
       (:version options)
       (println "Version:" version)
@@ -96,6 +96,4 @@
       (-> arguments first process println)
 
       :else
-      (do
-        (println (usage summary))
-        (System/exit 0)))))
+      (println (usage summary)))))
