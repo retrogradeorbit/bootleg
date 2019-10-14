@@ -6,7 +6,7 @@ Simple template processing command line tool to help build static websites
 
 Bootleg is distributed for linux as a single executable file. Download the latest tarball from https://github.com/retrogradeorbit/bootleg/releases and then extract it. Once extracted, move the binary to your path
 
-    $ tar xvf bootleg-0.1-linux-amd64.tgz
+    $ tar xvf bootleg-0.1.0-linux-amd64.tgz
     $ mv bootleg /usr/local/bin
 
 ## Usage
