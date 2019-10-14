@@ -105,6 +105,8 @@ Here, the rendered contents of `blogpost.md` will be injected into `template.htm
 
 ## Enlive
 
+More info on enlive can be found here: https://github.com/cgrand/enlive
+
 Often after loading a template or content you want to post process the markup. You can specify enlive processing steps with the `process` key.
 
 Under process we have a list of transforms. Each transform has a `selector`, `transform` and `args`.
