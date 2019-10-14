@@ -1,6 +1,5 @@
 (ns bootleg.file
-  (:require [clojure.java.io :as io])
-  )
+  (:require [clojure.java.io :as io]))
 
 (defn path-split
   "give a full path filename, return a tuple of
