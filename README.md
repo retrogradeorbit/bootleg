@@ -65,7 +65,43 @@ vars:
             years: 2018-2019
 ```
 
+This would load the `footer-template.html` file from the parent directory (to the yaml), and render it with the `company` and `years` vars. Then this entire rendered text would be present under the `footer` key.
 
+Next it would load the `body-template.html` file from the parent directory, render it with `title` and `blurb` and `body`, and that entire rendered text would be available under the `body` key.
+
+Next it would load the `site-template.html` file and render it with `title`, `author`, `body` and `footer`.
+
+This final rendered template would be output.
+
+*Note* in order to prevent the escaping of all html tags in the embedded content when it is injected as a var into the parent, *use the triple brace format* `{{{ body }}}`. So for above the site-template may look like:
+
+```html
+<html>
+ <head>
+  <title>{{ title }}</title>
+ </head>
+ <body>
+  <h1>{{ title }}<h1>
+  <h3>{{ author }}</h3>
+  <div>{{{ body }}}</div>
+ </body>
+</html>
+```
+
+## Markdown
+
+If a `load` instruction references a file with a markdown file extension, the file will be loaded as markdown and rendered into html. eg:
+
+```yaml
+load: template.html
+vars:
+    title: my title
+    author: my name
+    body:
+        load: blogpost.md
+```
+
+Here, the rendered contents of `blogpost.md` will be injected into `template.html`
 
 ## Options
 
