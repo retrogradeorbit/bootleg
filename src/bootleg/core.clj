@@ -8,8 +8,7 @@
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.java.io :as io]
             [clojure.walk :as walk]
-            [clojure.string :as string]
-            )
+            [clojure.string :as string])
   (:gen-class))
 
 (def version "0.1")
@@ -36,11 +35,11 @@
 
 (defn load-markdown [path file]
   (let [body (java.io.ByteArrayOutputStream.)]
-      (markdown/md-to-html (io/input-stream (file/path-join path file)) body)
-      (-> (.toString body)
-          java.io.StringReader.
-          enlive/html-resource
-          first :content first :content)))
+    (markdown/md-to-html (io/input-stream (file/path-join path file)) body)
+    (-> (.toString body)
+        java.io.StringReader.
+        enlive/html-resource
+        first :content first :content)))
 
 (defmethod load-template "markdown" [path file] (load-markdown path file))
 (defmethod load-template "mdown" [path file] (load-markdown path file))
