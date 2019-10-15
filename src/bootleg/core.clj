@@ -1,8 +1,12 @@
 (ns bootleg.core
   (:require [bootleg.transform :as transform]
             [bootleg.file :as file]
+
+            ;; loaders
             [bootleg.load :as load]
             [bootleg.markdown]
+            [bootleg.json]
+
             [yaml.core :as yaml]
             [cljstache.core :as moustache]
             [net.cgrand.enlive-html :as enlive]
