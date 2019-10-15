@@ -7,6 +7,7 @@
             [bootleg.markdown]
             [bootleg.json]
             [bootleg.yaml]
+            [bootleg.edn]
 
             [yaml.core :as yaml]
             [cljstache.core :as moustache]
