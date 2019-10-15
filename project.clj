@@ -5,6 +5,7 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/tools.cli "0.4.2"]
+                 [org.clojure/data.json "0.2.6"]
                  [markdown-clj "1.10.0"]
 
                  ;; https://github.com/owainlewis/yaml/issues/35
@@ -14,10 +15,6 @@
 
                  [cljstache "2.0.4"]
                  [enlive "1.1.6"]
-
-                 ;; https://github.com/cgrand/enlive/issues/110
-                 ;; TODO: use hickory to parse html cause tagsoup is broken
-                 [hickory "0.7.1"]
                  ]
   :main ^:skip-aot bootleg.core
   :target-path "target/%s"

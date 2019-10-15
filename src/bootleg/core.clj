@@ -12,6 +12,7 @@
             [yaml.core :as yaml]
             [cljstache.core :as moustache]
             [net.cgrand.enlive-html :as enlive]
+            [net.cgrand.jsoup :as jsoup]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.walk :as walk]
             [clojure.string :as string])
@@ -33,9 +34,26 @@
         options-summary]
        (string/join \newline)))
 
+(defn- i-starts-with?
+  "efficient case insensitive string start-with?"
+  [haystack needle]
+  (let [uneedle (string/upper-case needle)
+        uhaystack-start (string/upper-case (subs haystack 0 (count needle)))]
+    (= uneedle uhaystack-start)))
+
+(defn is-html? [markup]
+  (or (i-starts-with? markup "<!DOCTYPE HTML")
+      (i-starts-with? markup "<html")))
+
 (defn load-and-process [{:keys [path load process vars] :as context}]
-  (let [content (load/process-file path load)]
-    (if (string? content)
+  (enlive/set-ns-parser! jsoup/parser)
+  (let [content (load/process-file path load)
+        content-string? (string? content)
+        content-html? (and content-string? (is-html? content))
+        strip-extras #(if-not content-html?
+                        (-> % first :content first :content)
+                        %)]
+    (if content-string?
       (->
        (if process
          (->
@@ -48,6 +66,11 @@
                 java.io.StringReader.
                 enlive/html-resource))
            process)
+
+          ;; not html markup (like rendered markdown files)
+          ;; will be wrapped in <html> and <body> tags now
+          ;; so strip them if so
+          strip-extras
 
           enlive/emit*
           (->> (apply str)))
