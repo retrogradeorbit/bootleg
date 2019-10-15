@@ -1,10 +1,11 @@
 (ns bootleg.transform
-  (:require [net.cgrand.enlive-html :as enlive]))
+  (:require [bootleg.file :as file]
+            [net.cgrand.enlive-html :as enlive]))
 
 (defn prefix-path-fn [path]
   (fn [attr]
     (fn [node]
-      (update-in node [:attrs (keyword attr)] #(str path %)))))
+      (update-in node [:attrs (keyword attr)] #(file/path-join path %)))))
 
 (defmacro make-enlive-map [names]
   (->> (for [n names] [n (symbol "enlive" n)])

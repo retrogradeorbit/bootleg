@@ -6,6 +6,7 @@
             [bootleg.load :as load]
             [bootleg.markdown]
             [bootleg.json]
+            [bootleg.yaml]
 
             [yaml.core :as yaml]
             [cljstache.core :as moustache]
@@ -15,7 +16,7 @@
             [clojure.string :as string])
   (:gen-class))
 
-(def version "0.1")
+(def version "0.1.1")
 
 (def cli-options
   [
@@ -33,24 +34,26 @@
 
 (defn load-and-process [{:keys [path load process vars] :as context}]
   (let [content (load/process-file path load)]
-    (->
-     (if process
-       (->
-        (reduce
-         (fn [acc {:keys [selector] :as step}]
-           (let [selector-vec (into [] (map keyword (string/split selector #"\s+")))]
-             (enlive/transform acc selector-vec (transform/make-transform context step))))
-         (enlive/as-nodes
-          (-> content
-              java.io.StringReader.
-              enlive/html-resource))
-         process)
+    (if (string? content)
+      (->
+       (if process
+         (->
+          (reduce
+           (fn [acc {:keys [selector] :as step}]
+             (let [selector-vec (into [] (map keyword (string/split selector #"\s+")))]
+               (enlive/transform acc selector-vec (transform/make-transform context step))))
+           (enlive/as-nodes
+            (-> content
+                java.io.StringReader.
+                enlive/html-resource))
+           process)
 
-        enlive/emit*
-        (->> (apply str)))
+          enlive/emit*
+          (->> (apply str)))
 
-       content)
-     (moustache/render vars))))
+         content)
+       (moustache/render vars))
+      content)))
 
 (defn process-yaml-result [data path]
   (walk/postwalk
