@@ -1,12 +1,12 @@
 (ns bootleg.core
   (:require [bootleg.transform :as transform]
             [bootleg.file :as file]
-            [markdown.core :as markdown]
+            [bootleg.load :as load]
+            [bootleg.markdown]
             [yaml.core :as yaml]
             [cljstache.core :as moustache]
             [net.cgrand.enlive-html :as enlive]
             [clojure.tools.cli :refer [parse-opts]]
-            [clojure.java.io :as io]
             [clojure.walk :as walk]
             [clojure.string :as string])
   (:gen-class))
@@ -27,45 +27,25 @@
         options-summary]
        (string/join \newline)))
 
-(defmulti load-template
-  (fn [path file]
-    (->  file
-         (string/split #"\.")
-         last)))
-
-(defn load-markdown [path file]
-  (let [body (java.io.ByteArrayOutputStream.)]
-    (markdown/md-to-html (io/input-stream (file/path-join path file)) body)
-    (-> (.toString body)
-        java.io.StringReader.
-        enlive/html-resource
-        first :content first :content)))
-
-(defmethod load-template "markdown" [path file] (load-markdown path file))
-(defmethod load-template "mdown" [path file] (load-markdown path file))
-(defmethod load-template "mkdn" [path file] (load-markdown path file))
-(defmethod load-template "mkd" [path file] (load-markdown path file))
-(defmethod load-template "md" [path file] (load-markdown path file))
-
-(defmethod load-template :default [path file]
-  (-> (file/path-join path file)
-      slurp
-      java.io.StringReader.
-      enlive/html-resource))
-
 (defn load-and-process [{:keys [path load process vars] :as context}]
-  (let [body-html
-        (load-template path load)]
+  (let [content (load/process-file path load)]
     (->
-     (reduce
-      (fn [acc {:keys [selector] :as step}]
-        (let [selector-vec (into [] (map keyword (string/split selector #"\s+")))]
-          (enlive/transform acc selector-vec (transform/make-transform context step))))
-      (enlive/as-nodes body-html)
-      process)
+     (if process
+       (->
+        (reduce
+         (fn [acc {:keys [selector] :as step}]
+           (let [selector-vec (into [] (map keyword (string/split selector #"\s+")))]
+             (enlive/transform acc selector-vec (transform/make-transform context step))))
+         (enlive/as-nodes
+          (-> content
+              java.io.StringReader.
+              enlive/html-resource))
+         process)
 
-     enlive/emit*
-     (->> (apply str))
+        enlive/emit*
+        (->> (apply str)))
+
+       content)
      (moustache/render vars))))
 
 (defn process-yaml-result [data path]
