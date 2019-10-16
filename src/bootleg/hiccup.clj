@@ -9,6 +9,7 @@
             [hickory.core :as hickory]
             [hickory.render :as render]
             [hickory.convert :as convert]
+            [clojure.walk :as walk]
             [sci.core :as sci]))
 
 (defn load-file* [ctx file]
@@ -57,6 +58,9 @@
                  #(load-file*
                    ctx
                    (file/path-join path %))))
+
+        ;; hickory hiccup->html cant handle numbers
+        (->> (walk/postwalk #(if (number? %) (str %) %)))
         ;;enlive/html
         ;;enlive/emit*
         ;;(->> (apply str))

@@ -33,6 +33,11 @@
   (let [[path file] (file/path-split filename)]
     (hiccup/process-hiccup path file)))
 
+(defn output-result [options result]
+  (if (:data options)
+    (-> result pprint/pprint)
+    (-> result utils/hiccup->html println)))
+
 (defn -main
   "main entry point for site generation"
   [& args]
@@ -45,16 +50,12 @@
       (println "Version:" version)
 
       (:evaluate options)
-      (->> options :evaluate
-           (hiccup/process-hiccup-data ".")
-           utils/hiccup->html
-           println)
+      (let [result (->> options :evaluate (hiccup/process-hiccup-data "."))]
+        (output-result options result))
 
       (= 1 (count arguments))
       (let [result (-> arguments first process)]
-        (if (:data options)
-          (-> result pprint/pprint)
-          (-> result utils/hiccup->html println)))
+        (output-result options result))
 
       :else
       (println (usage summary)))))
