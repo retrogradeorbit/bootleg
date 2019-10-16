@@ -2,7 +2,7 @@
  [:body
   [:h1 "My resume"]
 
-  [:div#intro (map as-hiccup (parse-fragment (markdown "intro.md")))]
+  [:div#intro (markdown "intro.md")]
 
   (for [project (json "projects.json")]
     [:div [:p (:title project)]

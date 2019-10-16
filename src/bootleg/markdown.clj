@@ -1,16 +1,15 @@
 (ns bootleg.markdown
   (:require [bootleg.file :as file]
-            [bootleg.load :as load]
+            [bootleg.utils :as utils]
             [markdown.core :as markdown]
             [clojure.java.io :as io]))
 
-(defn process-markdown [path file]
-  (let [body (java.io.ByteArrayOutputStream.)]
-    (markdown/md-to-html (io/input-stream (file/path-join path file)) body)
-    (.toString body)))
-
-(defmethod load/process-file "markdown" [path file] (process-markdown path file))
-(defmethod load/process-file "mdown" [path file] (process-markdown path file))
-(defmethod load/process-file "mkdn" [path file] (process-markdown path file))
-(defmethod load/process-file "mkd" [path file] (process-markdown path file))
-(defmethod load/process-file "md" [path file] (process-markdown path file))
+(defn make-markdown-fn [path]
+  (fn [source & options]
+    (let [flags (into #{} options)
+          markup (if (:data flags)
+                   (markdown/md-to-html-string source)
+                   (let [body (java.io.ByteArrayOutputStream.)]
+                     (markdown/md-to-html (io/input-stream (file/path-join path source)) body)
+                     (.toString body)))]
+      (utils/coerce-html flags markup))))
