@@ -1,4 +1,4 @@
-(defproject bootleg "0.1.0-SNAPSHOT"
+(defproject bootleg "0.1.1-SNAPSHOT"
   :description "Simple template processing command line tool to help build static websites"
   :url "https://github.com/retrogradeorbit/bootleg"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
@@ -15,6 +15,10 @@
 
                  [cljstache "2.0.4"]
                  [enlive "1.1.6"]
+
+                 ;; for hiccup eval
+                 [borkdude/sci "0.0.10-SNAPSHOT"]
+                 [hickory "0.7.1"]
                  ]
   :main ^:skip-aot bootleg.core
   :target-path "target/%s"

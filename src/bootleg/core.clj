@@ -8,6 +8,7 @@
             [bootleg.json]
             [bootleg.yaml]
             [bootleg.edn]
+            [bootleg.hiccup]
 
             [yaml.core :as yaml]
             [cljstache.core :as moustache]
@@ -87,10 +88,12 @@
    data))
 
 (defn process [filename]
-  (let [[path _] (file/path-split filename)]
-    (-> filename
-        yaml/from-file
-        (process-yaml-result path))))
+  (let [[path file] (file/path-split filename)]
+    (if (#{"yml" "yaml"} (file/file-extension filename))
+      (-> filename
+          yaml/from-file
+          (process-yaml-result path))
+      (load/process-file path file))))
 
 (defn -main
   "main entry point for site generation"

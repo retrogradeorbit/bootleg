@@ -1,6 +1,5 @@
 (ns bootleg.load
-  (:require [bootleg.file :as file]
-            [clojure.string :as string]))
+  (:require [bootleg.file :as file]))
 
 (defmulti process-file
   "Takes a path and a filename as a string.
@@ -11,9 +10,7 @@
   dispatch is based on file extension.
   "
   (fn [path file]
-    (->  file
-         (string/split #"\.")
-         last)))
+    (file/file-extension file)))
 
 (defmethod process-file :default [path file]
   (slurp (file/path-join path file)))

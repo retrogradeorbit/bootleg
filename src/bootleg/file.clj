@@ -1,5 +1,6 @@
 (ns bootleg.file
-  (:require [clojure.java.io :as io]))
+  (:require [clojure.java.io :as io]
+            [clojure.string :as string]))
 
 (defn path-split
   "give a full path filename, return a tuple of
@@ -16,3 +17,8 @@
   file separator"
   [& parts]
   (.getPath (apply io/file parts)))
+
+(defn file-extension [file]
+  (->  file
+       (string/split #"\.")
+       last))

@@ -12,12 +12,12 @@ target/uberjar/bootleg-0.1.0-SNAPSHOT-standalone.jar: $(SRC)
 
 analyse:
 	$(GRAALVM)/bin/java -agentlib:native-image-agent=config-output-dir=config-dir \
-		-jar target/uberjar/bootleg-0.1.0-SNAPSHOT-standalone.jar
+		-jar target/uberjar/bootleg-0.1.1-SNAPSHOT-standalone.jar
 
-build/bootleg: target/uberjar/bootleg-0.1.0-SNAPSHOT-standalone.jar
+build/bootleg: target/uberjar/bootleg-0.1.1-SNAPSHOT-standalone.jar
 	-mkdir build
 	$(GRAALVM)/bin/native-image \
-		-jar target/uberjar/bootleg-0.1.0-SNAPSHOT-standalone.jar \
+		-jar target/uberjar/bootleg-0.1.1-SNAPSHOT-standalone.jar \
 		-Dsun.java2d.opengl=false \
 		-H:Name=build/bootleg \
 		-H:+ReportExceptionStackTraces \
