@@ -35,7 +35,7 @@
 
 (def hickory->hiccup convert/hickory-to-hiccup)
 (defn html->hickory [markup]
-  (-> markup html->hiccup-seq hiccup->hickory))
+  (-> markup html->hiccup-seq hiccup-seq->hickory))
 
 (def hickory->html render/hickory-to-html)
 
@@ -52,6 +52,14 @@
 
     :else
     (html->hiccup-seq html)))
+
+;; hiccup is a single form. However, html snippets can be multiple sequential forms
+;; resulting in a sequence of hiccup. The following function converts either of these
+;; to html without throwing an error for one of them
+(defn hiccup*->html [hiccup-or-hiccup-seq]
+  (if (vector? (first hiccup-or-hiccup-seq))
+    (hiccup-seq->html hiccup-or-hiccup-seq)
+    (hiccup->html hiccup-or-hiccup-seq)))
 
 ;; full html
 #_ (hickory/parse "<html><body><h1>foo</h1></body></html>")
@@ -80,3 +88,10 @@
 
 ;; hiccup->hickory
 #_ (hiccup->hickory [:div])
+
+;; hiccup-seq->hickory
+#_ (hiccup-seq->hickory '([:div] [:p]))
+
+;; hickup*->html
+#_ (hiccup*->html [:div])
+#_ (hiccup*->html '([:div]))

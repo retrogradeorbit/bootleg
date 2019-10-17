@@ -34,7 +34,7 @@
 (defn output-result [options result]
   (if (:data options)
     (-> result pprint)
-    (-> result utils/hiccup->html println)))
+    (-> result utils/hiccup*->html println)))
 
 (defn -main
   "main entry point for site generation"
