@@ -5,10 +5,7 @@
             [bootleg.yaml :as yaml]
             [bootleg.json :as json]
             [bootleg.edn :as edn]
-            [cljstache.core :as moustache]
-            [hickory.core :as hickory]
-            [hickory.render :as render]
-            [hickory.convert :as convert]
+            [cljstache.core :as mustache]
             [clojure.walk :as walk]
             [sci.core :as sci]))
 
@@ -33,7 +30,7 @@
               'slurp #(slurp (file/path-join path %))
 
               ;; process html
-              'moustache #(moustache/render (slurp (file/path-join path %1)) %2)
+              'mustache #(mustache/render (slurp (file/path-join path %1)) %2)
 
               ;; conversions
               'hiccup (partial process-hiccup path)
@@ -60,11 +57,7 @@
                    (file/path-join path %))))
 
         ;; hickory hiccup->html cant handle numbers
-        (->> (walk/postwalk #(if (number? %) (str %) %)))
-        ;;enlive/html
-        ;;enlive/emit*
-        ;;(->> (apply str))
-        )))
+        (->> (walk/postwalk #(if (number? %) (str %) %))))))
 
 (defn process-hiccup [path file]
   (->> file

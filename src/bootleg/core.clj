@@ -2,11 +2,10 @@
   (:require [bootleg.file :as file]
             [bootleg.utils :as utils]
             [bootleg.hiccup :as hiccup]
-            [net.cgrand.enlive-html :as enlive]
-            [net.cgrand.jsoup :as jsoup]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as string]
-            [clojure.pprint :as pprint])
+            [fipp.edn :refer [pprint]]
+            )
   (:gen-class))
 
 (def version "0.1.1")
@@ -29,13 +28,12 @@
        (string/join \newline)))
 
 (defn process [filename]
-  (enlive/set-ns-parser! jsoup/parser)
   (let [[path file] (file/path-split filename)]
     (hiccup/process-hiccup path file)))
 
 (defn output-result [options result]
   (if (:data options)
-    (-> result pprint/pprint)
+    (-> result pprint)
     (-> result utils/hiccup->html println)))
 
 (defn -main

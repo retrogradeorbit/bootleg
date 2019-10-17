@@ -19,6 +19,9 @@
                  ;; for hiccup eval
                  [borkdude/sci "0.0.10-SNAPSHOT"]
                  [hickory "0.7.1"]
+
+                 ;; clojures pprint doesn't work under graal native-image
+                 [fipp "0.6.21"]
                  ]
   :main ^:skip-aot bootleg.core
   :target-path "target/%s"

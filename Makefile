@@ -7,7 +7,7 @@ clean:
 	-rm -rf build target
 	lein clean
 
-target/uberjar/bootleg-0.1.0-SNAPSHOT-standalone.jar: $(SRC)
+target/uberjar/bootleg-0.1.1-SNAPSHOT-standalone.jar: $(SRC)
 	lein uberjar
 
 analyse:
