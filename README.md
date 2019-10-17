@@ -8,13 +8,14 @@ Bootleg is a command line tool that rapidly renders clojure based templates. Wit
 
 A simple page:
 
-    $ bootleg -e '[:html [:head [:title "A simple webpage"]] [:body [:h1 "A simple webpage"] [:p "Made with " [:pre "bootleg"] " for maximum powers!"]]]'
-    <html><head><title>A simple webpage</title></head><body><h1>A simple webpage</h1><p>Made with <pre>bootleg</pre> for maximum powers!</p></body></html>
+    $ bootleg -e '[:html [:body [:h1 "A simple webpage"] [:p "Made with bootleg for maximum powers!"]]]'
+    <html><body><h1>A simple webpage</h1><p>Made with bootleg for maximum powers!</p></body></html>
 
 A dynamic example:
 
-    $ bootleg -e '[:div (for [n (range 10 0 -1)] [:div n]) [:div "blast off!"]]'
-    <div><div>10</div><div>9</div><div>8</div><div>7</div><div>6</div><div>5</div><div>4</div><div>3</div><div>2</div><div>1</div><div>blast off!</div></div>
+    $ bootleg -e '[:div.countdown (for [n (range 10 0 -1)] [:p n]) [:p "blast off!"]]'
+    <div class="countdown"><p>10</p><p>9</p><p>8</p><p>7</p><p>6</p><p>5</p><p>4</p><p>3</p><p>2</p><p>1</p><p>blast off!</p></div>
+
 
 Mustache:
 
@@ -31,8 +32,18 @@ Markdown support. Easy downloading of resources by url (for any command):
 
 CSS selector based processing (via enlive):
 
-    $ build -e '(-> [:div [:h1.blurb] [:p#myid.blurb]] (at [:.blurb] (content "replace all blurb content") ))'
-    <div><h1 class="blurb">replace all blurb content</h1><p class="blurb" id="myid">replace all blurb content</p></div>
+    $ bootleg -e '(-> [:div [:h1.blurb] [:p.blurb]] (at [:.blurb] (content "blurb content") ))'
+    <div><h1 class="blurb">blurb content</h1><p class="blurb">blurb content</p></div>
+
+Fast:
+
+    $time bootleg -e '(-> [:div [:h1.blurb] [:p.blurb]] (at [:.blurb] (content "blurb content") ))'
+    <div><h1 class="blurb">blurb content</h1><p class="blurb">blurb content</p></div>
+
+    real	0m0.007s
+    user	0m0.004s
+    sys	0m0.003s
+
 
 ## Installation
 
@@ -46,7 +57,7 @@ Bootleg is distributed for linux as a single executable file. Download the lates
 Run at the command line for options:
 
     $ bootleg -h
-    Static site generator
+    Static website generation made simple. A powerful, fast, clojure html templating solution.
 
     Usage: bootleg [options] [clj-file]
 
