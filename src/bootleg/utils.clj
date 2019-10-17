@@ -15,43 +15,78 @@
   (or (i-starts-with? markup "<!DOCTYPE HTML")
       (i-starts-with? markup "<html")))
 
+;;
+;; hiccup / html
+;;
 (defn html->hiccup-seq [markup]
   (if (html? markup)
     (hickory/as-hiccup (hickory/parse markup))
     (map hickory/as-hiccup (hickory/parse-fragment markup))))
 
+#_ (html->hiccup-seq "<div>div</div><p>p</p>")
+
 (defn html->hiccup [markup]
   (last (html->hiccup-seq markup)))
 
+#_ (html->hiccup "<div>div</div><p>p</p>")
+
 (def hiccup-seq->html render/hiccup-to-html)
+
+#_ (hiccup-seq->html '([:div "div"] [:p "p"]))
 
 (defn hiccup->html [hiccup]
   (hiccup-seq->html [hiccup]))
 
-(def hiccup-seq->hickory convert/hiccup-to-hickory)
+#_ (hiccup->html [:div "div"])
 
+;;
+;; hiccup / hickory
+;;
 (defn hiccup->hickory [hiccup]
-  (hiccup-seq->hickory [hiccup]))
+  (first (convert/hiccup-fragment-to-hickory [hiccup])))
 
-(def hickory->hiccup convert/hickory-to-hiccup)
+#_ (hiccup->hickory [:div "div"])
+
+(defn hickory->hiccup [hickory]
+  (convert/hickory-to-hiccup hickory))
+
+#_ (hickory->hiccup {:type :element, :attrs nil, :tag :div, :content ["div"]})
+
+(defn hiccup-seq->hickory-seq [hiccup-seq]
+  (map hiccup->hickory hiccup-seq))
+
+#_ (hiccup-seq->hickory-seq '([:div "div"] [:p "p"]))
+
+(defn hickory-seq->hiccup-seq [hickory-seq]
+  (map hickory->hiccup hickory-seq))
+
+#_ (hickory-seq->hiccup-seq '({:type :element, :attrs nil, :tag :div, :content ["div"]} {:type :element, :attrs nil, :tag :p, :content ["p"]}))
+
+
+
+;;
+;; hickory / html
+;;
+(defn html->hickory-seq [markup]
+  (map hickory/as-hickory (hickory/parse-fragment markup)))
+
+#_ (html->hickory-seq "<div>div</div><p>p</p>")
+
 (defn html->hickory [markup]
-  (-> markup html->hiccup-seq hiccup-seq->hickory))
+  (last (html->hickory-seq markup)))
 
-(def hickory->html render/hickory-to-html)
+#_ (html->hickory "<div>div</div><p>p</p>")
 
-(defn coerce-html [flags html]
-  (cond
-    (:hiccup flags)
-    (html->hiccup-seq html)
+(defn hickory-seq->html [hickory]
+  (apply str (map render/hickory-to-html hickory)))
 
-    (:hickory flags)
-    (html->hickory html)
+#_ (hickory-seq->html
+    '({:type :element, :attrs nil, :tag :div, :content ["div"]} "-" {:type :element, :attrs nil, :tag :p, :content ["p"]}))
 
-    (:html flags)
-    html
+(defn hickory->html [hickory]
+  (render/hickory-to-html hickory))
 
-    :else
-    (html->hiccup-seq html)))
+#_ (hickory->html {:type :element, :attrs nil, :tag :div, :content ["div"]})
 
 (defn is-hiccup? [data]
   (keyword? (first data)))
@@ -59,9 +94,72 @@
 (defn is-hickory? [data]
   (and (map? data) (:type data)))
 
+(defn is-hickory-seq? [data]
+  (and (or (seq? data) (vector? data))
+       (is-hickory? (first data))))
+
 (defn is-hiccup-seq? [data]
   (and (or (seq? data) (vector? data))
        (or (string? (first data)) (is-hiccup? (first data)))))
+
+(defn markup-type [data]
+  (cond
+    (is-hiccup? data) :hiccup
+    (is-hiccup-seq? data) :hiccup-seq
+    (is-hickory? data) :hickory
+    (is-hickory-seq? data) :hickory-seq
+    (string? data) :html
+    :else nil))
+
+(def conversion-fns
+  ;; keys: [from-type to-type]
+  ;; values: converter function
+  ;;
+  ;; WARNING: some of these are possibly lossy (once using `first`)
+  {
+   [:hiccup :hiccup] identity
+   [:hiccup :hickory] hiccup->hickory
+   [:hiccup :hickory-seq] (comp list hiccup->hickory)
+   [:hiccup :hiccup-seq] list
+   [:hiccup :html] hiccup->html
+
+   [:hiccup-seq :hiccup] first
+   [:hiccup-seq :hickory] (comp first hiccup-seq->hickory-seq)
+   [:hiccup-seq :hickory-seq] hiccup-seq->hickory-seq
+   [:hiccup-seq :hiccup-seq] identity
+   [:hiccup-seq :html] hiccup-seq->html
+
+   [:hickory :hiccup] hickory->hiccup
+   [:hickory :hickory] identity
+   [:hickory :hickory-seq] list
+   [:hickory :hiccup-seq] (comp list hickory->hiccup)
+   [:hickory :html] hickory->html
+
+   [:hickory-seq :hiccup] (comp first hickory-seq->hiccup-seq)
+   [:hickory-seq :hickory] first
+   [:hickory-seq :hickory-seq] identity
+   [:hickory-seq :hiccup-seq] hickory-seq->hiccup-seq
+   [:hickory-seq :html] hickory-seq->html
+
+   [:html :hiccup] html->hiccup
+   [:html :hickory] html->hickory
+   [:html :hickory-seq] html->hickory-seq
+   [:html :hiccup-seq] html->hiccup-seq
+   [:html :html] identity})
+
+(defn convert-to [data to-type]
+  (let [from-type (markup-type data)
+        converter (conversion-fns [from-type to-type])]
+    (converter data)))
+
+(defn html-output-to [flags html]
+  (cond
+    (:hiccup flags) (html->hiccup html)
+    (:hiccup-seq flags) (html->hiccup-seq html)
+    (:hickory flags) (html->hickory html)
+    (:hickory-seq flags) (html->hickory-seq html)
+    (:html flags) html
+    :else (html->hiccup-seq html)))
 
 (defn as-html
   "Intelligently coerce input to html
@@ -69,23 +167,7 @@
   resulting in a sequence of hiccup. The following function converts either of these
   to html without throwing an error for one of them"
   [data]
-  (cond
-    ;; pure hiccup
-    (is-hiccup? data)
-    (hiccup->html data)
-
-    (is-hickory? data)
-    (hickory->html data)
-
-    (is-hiccup-seq? data)
-    (hiccup-seq->html data)
-
-    (string? data)
-    data
-
-    ;; anything else cast to a string
-    :else
-    (str data)))
+  (convert-to data :html))
 
 ;; full html
 #_ (hickory/parse "<html><body><h1>foo</h1></body></html>")
@@ -117,6 +199,9 @@
 
 ;; hiccup-seq->hickory
 #_ (hiccup-seq->hickory '([:div] [:p]))
+
+;; hiccup-seq->hickory-seq
+#_ (hiccup-seq->hickory-seq '([:div] [:p]))
 
 ;; hickup*->html
 #_ (hiccup*->html [:div])
