@@ -16,7 +16,7 @@ A dynamic example:
     $ bootleg -e '[:div.countdown (for [n (range 10 0 -1)] [:p n]) [:p "blast off!"]]'
     <div class="countdown"><p>10</p><p>9</p><p>8</p><p>7</p><p>6</p><p>5</p><p>4</p><p>3</p><p>2</p><p>1</p><p>blast off!</p></div>
 
-### Mustache
+Mustache:
 
     $ cd examples/quickstart
     $ bootleg -e '(mustache "quickstart.html" (yaml "fields.yml"))'
@@ -24,23 +24,17 @@ A dynamic example:
     <h2>by Crispin</h2>
     <p>I'm going to rewrite all my sites with this!</p>
 
-### Markdown support
-
-Easy downloading of resources by url (for any command):
+Markdown support. Easy downloading of resources by url (for any command):
 
     $ bootleg -e '(markdown "https://raw.githubusercontent.com/retrogradeorbit/bootleg/master/README.md")'
     <h1>bootleg</h1><p>Static website generation made simple. A powerful, fast, clojure templating solution that rocks!</p>...
 
-### CSS selector based processing
-
-The magic of enlive:
+CSS selector based processing. The magic of enlive:
 
     $ bootleg -e '(-> (markdown "examples/quickstart/simple.md") (at [:p] (set-attr :style "color:green;")))'
     <h1>Markdown support</h1><p style="color:green;">This is some simple markdown</p>
 
-### Fast
-
-Both startup and processing:
+Fast startup and processing:
 
     $ time bootleg -e '(-> [:div [:h1.blurb] [:p.blurb]] (at [:.blurb] (content "blurb content") ))'
     <div><h1 class="blurb">blurb content</h1><p class="blurb">blurb content</p></div>
@@ -48,8 +42,6 @@ Both startup and processing:
     real	0m0.007s
     user	0m0.004s
     sys	0m0.003s
-
-### Data Output
 
 Data output with -d flag:
 
