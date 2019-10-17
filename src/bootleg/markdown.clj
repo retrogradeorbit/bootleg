@@ -4,7 +4,7 @@
             [markdown.core :as markdown]))
 
 (defn make-markdown-fn [path]
-  (fn [source & options]
+  (fn markdown [source & options]
     (let [flags (into #{} options)
           markup (if (:data flags)
                    (markdown/md-to-html-string source)

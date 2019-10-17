@@ -4,7 +4,7 @@
             [cljstache.core :as mustache]))
 
 (defn make-mustache-fn [path]
-  (fn [source vars & options]
+  (fn mustache [source vars & options]
     (let [flags (into #{} options)
           pre-markup (if (:data flags)
                        source

@@ -3,7 +3,7 @@
             [bootleg.utils :as utils]))
 
 (defn make-html-fn [path]
-  (fn [source & options]
+  (fn html [source & options]
     (let [flags (into #{} options)
           markup (if (:data flags)
                    source
