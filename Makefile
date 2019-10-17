@@ -26,6 +26,7 @@ build/bootleg: target/uberjar/bootleg-0.1.1-SNAPSHOT-standalone.jar
 		-H:ConfigurationFileDirectories=graal-configs/ \
 		--initialize-at-build-time \
 		-H:Log=registerResource: \
+		-H:EnableURLProtocols=http,https \
 		--verbose \
 		--allow-incomplete-classpath \
 		--no-fallback \
