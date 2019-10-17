@@ -7,6 +7,7 @@
             [bootleg.yaml :as yaml]
             [bootleg.json :as json]
             [bootleg.edn :as edn]
+            [net.cgrand.enlive-html :as enlive]
             [clojure.walk :as walk]
             [sci.core :as sci]
             [fipp.edn :refer [pprint]]))
@@ -36,22 +37,42 @@
               'is-hiccup? utils/is-hiccup?
               'is-hiccup-seq? utils/is-hiccup-seq?
               'is-hickory? utils/is-hickory?
+              'is-hickory-seq? utils/is-hickory-seq?
 
               ;; conversions
-              'hiccup->html utils/hiccup->html
-              'hiccup->hickory utils/hiccup->hickory
-              'hiccup-seq->html utils/hiccup-seq->html
-              'hiccup-seq->hickory utils/hiccup-seq->hickory
-
-              'html->hiccup utils/html->hiccup
-              'html->hiccup-seq utils/html->hiccup-seq
-              'html->hickory utils/html->hickory
-
-              'hickory->html utils/hickory->html
-              'hickory->hiccup utils/hickory->hiccup
-
-              ;; universal converter
+              'convert-to utils/convert-to
               'as-html utils/as-html
+
+              ;; enlive
+              'at (fn at [node-or-nodes & selector-transform-pairs]
+                    (let [input-type (utils/markup-type node-or-nodes)
+                          converted-nodes (utils/convert-to node-or-nodes :hickory-seq)]
+                      (->
+                       (reduce
+                        (fn [node [selector transform]]
+                          (enlive/at node selector transform))
+                        converted-nodes
+                        (partition 2 selector-transform-pairs))
+
+                       (utils/convert-to input-type))))
+              'content enlive/content
+              'html-content enlive/html-content
+              'wrap enlive/wrap
+              'unwrap enlive/unwrap
+              'set-attr enlive/set-attr
+              'remove-attr enlive/remove-attr
+              'add-class enlive/add-class
+              'remove-class enlive/remove-class
+              'do-> enlive/do->
+              'append enlive/append
+              'prepend enlive/prepend
+              'after enlive/after
+              'before enlive/before
+              'substitute enlive/substitute
+              'move enlive/move
+
+              ;; macro
+              ;;'clone-for enlive/clone-for
 
               ;; debug
               'println println
