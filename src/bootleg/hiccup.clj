@@ -37,6 +37,7 @@
               'hiccup->hickory utils/hiccup->hickory
               'hiccup-seq->html utils/hiccup-seq->html
               'hiccup-seq->hickory utils/hiccup-seq->hickory
+              'hiccup*->html utils/hiccup*->html
 
               'html->hiccup utils/html->hiccup
               'html->hiccup-seq utils/html->hiccup-seq
