@@ -2,12 +2,14 @@
   (:require [bootleg.file :as file]
             [bootleg.utils :as utils]
             [bootleg.markdown :as markdown]
+            [bootleg.mustache :as mustache]
+            [bootleg.html :as html]
             [bootleg.yaml :as yaml]
             [bootleg.json :as json]
             [bootleg.edn :as edn]
-            [cljstache.core :as mustache]
             [clojure.walk :as walk]
-            [sci.core :as sci]))
+            [sci.core :as sci]
+            [fipp.edn :refer [pprint]]))
 
 (defn load-file* [ctx file]
   (let [s (slurp file)]
@@ -17,36 +19,35 @@
 
 (defn process-hiccup-data [path data]
   (let [ctx {:bindings
-             {'markdown (markdown/make-markdown-fn path)
-
-              ;;'html #(load-html (file/path-join path %))
+             {
+              ;; file loading
+              'markdown (markdown/make-markdown-fn path)
+              'mustache (mustache/make-mustache-fn path)
+              'slurp #(slurp (file/path-join path %))
+              'html (html/make-html-fn path)
+              'hiccup (partial process-hiccup path)
 
               ;; vars files
               'yaml (partial yaml/load-yaml path)
               'json (partial json/load-json path)
               'edn (partial edn/load-edn path)
 
-              ;; plain files
-              'slurp #(slurp (file/path-join path %))
-
-              ;; process html
-              'mustache #(mustache/render (slurp (file/path-join path %1)) %2)
-
-              ;; conversions
-              'hiccup (partial process-hiccup path)
-
               ;; conversions
               'hiccup->html utils/hiccup->html
+              'hiccup->hickory utils/hiccup->hickory
               'hiccup-seq->html utils/hiccup-seq->html
+              'hiccup-seq->hickory utils/hiccup-seq->hickory
+
               'html->hiccup utils/html->hiccup
               'html->hiccup-seq utils/html->hiccup-seq
-              'hickory->html utils/hickory->html
               'html->hickory utils/html->hickory
-              'hiccup->hickory utils/hiccup->hickory
+
+              'hickory->html utils/hickory->html
               'hickory->hiccup utils/hickory->hiccup
 
               ;; debug
               'println println
+              'pprint pprint
               }}]
     (-> data
         (sci/eval-string

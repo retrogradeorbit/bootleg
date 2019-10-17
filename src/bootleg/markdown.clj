@@ -1,8 +1,7 @@
 (ns bootleg.markdown
   (:require [bootleg.file :as file]
             [bootleg.utils :as utils]
-            [markdown.core :as markdown]
-            [clojure.java.io :as io]))
+            [markdown.core :as markdown]))
 
 (defn make-markdown-fn [path]
   (fn [source & options]
