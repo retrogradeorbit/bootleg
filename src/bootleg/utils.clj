@@ -57,9 +57,9 @@
 ;; resulting in a sequence of hiccup. The following function converts either of these
 ;; to html without throwing an error for one of them
 (defn hiccup*->html [hiccup-or-hiccup-seq]
-  (if (vector? (first hiccup-or-hiccup-seq))
-    (hiccup-seq->html hiccup-or-hiccup-seq)
-    (hiccup->html hiccup-or-hiccup-seq)))
+  (if (keyword? (first hiccup-or-hiccup-seq))
+    (hiccup->html hiccup-or-hiccup-seq)
+    (hiccup-seq->html hiccup-or-hiccup-seq)))
 
 ;; full html
 #_ (hickory/parse "<html><body><h1>foo</h1></body></html>")
@@ -95,3 +95,4 @@
 ;; hickup*->html
 #_ (hiccup*->html [:div])
 #_ (hiccup*->html '([:div]))
+#_ (hiccup*->html '("<!DOCTYPE HTML>" [:div]))
