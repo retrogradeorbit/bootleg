@@ -23,7 +23,7 @@
               ;; file loading
               'markdown (markdown/make-markdown-fn path)
               'mustache (mustache/make-mustache-fn path)
-              'slurp #(slurp (file/path-join path %))
+              'slurp #(slurp (file/input-stream path %))
               'html (html/make-html-fn path)
               'hiccup (partial process-hiccup path)
 
