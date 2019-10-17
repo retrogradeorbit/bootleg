@@ -19,7 +19,7 @@
    ])
 
 (defn usage [options-summary]
-  (->> ["Static site generator"
+  (->> ["Static website generation made simple. A powerful, fast, clojure html templating solution."
         ""
         "Usage: bootleg [options] [clj-file]"
         ""
