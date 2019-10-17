@@ -53,13 +53,39 @@
     :else
     (html->hiccup-seq html)))
 
-;; hiccup is a single form. However, html snippets can be multiple sequential forms
-;; resulting in a sequence of hiccup. The following function converts either of these
-;; to html without throwing an error for one of them
-(defn hiccup*->html [hiccup-or-hiccup-seq]
-  (if (keyword? (first hiccup-or-hiccup-seq))
-    (hiccup->html hiccup-or-hiccup-seq)
-    (hiccup-seq->html hiccup-or-hiccup-seq)))
+(defn is-hiccup? [data]
+  (keyword? (first data)))
+
+(defn is-hickory? [data]
+  (and (map? data) (:type data)))
+
+(defn is-hiccup-seq? [data]
+  (and (or (seq? data) (vector? data))
+       (or (string? (first data)) (is-hiccup? (first data)))))
+
+(defn as-html
+  "Intelligently coerce input to html
+  hiccup is a single form. However, html snippets can be multiple sequential forms
+  resulting in a sequence of hiccup. The following function converts either of these
+  to html without throwing an error for one of them"
+  [data]
+  (cond
+    ;; pure hiccup
+    (is-hiccup? data)
+    (hiccup->html data)
+
+    (is-hickory? data)
+    (hickory->html data)
+
+    (is-hiccup-seq? data)
+    (hiccup-seq->html data)
+
+    (string? data)
+    data
+
+    ;; anything else cast to a string
+    :else
+    (str data)))
 
 ;; full html
 #_ (hickory/parse "<html><body><h1>foo</h1></body></html>")
