@@ -37,7 +37,7 @@ CSS selector based processing (via enlive):
 
 Fast:
 
-    $time bootleg -e '(-> [:div [:h1.blurb] [:p.blurb]] (at [:.blurb] (content "blurb content") ))'
+    $ time bootleg -e '(-> [:div [:h1.blurb] [:p.blurb]] (at [:.blurb] (content "blurb content") ))'
     <div><h1 class="blurb">blurb content</h1><p class="blurb">blurb content</p></div>
 
     real	0m0.007s
