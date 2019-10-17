@@ -11,4 +11,4 @@
                    (let [body (java.io.ByteArrayOutputStream.)]
                      (markdown/md-to-html (file/input-stream path source) body)
                      (.toString body)))]
-      (utils/coerce-html flags markup))))
+      (utils/html-output-to flags markup))))

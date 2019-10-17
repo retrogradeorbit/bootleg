@@ -8,4 +8,4 @@
           markup (if (:data flags)
                    source
                    (slurp (file/input-stream path source)))]
-      (utils/coerce-html flags markup))))
+      (utils/html-output-to flags markup))))

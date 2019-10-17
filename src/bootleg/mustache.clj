@@ -10,4 +10,4 @@
                        source
                        (slurp (file/input-stream path source)))
           markup (mustache/render pre-markup vars)]
-      (utils/coerce-html flags markup))))
+      (utils/html-output-to flags markup))))
