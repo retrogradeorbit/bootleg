@@ -22,3 +22,19 @@
   (->  file
        (string/split #"\.")
        last))
+
+(defn file-input-stream [path file]
+  (io/input-stream (path-join path file)))
+
+(defn url-input-stream [url]
+  (io/input-stream (io/as-url url)))
+
+(defmulti input-stream
+  (fn [_ url-or-file]
+    ;; dispatch on schema
+    (when-let [[_ schema] (re-find #"(\S+):\/\/" url-or-file)]
+      schema)))
+
+(defmethod input-stream :default [path file] (file-input-stream path file))
+(defmethod input-stream "http" [_ url] (url-input-stream url))
+(defmethod input-stream "https" [_ url] (url-input-stream url))

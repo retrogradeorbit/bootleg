@@ -10,6 +10,6 @@
           markup (if (:data flags)
                    (markdown/md-to-html-string source)
                    (let [body (java.io.ByteArrayOutputStream.)]
-                     (markdown/md-to-html (io/input-stream (file/path-join path source)) body)
+                     (markdown/md-to-html (file/input-stream path source) body)
                      (.toString body)))]
       (utils/coerce-html flags markup))))

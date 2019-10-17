@@ -21,7 +21,7 @@
 (defn usage [options-summary]
   (->> ["Static site generator"
         ""
-        "Usage: bootleg [options] [yaml-file]"
+        "Usage: bootleg [options] [clj-file]"
         ""
         "Options:"
         options-summary]
