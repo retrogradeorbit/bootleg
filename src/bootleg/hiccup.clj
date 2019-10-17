@@ -7,6 +7,7 @@
             [bootleg.yaml :as yaml]
             [bootleg.json :as json]
             [bootleg.edn :as edn]
+            [bootleg.namespaces :as namespaces]
             [net.cgrand.enlive-html :as enlive]
             [clojure.walk :as walk]
             [sci.core :as sci]
@@ -19,7 +20,9 @@
 (declare process-hiccup)
 
 (defn process-hiccup-data [path data]
-  (let [ctx {:bindings
+  (let [ctx {
+             :namespaces namespaces/namespaces
+             :bindings
              {
               ;; file loading
               'markdown (markdown/make-markdown-fn path)
