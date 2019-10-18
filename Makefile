@@ -1,4 +1,4 @@
-GRAALVM = ~/graalvm-ce-19.2.0.1
+GRAALVM = $(HOME)/graalvm-ce-19.2.0.1
 SRC = src/bootleg/core.clj
 
 all: build/bootleg
@@ -14,8 +14,10 @@ analyse:
 	$(GRAALVM)/bin/java -agentlib:native-image-agent=config-output-dir=config-dir \
 		-jar target/uberjar/bootleg-0.1.1-SNAPSHOT-standalone.jar
 
+build/bootleg: export GRAALVM_HOME = $(GRAALVM)
 build/bootleg: target/uberjar/bootleg-0.1.1-SNAPSHOT-standalone.jar
 	-mkdir build
+	export
 	$(GRAALVM)/bin/native-image \
 		-jar target/uberjar/bootleg-0.1.1-SNAPSHOT-standalone.jar \
 		-Dsun.java2d.opengl=false \

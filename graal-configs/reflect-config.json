@@ -24,5 +24,16 @@
             { "name": "parse", "parameterTypes": ["org.xml.sax.InputSource"] },
             { "name": "parse", "parameterTypes": ["java.lang.String"] }
         ]
+    },
+    {
+        "name":"java.util.Base64$Decoder",
+        "methods": [
+            {"name": "decode", "parameterTypes": ["java.lang.String"] }
+            ]
+    },
+    {
+        "name":"java.io.BufferedOutputStream",
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
     }
 ]

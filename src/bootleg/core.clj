@@ -2,10 +2,10 @@
   (:require [bootleg.file :as file]
             [bootleg.utils :as utils]
             [bootleg.hiccup :as hiccup]
+            [bootleg.config :as config]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as string]
-            [fipp.edn :refer [pprint]]
-            )
+            [fipp.edn :refer [pprint]])
   (:gen-class))
 
 (def version "0.1.1")
@@ -39,6 +39,7 @@
 (defn -main
   "main entry point for site generation"
   [& args]
+  (config/init!)
   (let [{:keys [options summary arguments]} (parse-opts args cli-options)]
     (cond
       (:help options)
