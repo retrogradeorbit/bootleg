@@ -58,8 +58,6 @@ Bootleg is distributed for linux as a single executable file. Download the lates
     $ tar xvf bootleg-0.1.1-linux-amd64.tgz
     $ mv bootleg /usr/local/bin
 
-
-
 ## Usage
 
 Run at the command line for options:
@@ -76,9 +74,66 @@ Run at the command line for options:
       -d, --data           Output the rendered template as a clojure form instead of html
       -o, --output FILE    Write the output to the specified file instead of stdout
 
+## Overview
+
+`bootleg` supports five principle data structures. Three are more flexible. And two are limited. They are as follows. We will begin describing the two limited data structures and why they are limited.
+
+### hiccup
+
+Hiccup is a standard clojure DSL syntax for representing markup as nested sequences of vectors, and is represented in type conversions and option flags by the keyword `:hiccup`. An example of some hiccup: the html `<div><p>This is an example</p></div>` is represented in hiccup as `[:div [:p "This is an example"]]`.
+
+Hiccup is limited in that it can only represent a single root element and its children. This means there are template fragments that *cannot* be represented in hiccup. For example, the html snippet `<p>one</p><p>two</p>` cannot be represented as hiccup. It is comprised of two hiccup forms. `[:p "one"]` and `[:p "two"]`
+
+### hickory
+
+Hickory is a format used to internally represent document trees in clojure for programmatic processing. In type conversion and option flags is is referenced by the keyword `:hickory`. It is very verbose and not suitable to write by hand. It is supported internally for passing between functions that use it. A simple example of some hickory: the html `<p>one</p>` is represented in hickory as `{:type :element, :attrs nil, :tag :p, :content ["one"]}`.
+
+Both the hickory and enlive clojure projects use this format internally to represent and manipulate DOM trees.
+
+Hickory is limited in that it can only represent a single root element and its children. This means there are template fragments that *cannot* be represented in hickory. For example, the html snippet `<p>one</p><p>two</p>` cannot be represented as hickory. It is comprised of two hickory forms. `{:type :element, :attrs nil, :tag :p, :content ["one"]}` and `{:type :element, :attrs nil, :tag :p, :content ["two"]}`
+
+### hiccup-seq
+
+Hiccup-seq is simply a clojure sequence (or vector) of hiccup forms. In type conversion and option flags is is referenced by the keyword `:hiccup-seq`. By wrapping multiple hiccup forms in a sequence, hiccup-seq can now represent any single root element and it children *and* any template fragment composed of sibling elements.
+
+For example: the html snippet `<p>one</p><p>two</p>` is represented in hiccup-seq as: `([:p "one"] [:p "two"])`
+
+### hickory-seq
+
+Hickory-seq is simply a clojure sequence (or vector) of hickory forms. In type conversion and option flags is is referenced by the keyword `:hickory-seq`. By wrapping multiple hickory forms in a sequence, hickory-seq can now represent any single root element and it children *and* any template fragment composed of sibling elements.
+
+For example: the html snippet `<p>one</p><p>two</p>` is represented in hickory-seq as: `({:type :element, :attrs nil, :tag :p, :content ["one"]} {:type :element, :attrs nil, :tag :p, :content ["two"]})`
+
+### html
+
+html (or any type of xml) is represented internally as a string. This is a flexible type and can hold a root element and children, or a number of sibling elements sequentially.
+
 ## Inbuilt functions
 
 The following functions are inbuilt into the clojure interpreter:
+
+### markdown
+
+**(markdown source & options)**
+
+Load the markdown from the file specified in `source` and render it. `source` can be a local file path (relative to the executing hiccup file location) or a URL to gather the markdown from.
+
+Options can be used to alter the behaviour of the function. Options are a list of keywords and can be specified in any order after the source parameter. Options can be:
+
+ * :data Interpret the `source` argument as markdown data, not a file to load
+ * :hiccup-seq Return the rendered markdown as a hiccup sequence data structure
+ * :hickory-seq Return the rendered markdown as a hickory sequence data structure
+ * :html Return the rendered markdown as an html string
+
+eg.
+
+    $ bootleg -e '(markdown "# heading\nparagraph" :data)'
+
+    $ bootleg -d -e '(markdown "# heading\nparagraph" :data :hickory-seq)'
+
+    $ bootleg -d -e '(markdown "# heading\nparagraph" :data :hiccup-seq)'
+
+    $ bootleg -d -e '(markdown "# heading\nparagraph" :data :html)'
 
 
 
