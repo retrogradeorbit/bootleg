@@ -35,5 +35,10 @@
         "name":"java.io.BufferedOutputStream",
         "allDeclaredMethods": true,
         "allPublicMethods": true
+    },
+    {
+        "name":"java.io.OutputStreamWriter",
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
     }
 ]
