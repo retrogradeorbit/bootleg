@@ -41,15 +41,16 @@
          (.write w#))))
 
 (defn setup []
-  ;; https://blog.taylorwood.io/2018/10/04/graalvm-https.html
-  (System/setProperty "java.library.path" libs-dir)
   (write-embedded-file-to libsunec-path "jre/lib/amd64/libsunec.so"))
 
 (defn init! []
+  ;; https://blog.taylorwood.io/2018/10/04/graalvm-https.html
   (.mkdirs (io/as-file libs-dir))
   (let [check-size (embed-length "jre/lib/amd64/libsunec.so")
         exists? (.exists (io/as-file libsunec-path))
         file-size (when exists? (.length (io/as-file libsunec-path)))]
     (when (or (not exists?)
               (not= check-size file-size))
-      (setup))))
+      (setup)))
+
+  (System/setProperty "java.library.path" libs-dir))
