@@ -80,13 +80,13 @@ Run at the command line for options:
 
 ### hiccup
 
-Hiccup is a standard clojure DSL syntax for representing markup as nested sequences of vectors, and is represented in type conversions and option flags by the keyword `:hiccup`. An example of some hiccup: the html `<div><p>This is an example</p></div>` is represented in hiccup as `[:div [:p "This is an example"]]`.
+Hiccup is a standard clojure DSL syntax for representing markup as nested sequences of vectors, and is represented in option flags by the keyword `:hiccup`. An example of some hiccup: the html `<div><p>This is an example</p></div>` is represented in hiccup as `[:div [:p "This is an example"]]`.
 
 Hiccup is limited in that it can only represent a single root element and its children. This means there are template fragments that *cannot* be represented in hiccup. For example, the html snippet `<p>one</p><p>two</p>` cannot be represented as hiccup. It is comprised of two hiccup forms. `[:p "one"]` and `[:p "two"]`
 
 ### hickory
 
-Hickory is a format used to internally represent document trees in clojure for programmatic processing. In type conversion and option flags is is referenced by the keyword `:hickory`. It is very verbose and not suitable to write by hand. It is supported internally for passing between functions that use it. A simple example of some hickory: the html `<p>one</p>` is represented in hickory as `{:type :element, :attrs nil, :tag :p, :content ["one"]}`.
+Hickory is a format used to internally represent document trees in clojure for programmatic processing. In option flags it is referenced by the keyword `:hickory`. It is very verbose and not suitable to write by hand. It is supported internally for passing between functions that use it. A simple example of some hickory: the html `<p>one</p>` is represented in hickory as `{:type :element, :attrs nil, :tag :p, :content ["one"]}`.
 
 Both the hickory and enlive clojure projects use this format internally to represent and manipulate DOM trees.
 
@@ -94,13 +94,13 @@ Hickory is limited in that it can only represent a single root element and its c
 
 ### hiccup-seq
 
-Hiccup-seq is simply a clojure sequence (or vector) of hiccup forms. In type conversion and option flags is is referenced by the keyword `:hiccup-seq`. By wrapping multiple hiccup forms in a sequence, hiccup-seq can now represent any single root element and it children *and* any template fragment composed of sibling elements.
+Hiccup-seq is simply a clojure sequence (or vector) of hiccup forms. In option flags it is referenced by the keyword `:hiccup-seq`. By wrapping multiple hiccup forms in a sequence, hiccup-seq can now represent any single root element and it children *and* any template fragment composed of sibling elements.
 
 For example: the html snippet `<p>one</p><p>two</p>` is represented in hiccup-seq as: `([:p "one"] [:p "two"])`
 
 ### hickory-seq
 
-Hickory-seq is simply a clojure sequence (or vector) of hickory forms. In type conversion and option flags is is referenced by the keyword `:hickory-seq`. By wrapping multiple hickory forms in a sequence, hickory-seq can now represent any single root element and it children *and* any template fragment composed of sibling elements.
+Hickory-seq is simply a clojure sequence (or vector) of hickory forms. In option flags it is referenced by the keyword `:hickory-seq`. By wrapping multiple hickory forms in a sequence, hickory-seq can now represent any single root element and it children *and* any template fragment composed of sibling elements.
 
 For example: the html snippet `<p>one</p><p>two</p>` is represented in hickory-seq as: `({:type :element, :attrs nil, :tag :p, :content ["one"]} {:type :element, :attrs nil, :tag :p, :content ["two"]})`
 
