@@ -34,19 +34,22 @@ CSS selector based processing. The magic of enlive:
     $ bootleg -e '(-> (markdown "examples/quickstart/simple.md") (at [:p] (set-attr :style "color:green;")))'
     <h1>Markdown support</h1><p style="color:green;">This is some simple markdown</p>
 
-Fast startup and processing:
+Enlive processing:
 
-    $ time bootleg -e '(-> [:div [:h1.blurb] [:p.blurb]] (at [:.blurb] (content "blurb content") ))'
+    $ bootleg -e '(-> [:div [:h1.blurb] [:p.blurb]] (at [:.blurb] (content "blurb content") ))'
     <div><h1 class="blurb">blurb content</h1><p class="blurb">blurb content</p></div>
-
-    real	0m0.007s
-    user	0m0.004s
-    sys	0m0.003s
 
 Data output with -d flag:
 
     $ bootleg -d -e '(markdown "examples/quickstart/simple.md")'
     ([:h1 {} "Markdown support"] [:p {} "This is some simple markdown"])
+
+Process files:
+
+    $ echo '[:p#myid "an example"]' > example.clj
+    $ bootleg -o example.html example.clj
+    $ cat example.html
+    <p id="myid">an example</p>
 
 ## Installation
 
@@ -54,6 +57,8 @@ Bootleg is distributed for linux as a single executable file. Download the lates
 
     $ tar xvf bootleg-0.1.1-linux-amd64.tgz
     $ mv bootleg /usr/local/bin
+
+
 
 ## Usage
 
@@ -69,6 +74,13 @@ Run at the command line for options:
       -v, --version        Print the version string and exit
       -e, --evaluate CODE  Pass in the hiccup to evaluate on the command line
       -d, --data           Output the rendered template as a clojure form instead of html
+      -o, --output FILE    Write the output to the specified file instead of stdout
+
+## Inbuilt functions
+
+The following functions are inbuilt into the clojure interpreter:
+
+
 
 ## License
 

@@ -5,6 +5,7 @@
             [bootleg.config :as config]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as string]
+            [clojure.java.io :as io]
             [fipp.edn :refer [pprint]])
   (:gen-class))
 
@@ -16,6 +17,7 @@
    ["-v" "--version" "Print the version string and exit"]
    ["-e" "--evaluate CODE" "Pass in the hiccup to evaluate on the command line"]
    ["-d" "--data" "Output the rendered template as a clojure form instead of html"]
+   ["-o" "--output FILE" "Write the output to the specified file instead of stdout"]
    ])
 
 (defn usage [options-summary]
@@ -32,9 +34,17 @@
     (hiccup/process-hiccup path file)))
 
 (defn output-result [options result]
-  (if (:data options)
-    (-> result pprint)
-    (-> result utils/as-html println)))
+  (let [out (if (:output options)
+              (io/writer (:output options))
+              *out*)]
+    (try
+      (if (:data options)
+        (-> result (pprint {:writer out}))
+        (->> result utils/as-html (.write out)))
+      (finally
+        (if (:output options)
+          (.close out)
+          (.flush out))))))
 
 (defn -main
   "main entry point for site generation"
