@@ -134,7 +134,6 @@ eg.
     ({:type :element, :attrs nil, :tag :h1, :content ["heading"]}
      {:type :element, :attrs nil, :tag :p, :content ["paragraph"]})
 
-
     $ bootleg -d -e '(markdown "# heading\nparagraph" :data :hiccup-seq)'
     ([:h1 {} "heading"] [:p {} "paragraph"])
 
