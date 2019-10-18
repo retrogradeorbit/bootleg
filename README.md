@@ -120,10 +120,10 @@ Load the markdown from the file specified in `source` and render it. `source` ca
 
 Options can be used to alter the behaviour of the function. Options are a list of keywords and can be specified in any order after the source parameter. Options can be:
 
- * :data Interpret the `source` argument as markdown data, not a file to load
- * :hiccup-seq Return the rendered markdown as a hiccup sequence data structure
- * :hickory-seq Return the rendered markdown as a hickory sequence data structure
- * :html Return the rendered markdown as an html string
+ * `:data` Interpret the `source` argument as markdown data, not a file to load
+ * `:hiccup-seq` Return the rendered markdown as a hiccup sequence data structure
+ * `:hickory-seq` Return the rendered markdown as a hickory sequence data structure
+ * `:html` Return the rendered markdown as an html string
 
 eg.
 
