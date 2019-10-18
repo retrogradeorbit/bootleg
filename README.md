@@ -128,13 +128,18 @@ Options can be used to alter the behaviour of the function. Options are a list o
 eg.
 
     $ bootleg -e '(markdown "# heading\nparagraph" :data)'
+    <h1>heading</h1><p>paragraph</p>
 
     $ bootleg -d -e '(markdown "# heading\nparagraph" :data :hickory-seq)'
+    ({:type :element, :attrs nil, :tag :h1, :content ["heading"]}
+     {:type :element, :attrs nil, :tag :p, :content ["paragraph"]})
+
 
     $ bootleg -d -e '(markdown "# heading\nparagraph" :data :hiccup-seq)'
+    ([:h1 {} "heading"] [:p {} "paragraph"])
 
     $ bootleg -d -e '(markdown "# heading\nparagraph" :data :html)'
-
+    "<h1>heading</h1><p>paragraph</p>"
 
 
 ## License
