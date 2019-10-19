@@ -9,7 +9,7 @@ Bootleg is a command line tool that rapidly renders clojure based templates. Wit
 Install:
 
     $ tar xvf bootleg-0.1.1-linux-amd64.tgz
-    $ mv bootleg /usr/local/bin
+    $ mv bootleg ~/bin
 
 A simple page:
 
