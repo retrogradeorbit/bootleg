@@ -76,6 +76,8 @@ Run at the command line for options:
 
 ## Overview
 
+`bootleg` loads the clj file specified on the command line, or evaluates the `CODE` form specified in the -e flag. The code cat return any of the supported data structures listed below. `bootleg` will then convert that format into html and write it out to standard out, or to `FILE` if specified. This conversion to html step can be prevented by passing in the `-d` flag. In this case the output will be a pretty formatted edn form of the output data structure.
+
 `bootleg` supports five principle data structures. Three are more flexible. And two are limited. We will begin describing the two limited data structures and why they are limited.
 
 ### hiccup
@@ -112,7 +114,9 @@ html (or any type of xml) is represented internally as a string. This is a flexi
 
 The following functions are inbuilt into the clojure interpreter:
 
-### markdown
+### Markup Processing Functions
+
+#### markdown
 
 **(markdown source & options)**
 
@@ -139,6 +143,122 @@ eg.
 
     $ bootleg -d -e '(markdown "# heading\nparagraph" :data :html)'
     "<h1>heading</h1><p>paragraph</p>"
+
+#### mustache
+
+**(mustache source vars & options)**
+
+Load a mustache template from the file specified in `source` and render it substituting the vars from `vars`. `source` can be a local file path (relative to the executing hiccup file location) or a URL to gather the markdown from.
+
+Options can be used to alter the behaviour of the function. Options are a list of keywords and can be specified in any order after the source parameter. Options can be:
+
+ * `:data` Interpret the `source` argument as markdown data, not a file to load
+ * `:hiccup` Return the rendered markdown as hiccup
+ * `:hiccup-seq` Return the rendered markdown as a hiccup sequence data structure
+ * `:hickory` Return the rendered markdown as hickory
+ * `:hickory-seq` Return the rendered markdown as a hickory sequence data structure
+ * `:html` Return the rendered markdown as an html string
+
+eg.
+
+    $ bootleg -e '(mustache "<p>{{var1}}</p><div>{{&var2}}</div>" {:var1 "value 1" :var2 "<p>markup</p>"} :data)'
+    <p>value 1</p><div><p>markup</p></div>
+
+    $ bootleg -d -e '(mustache "<p>{{var1}}</p>" {:var1 "value 1"} :data :hiccup-seq)'
+    ([:p {} "value 1"])
+
+#### slurp
+
+**(slurp source)**
+
+Load the contents of a file, from a local or remote source, into memory and return it. Unline clojure's inbuilt `slurp`, this `slurp` can load from URLs. Does no interpretation of the file contents at all. Returns them as is.
+
+#### html
+
+**(html source & options)**
+
+Loads the contents of a html or xml file and returns them in `:hiccup-seq` (by default).
+
+Options can be:
+
+ * `:data` Interpret the `source` argument as markdown data, not a file to load
+ * `:hiccup` Return the rendered markdown as hiccup
+ * `:hiccup-seq` Return the rendered markdown as a hiccup sequence data structure
+ * `:hickory` Return the rendered markdown as hickory
+ * `:hickory-seq` Return the rendered markdown as a hickory sequence data structure
+ * `:html` Return the rendered markdown as an html string
+
+eg.
+
+    $ bootleg -d -e '(html "<h1>heading</h1><p>body</p>" :data :hiccup-seq)'
+    ([:h1 {} "heading"] [:p {} "body"])
+
+    $ bootleg -d -e '(html "<div><h1>heading</h1><p>body</p></div>" :data :hiccup)'
+    [:div {} [:h1 {} "heading"] [:p {} "body"]]
+
+#### hiccup
+
+**(hiccup source)**
+
+Loads and evaluates the clojure source from another file.
+
+### Var Loading Functions
+
+#### yaml
+
+#### json
+
+#### edn
+
+### Data Testing
+
+#### is-hiccup?
+
+#### is-hiccup-seq?
+
+#### is-hickory?
+
+#### is-hickory-seq?
+
+### Data Conversion
+
+#### convert-to
+
+#### as-html
+
+### Enlive Processing
+
+### at
+
+### content
+
+### html-content
+
+### wrap
+
+### unwrap
+
+### set-attr
+
+### remove-attr
+
+### add-class
+
+### remove-class
+
+### do->
+
+### append
+
+### prepend
+
+### after
+
+### before
+
+### substitute
+
+### move
 
 
 ## License
