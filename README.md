@@ -262,6 +262,7 @@ Enlive html functions are to be found in the `enlive` namespace. The enlive macr
 
 In addition to this the standard enlive namespaces are available in their usual locations:
 
+ * net.cgrand.enlive-html
  * net.cgrand.jsoup
  * net.cgrand.reload
  * net.cgrand.tagsoup
