@@ -4,6 +4,13 @@ Static website generation made simple. A powerful, fast, clojure html templating
 
 Bootleg is a command line tool that rapidly renders clojure based templates. With inbuilt support for html, hiccup, hickory, mustache, enlive, json, yaml and edn, it enables you to pull together disparate elements and glue them together to generate the static website of your dreams.
 
+## Installation
+
+Bootleg is distributed for linux as a single executable file. Download the latest tarball from https://github.com/retrogradeorbit/bootleg/releases and then extract it. Once extracted, move the binary to your path. For system wide installation try `/usr/local/bin` or for personal use `~/bin`
+
+    $ tar xvf bootleg-0.1.1-linux-amd64.tgz
+    $ mv bootleg /usr/local/bin
+
 ## Quickstart
 
 A simple page:
@@ -50,13 +57,6 @@ Process files:
     $ bootleg -o example.html example.clj
     $ cat example.html
     <p id="myid">an example</p>
-
-## Installation
-
-Bootleg is distributed for linux as a single executable file. Download the latest tarball from https://github.com/retrogradeorbit/bootleg/releases and then extract it. Once extracted, move the binary to your path. For system wide installation try `/usr/local/bin` or for personal use `~/bin`
-
-    $ tar xvf bootleg-0.1.1-linux-amd64.tgz
-    $ mv bootleg /usr/local/bin
 
 ## Usage
 
