@@ -76,9 +76,9 @@ Run at the command line for options:
 
 ## Overview
 
-`bootleg` loads the clj file specified on the command line, or evaluates the `CODE` form specified in the -e flag. The code cat return any of the supported data structures listed below. `bootleg` will then convert that format into html and write it out to standard out, or to `FILE` if specified. This conversion to html step can be prevented by passing in the `-d` flag. In this case the output will be a pretty formatted edn form of the output data structure.
+`bootleg` loads and evaluates the clj file specified on the command line, or evaluates the `CODE` form specified in the -e flag. The code can return any of the supported data structures listed below. `bootleg` will then automatically convert that format into html and write it out to standard out, or to `FILE` if specified. This conversion to html step can be prevented by calling with the `-d` flag. In this case the output will be a pretty formatted edn form of the output data structure.
 
-`bootleg` supports five principle data structures. Three are more flexible. And two are limited. We will begin describing the two limited data structures and why they are limited.
+`bootleg` supports five main markup data structures. Three are more flexible. And two are limited. We will begin describing the two limited data structures and why they are limited.
 
 ### hiccup
 
@@ -118,7 +118,7 @@ The following functions are inbuilt into the clojure interpreter:
 
 #### markdown
 
-**(markdown source & options)**
+`(markdown source & options)`
 
 Load the markdown from the file specified in `source` and render it. `source` can be a local file path (relative to the executing hiccup file location) or a URL to gather the markdown from.
 
@@ -146,7 +146,7 @@ eg.
 
 #### mustache
 
-**(mustache source vars & options)**
+`(mustache source vars & options)`
 
 Load a mustache template from the file specified in `source` and render it substituting the vars from `vars`. `source` can be a local file path (relative to the executing hiccup file location) or a URL to gather the markdown from.
 
@@ -169,13 +169,13 @@ eg.
 
 #### slurp
 
-**(slurp source)**
+`(slurp source)`
 
 Load the contents of a file, from a local or remote source, into memory and return it. Unline clojure's inbuilt `slurp`, this `slurp` can load from URLs. Does no interpretation of the file contents at all. Returns them as is.
 
 #### html
 
-**(html source & options)**
+`(html source & options)`
 
 Loads the contents of a html or xml file and returns them in `:hiccup-seq` (by default).
 
@@ -198,7 +198,7 @@ eg.
 
 #### hiccup
 
-**(hiccup source)**
+`(hiccup source)`
 
 Loads and evaluates the clojure source from another file.
 
@@ -206,29 +206,49 @@ Loads and evaluates the clojure source from another file.
 
 #### yaml
 
+`(yaml source)`
+
 #### json
 
+`(json source)`
+
 #### edn
+
+`(edn source)`
 
 ### Data Testing
 
 #### is-hiccup?
 
+`(is-hiccup? data)`
+
 #### is-hiccup-seq?
+
+`(is-hiccup-seq? data)`
 
 #### is-hickory?
 
+`(is-hickory? data)`
+
 #### is-hickory-seq?
+
+`(is-hickory-seq? data)`
 
 ### Data Conversion
 
 #### convert-to
 
+`(convert-to data type)`
+
 #### as-html
+
+`(as-html data)`
 
 ### Enlive Processing
 
 ### at
+
+`(at data selector transform & more)`
 
 ### content
 
