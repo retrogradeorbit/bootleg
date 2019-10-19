@@ -46,37 +46,6 @@
               'convert-to utils/convert-to
               'as-html utils/as-html
 
-              ;; enlive
-              'at (fn at [node-or-nodes & selector-transform-pairs]
-                    (let [input-type (utils/markup-type node-or-nodes)
-                          converted-nodes (utils/convert-to node-or-nodes :hickory-seq)]
-                      (->
-                       (reduce
-                        (fn [node [selector transform]]
-                          (enlive/at node selector transform))
-                        converted-nodes
-                        (partition 2 selector-transform-pairs))
-
-                       (utils/convert-to input-type))))
-              'content enlive/content
-              'html-content enlive/html-content
-              'wrap enlive/wrap
-              'unwrap enlive/unwrap
-              'set-attr enlive/set-attr
-              'remove-attr enlive/remove-attr
-              'add-class enlive/add-class
-              'remove-class enlive/remove-class
-              'do-> enlive/do->
-              'append enlive/append
-              'prepend enlive/prepend
-              'after enlive/after
-              'before enlive/before
-              'substitute enlive/substitute
-              'move enlive/move
-
-              ;; macro
-              ;;'clone-for enlive/clone-for
-
               ;; debug
               'println println
               'pprint pprint
