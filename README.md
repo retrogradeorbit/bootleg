@@ -36,12 +36,12 @@ Markdown support. Easy downloading of resources by url (for any command):
 
 CSS selector based processing. The magic of enlive:
 
-    $ bootleg -e '(-> (markdown "examples/quickstart/simple.md") (at [:p] (set-attr :style "color:green;")))'
+    $ bootleg -e '(-> (markdown "examples/quickstart/simple.md") (enlive/at [:p] (enlive/set-attr :style "color:green;")))'
     <h1>Markdown support</h1><p style="color:green;">This is some simple markdown</p>
 
 Enlive processing:
 
-    $ bootleg -e '(-> [:div [:h1.blurb] [:p.blurb]] (at [:.blurb] (content "blurb content") ))'
+    $ bootleg -e '(-> [:div [:h1.blurb] [:p.blurb]] (enlive/at [:.blurb] (enlive/content "blurb content")))'
     <div><h1 class="blurb">blurb content</h1><p class="blurb">blurb content</p></div>
 
 Data output with -d flag:
@@ -258,40 +258,59 @@ Loads and evaluates the clojure source from another file.
 
 ### Enlive Processing
 
-### at
+Enlive html functions are to be found in the `enlive` namespace. The enlive macros are not supported (`deftemplate`, `defsnippet`, `clone-for`). A reimplementation of `at` is supplied that provides automatic type coercion for the inputs and outputs.
+
+In addition to this the standard enlive namespaces are available in their usual locations:
+
+ * net.cgrand.jsoup
+ * net.cgrand.reload
+ * net.cgrand.tagsoup
+ * net.cgrand.xml
+
+#### at
 
 `(at data selector transform & more)`
 
-### content
+#### content
 
-### html-content
+#### html-content
 
-### wrap
+#### wrap
 
-### unwrap
+#### unwrap
 
-### set-attr
+#### set-attr
 
-### remove-attr
+#### remove-attr
 
-### add-class
+#### add-class
 
-### remove-class
+#### remove-class
 
-### do->
+#### do->
 
-### append
+#### append
 
-### prepend
+#### prepend
 
-### after
+#### after
 
-### before
+#### before
 
-### substitute
+#### substitute
 
-### move
+#### move
 
+### Hickory
+
+The `hickory` namespaces are provided at their usual namespace locations.
+
+ * hickory.convert
+ * hickory.hiccup-utils
+ * hickory.render
+ * hickory.select
+ * hickory.utils
+ * hickory.zip
 
 ## License
 
