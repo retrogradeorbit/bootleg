@@ -60,6 +60,7 @@ Process files:
 
 Bootleg is distributed for linux as a single executable file. Download the latest tarball from https://github.com/retrogradeorbit/bootleg/releases and then extract it. Once extracted, move the binary to your path. For system wide installation try `/usr/local/bin` or for personal use `~/bin`
 
+    $ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.1/bootleg-0.1.1-linux-amd64.tgz
     $ tar xvf bootleg-0.1.1-linux-amd64.tgz
     $ mv bootleg /usr/local/bin
 
