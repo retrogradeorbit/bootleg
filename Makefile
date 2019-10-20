@@ -33,5 +33,5 @@ build/bootleg: target/uberjar/bootleg-0.1.1-SNAPSHOT-standalone.jar
 		--allow-incomplete-classpath \
 		--no-fallback \
 		--no-server \
-		"-J-Xmx3g" \
+		"-J-Xmx8g" \
 		-H:+TraceClassInitialization -H:+PrintClassInitialization

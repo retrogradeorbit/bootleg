@@ -253,10 +253,6 @@
                             'html net.cgrand.enlive-html/html}
 
    'net.cgrand.jsoup {'parser net.cgrand.jsoup/parser}
-   'net.cgrand.reload {
-                       'watch-url net.cgrand.reload/watch-url
-                       'auto-reload net.cgrand.reload/auto-reload
-                       }
    'net.cgrand.tagsoup {
                         'parser net.cgrand.tagsoup/parser
                         }
