@@ -153,7 +153,17 @@
             ;;'clone-for enlive/clone-for
             }
 
-   'net.cgrand.enlive-html {
+   'net.cgrand.enlive-html {'at (fn at [node-or-nodes & selector-transform-pairs]
+                                  (let [input-type (utils/markup-type node-or-nodes)
+                                        converted-nodes (utils/convert-to node-or-nodes :hickory-seq)]
+                                    (->
+                                     (reduce
+                                      (fn [node [selector transform]]
+                                        (enlive/at node selector transform))
+                                      converted-nodes
+                                      (partition 2 selector-transform-pairs))
+
+                                     (utils/convert-to input-type))))
                             'ns-options net.cgrand.enlive-html/ns-options
                             'set-ns-options! net.cgrand.enlive-html/set-ns-options!
                             'alter-ns-options! net.cgrand.enlive-html/alter-ns-options!
