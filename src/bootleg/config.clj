@@ -16,7 +16,7 @@
   []
   (doseq [filename libs-set]
     (when-let [file (io/resource filename)]
-      (let [[path name] (file/path-split (.getFile file))]
+      (let [[_ name] (file/path-split (.getFile file))]
         (io/copy (io/input-stream file) (io/file (file/path-join libs-dir name)))))))
 
 (defn init! []
