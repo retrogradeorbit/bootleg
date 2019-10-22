@@ -17,6 +17,7 @@
   (doseq [filename libs-set]
     (when-let [file (io/resource filename)]
       (let [[_ name] (file/path-split (.getFile file))]
+        ;; (println "installing:" name)
         (io/copy (io/input-stream file) (io/file (file/path-join libs-dir name)))))))
 
 (defn init! []
