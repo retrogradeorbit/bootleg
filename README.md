@@ -563,10 +563,10 @@ The `hickory` namespaces are provided at their usual namespace locations.
 
 `bootleg` leverages other peoples' amazing work. The following projects and people enable this to exist at all.
 
- * [James Reeves](https://www.booleanknot.com/) built [hiccup](https://github.com/weavejester/hiccup)
+ * [James Reeves](https://www.booleanknot.com/) built [Hiccup](https://github.com/weavejester/hiccup)
  * [Christophe Grand](http://clj-me.cgrand.net/) built [Enlive](https://github.com/cgrand/enlive)
  * [David Santiago](https://github.com/davidsantiago) built [Hickory](https://github.com/davidsantiago/hickory)
- * [Michiel Borkent](https://www.michielborkent.nl/) built [sci](https://github.com/borkdude/sci)
+ * [Michiel Borkent](https://www.michielborkent.nl/) built [Sci](https://github.com/borkdude/sci)
 
 ## License
 
