@@ -2,7 +2,8 @@
   (:require [clojure.string :as string]
             [hickory.core :as hickory]
             [hickory.render :as render]
-            [hickory.convert :as convert]))
+            [hickory.convert :as convert]
+            [clojure.walk :as walk]))
 
 (defn- i-starts-with?
   "efficient case insensitive string start-with?"
@@ -14,6 +15,14 @@
 (defn html? [markup]
   (or (i-starts-with? markup "<!DOCTYPE HTML")
       (i-starts-with? markup "<html")))
+
+(defn hickory-seq-add-missing-types [hickory]
+  (walk/postwalk
+   (fn [el]
+     (if (and (:tag el) (not (:type el)))
+       (assoc el :type :element)
+       el))
+   hickory))
 
 ;;
 ;; hiccup / html
@@ -48,9 +57,10 @@
 #_ (hiccup->hickory [:div "div"])
 
 (defn hickory->hiccup [hickory]
-  (convert/hickory-to-hiccup hickory))
+  (-> hickory hickory-seq-add-missing-types convert/hickory-to-hiccup))
 
 #_ (hickory->hiccup {:type :element, :attrs nil, :tag :div, :content ["div"]})
+#_ (hickory->hiccup {:attrs nil, :tag :div, :content ["div"]})
 
 (defn hiccup-seq->hickory-seq [hiccup-seq]
   (map hiccup->hickory hiccup-seq))
@@ -78,15 +88,18 @@
 #_ (html->hickory "<div>div</div><p>p</p>")
 
 (defn hickory-seq->html [hickory]
-  (apply str (map render/hickory-to-html hickory)))
+  (apply str (map #(-> % hickory-seq-add-missing-types render/hickory-to-html) hickory)))
 
 #_ (hickory-seq->html
     '({:type :element, :attrs nil, :tag :div, :content ["div"]} "-" {:type :element, :attrs nil, :tag :p, :content ["p"]}))
+#_ (hickory-seq->html
+    '({:attrs nil, :tag :div, :content ["div"]} "-" {:attrs nil, :tag :p, :content ["p"]}))
 
 (defn hickory->html [hickory]
-  (render/hickory-to-html hickory))
+  (-> hickory hickory-seq-add-missing-types render/hickory-to-html))
 
 #_ (hickory->html {:type :element, :attrs nil, :tag :div, :content ["div"]})
+#_ (hickory->html {:attrs nil, :tag :div, :content ["div"]})
 
 (defn is-hiccup? [data]
   (keyword? (first data)))
