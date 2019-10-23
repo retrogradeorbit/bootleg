@@ -9,7 +9,7 @@ Bootleg is a command line tool that rapidly renders clojure based templates. Wit
 Install:
 
 ```shell
-$ tar xvf bootleg-0.1.1-linux-amd64.tgz
+$ tar xvf bootleg-0.1.2-linux-amd64.tgz
 $ mv bootleg ~/bin
 ```
 
@@ -164,8 +164,8 @@ $ bootleg example-data.clj          # <- no -d flag means output will be html
 Bootleg is distributed for linux as a single executable file. Download the latest tarball from https://github.com/retrogradeorbit/bootleg/releases and then extract it. Once extracted, move the binary to your path. For system wide installation try `/usr/local/bin` or for personal use `~/bin`
 
 ```shell
-$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.1/bootleg-0.1.1-linux-amd64.tgz
-$ tar xvf bootleg-0.1.1-linux-amd64.tgz
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.2/bootleg-0.1.2-linux-amd64.tgz
+$ tar xvf bootleg-0.1.2-linux-amd64.tgz
 $ mv bootleg /usr/local/bin
 ```
 
@@ -174,7 +174,7 @@ $ mv bootleg /usr/local/bin
 Although there is nothing preventing bootleg from running on winodws or MacOS, binary builds are not yet available. Although startup and execution time will be much slower, in the meantime you can use the jar release file and run it as follows:
 
 ```shell
-$ java -jar bootleg-0.1.1.jar
+$ java -jar bootleg-0.1.2.jar
 ```
 
 ## Usage
