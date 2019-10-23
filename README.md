@@ -259,13 +259,19 @@ Loads and evaluates the clojure source from another file.
 
 `(yaml source)`
 
+Load yaml data from `source` and process it. Returns the parsed data structure.
+
 #### json
 
 `(json source)`
 
+Load json data from `source` and process it. Returns the parsed data structure.
+
 #### edn
 
 `(edn source)`
+
+Load edn data from `source` and process it. Returns the parsed data structure.
 
 ### Data Testing
 
@@ -273,17 +279,25 @@ Loads and evaluates the clojure source from another file.
 
 `(is-hiccup? data)`
 
+Test the markup in `data`. Return `true` if the data is a hiccup form.
+
 #### is-hiccup-seq?
 
 `(is-hiccup-seq? data)`
+
+Test the markup in `data`. Return `true` if the data is a sequence of hiccup forms.
 
 #### is-hickory?
 
 `(is-hickory? data)`
 
+Test the markup in `data`. Return `true` if the data is a hickory form.
+
 #### is-hickory-seq?
 
 `(is-hickory-seq? data)`
+
+Test the markup in `data`. Return `true` if the data is a sequence of hickory forms.
 
 ### Data Conversion
 
@@ -348,35 +362,106 @@ In addition to this the standard enlive namespaces are available in their usual 
 
 `(at data selector transform & more)`
 
+Take the markup `data` and process every element matching `selector` through the transform `transform`
+
+### Enlive Transforms
+
 #### content
+
+`(content & values)`
+
+Replaces the content of the element. Values can be hickory nodes, collection of hikory nodes, or plain text strings.
+
+#### html-snippet
+
+`(html-snippet & values)`
+
+Concatenate values as a string and then parse it with tagsoup. html-snippet doesn't insert missing <html> or <body> tags.
 
 #### html-content
 
+`(html-content & values)`
+
+Replaces the content of the element. Values are strings containing html code.
+
 #### wrap
+
+`(wrap tag attr)`
+
+Wraps selected node into the given tag. eg. `(wrap :div)` or `(wrap :div {:class "foo"})`
 
 #### unwrap
 
+`unwrap`
+
+Opposite to wrap, returns the content of the selected node.
+
 #### set-attr
+
+`(set-attr & key-value-pairs)`
+
+Assocs attributes on the selected element. eg. `(set-attr :attr1 "val1" :attr2 "val2")`
 
 #### remove-attr
 
+`(remove-attr & attr-names)`
+
+Sets given key value pairs as attributes for selected node. eg. `(remove-attr :attr1 :attr2)`
+
 #### add-class
+
+`(add-class & classes)`
+
+Adds class(es) to the selected node. eg. `(add-class "foo" "bar")`
 
 #### remove-class
 
+`(add-class & classes)`
+
+Removes class(es) from the selected node. eg. `(remove-class "foo" "bar")`
+
 #### do->
+
+`(do-> & fns)`
+
+Chains (composes) several transformations. Applies functions from left to right. eg. `(do-> transformation1 transformation2)`
 
 #### append
 
+`(append & values)`
+
+Appends the values to the content of the selected element. eg. `(append "xyz" a-node "abc")`
+
 #### prepend
+
+`(prepend & values)`
+
+Prepends the values to the content of the selected element. eg. `(prepend "xyz" a-node "abc")`
 
 #### after
 
+`(after & values)`
+
+Inserts the values after the current selection (node or fragment). eg. `(after "xyz" a-node "abc")`
+
 #### before
+
+`(before & values)`
+
+Inserts the values before the current selection (node or fragment). eg. `(before "xyz" a-node "abc")`
 
 #### substitute
 
+`(substitute & values)`
+
+Replaces the current selection (node or fragment). eg. `(substitute "xyz" a-node "abc")`
+
 #### move
+
+`(move src-selector dest-selector)`
+`(src-selector dest-selector combiner)`
+
+Takes all nodes (under the current element) matched by src-selector, removes them and combines them with the elements matched by dest-selector. eg. `(move [:.footnote] [:#footnotes] content)`
 
 ### Hickory
 
