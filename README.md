@@ -252,6 +252,37 @@ Loads and evaluates the clojure source from another file.
 
 `(convert-to data type)`
 
+Convert one supported data type to another. Input data may be hiccup, hiccup-seq, hickory, hickory-seq or html.
+
+Type may be `:hiccup`, `:hiccup-seq`, `:hickory`, `:hickory-seq` or `html`.
+
+Example:
+
+```clojure
+$ bootleg -d -e '(convert-to [:p#id.class "one"] :hickory)'
+{:type :element,
+ :attrs {:class "class", :id "id"},
+ :tag :p,
+ :content ["one"]}
+```
+
+```clojure
+$ bootleg -d -e '(convert-to "<p class=\"class\" id=\"id\">one</p>" :hiccup)'
+[:p {:class "class", :id "id"} "one"]
+```
+
+```clojure
+$ bootleg -d -e '(convert-to "<p>one</p><p>two</p>" :hiccup-seq)'
+([:p {} "one"] [:p {} "two"])
+```
+
+**Note:** Some conversions are lossy. Converting from html or any *-seq data type to hickory or hiccup may lose forms. Only the last form will be returned.
+
+```clojure
+$ bootleg -d -e '(convert-to "<p>one</p><p>two</p>" :hiccup)'
+[:p {} "two"]
+```
+
 #### as-html
 
 `(as-html data)`
