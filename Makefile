@@ -1,6 +1,6 @@
 GRAALVM = $(HOME)/graalvm-ce-19.2.1
 SRC = src/bootleg/core.clj
-VERSION = 0.1.1-SNAPSHOT
+VERSION = 0.1.1
 
 all: build/bootleg
 
@@ -41,3 +41,8 @@ copy-libs-to-resource:
 	-cp $(GRAALVM)/jre/bin/sunec.dll resources
 	-cp $(GRAALVM)/jre/lib/libsunec.dylib resources
 	-cp $(GRAALVM)/jre/lib/amd64/libsunec.so resources
+
+package-linux:
+	cd build && tar cvzf bootleg-$(VERSION)-linux-amd64.tgz bootleg
+	cp build/*.tgz ./
+	cp target/uberjar/bootleg-$(VERSION)-standalone.jar bootleg-$(VERSION).jar
