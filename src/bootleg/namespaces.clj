@@ -12,6 +12,18 @@
             [net.cgrand.tagsoup]
             [net.cgrand.xml]))
 
+(defn at [node-or-nodes & selector-transform-pairs]
+  (let [input-type (utils/markup-type node-or-nodes)
+        converted-nodes (utils/convert-to node-or-nodes :hickory-seq)]
+    (->
+     (reduce
+      (fn [node [selector transform]]
+        (enlive/at node selector transform))
+      converted-nodes
+      (partition 2 selector-transform-pairs))
+
+     (utils/convert-to input-type))))
+
 (def namespaces
   {'Math {
           'abs #(Math/abs %1)
@@ -122,17 +134,7 @@
                  'hickory-zip hickory.zip/hickory-zip
                  'hiccup-zip hickory.zip/hickory-zip
                  }
-   'enlive {'at (fn at [node-or-nodes & selector-transform-pairs]
-                  (let [input-type (utils/markup-type node-or-nodes)
-                        converted-nodes (utils/convert-to node-or-nodes :hickory-seq)]
-                    (->
-                     (reduce
-                      (fn [node [selector transform]]
-                        (enlive/at node selector transform))
-                      converted-nodes
-                      (partition 2 selector-transform-pairs))
-
-                     (utils/convert-to input-type))))
+   'enlive {'at at
             'content enlive/content
             'html-content enlive/html-content
             'wrap enlive/wrap
@@ -153,17 +155,7 @@
             ;;'clone-for enlive/clone-for
             }
 
-   'net.cgrand.enlive-html {'at (fn at [node-or-nodes & selector-transform-pairs]
-                                  (let [input-type (utils/markup-type node-or-nodes)
-                                        converted-nodes (utils/convert-to node-or-nodes :hickory-seq)]
-                                    (->
-                                     (reduce
-                                      (fn [node [selector transform]]
-                                        (enlive/at node selector transform))
-                                      converted-nodes
-                                      (partition 2 selector-transform-pairs))
-
-                                     (utils/convert-to input-type))))
+   'net.cgrand.enlive-html {'at at
                             'ns-options net.cgrand.enlive-html/ns-options
                             'set-ns-options! net.cgrand.enlive-html/set-ns-options!
                             'alter-ns-options! net.cgrand.enlive-html/alter-ns-options!
