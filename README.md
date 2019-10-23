@@ -8,83 +8,107 @@ Bootleg is a command line tool that rapidly renders clojure based templates. Wit
 
 Install:
 
-    $ tar xvf bootleg-0.1.1-linux-amd64.tgz
-    $ mv bootleg ~/bin
+```shell
+$ tar xvf bootleg-0.1.1-linux-amd64.tgz
+$ mv bootleg ~/bin
+```
 
 A simple page:
 
-    $ bootleg -e '[:html [:body [:h1 "A simple webpage"] [:p "Made with bootleg for maximum powers!"]]]'
-    <html><body><h1>A simple webpage</h1><p>Made with bootleg for maximum powers!</p></body></html>
+```clojure
+$ bootleg -e '[:html [:body [:h1 "A simple webpage"] [:p "Made with bootleg for maximum powers!"]]]'
+<html><body><h1>A simple webpage</h1><p>Made with bootleg for maximum powers!</p></body></html>
+```
 
 A dynamic example:
 
-    $ bootleg -e '[:div.countdown (for [n (range 10 0 -1)] [:p n]) [:p "blast off!"]]'
-    <div class="countdown"><p>10</p><p>9</p><p>8</p><p>7</p><p>6</p><p>5</p><p>4</p><p>3</p><p>2</p><p>1</p><p>blast off!</p></div>
+```clojure
+$ bootleg -e '[:div.countdown (for [n (range 10 0 -1)] [:p n]) [:p "blast off!"]]'
+<div class="countdown"><p>10</p><p>9</p><p>8</p><p>7</p><p>6</p><p>5</p><p>4</p><p>3</p><p>2</p><p>1</p><p>blast off!</p></div>
+```
 
 Mustache:
 
-    $ cd examples/quickstart
-    $ bootleg -e '(mustache "quickstart.html" (yaml "fields.yml"))'
-    <h1>Bootleg</h1>
-    <h2>by Crispin</h2>
-    <p>I'm going to rewrite all my sites with this!</p>
+```shell
+$ cd examples/quickstart
+$ bootleg -e '(mustache "quickstart.html" (yaml "fields.yml"))'
+<h1>Bootleg</h1>
+<h2>by Crispin</h2>
+<p>I'm going to rewrite all my sites with this!</p>
+```
 
 Markdown support. Easy downloading of resources by url (for any command):
 
-    $ bootleg -e '(markdown "https://raw.githubusercontent.com/retrogradeorbit/bootleg/master/README.md")'
-    <h1>bootleg</h1><p>Static website generation made simple. A powerful, fast, clojure templating solution that rocks!</p>...
+```clojure
+$ bootleg -e '(markdown "https://raw.githubusercontent.com/retrogradeorbit/bootleg/master/README.md")'
+<h1>bootleg</h1><p>Static website generation made simple. A powerful, fast, clojure templating solution that rocks!</p>...
+```
 
 CSS selector based processing. The magic of enlive:
 
-    $ bootleg -e '(-> (markdown "examples/quickstart/simple.md") (enlive/at [:p] (enlive/set-attr :style "color:green;")))'
-    <h1>Markdown support</h1><p style="color:green;">This is some simple markdown</p>
+```clojure
+$ bootleg -e '(-> (markdown "examples/quickstart/simple.md") (enlive/at [:p] (enlive/set-attr :style "color:green;")))'
+<h1>Markdown support</h1><p style="color:green;">This is some simple markdown</p>
+```
 
 Enlive processing:
 
-    $ bootleg -e '(-> [:div [:h1.blurb] [:p.blurb]] (enlive/at [:.blurb] (enlive/content "blurb content")))'
-    <div><h1 class="blurb">blurb content</h1><p class="blurb">blurb content</p></div>
+```clojure
+$ bootleg -e '(-> [:div [:h1.blurb] [:p.blurb]] (enlive/at [:.blurb] (enlive/content "blurb content")))'
+<div><h1 class="blurb">blurb content</h1><p class="blurb">blurb content</p></div>
+```
 
 Data output with -d flag:
 
-    $ bootleg -d -e '(markdown "examples/quickstart/simple.md")'
-    ([:h1 {} "Markdown support"] [:p {} "This is some simple markdown"])
+```clojure
+$ bootleg -d -e '(markdown "examples/quickstart/simple.md")'
+([:h1 {} "Markdown support"] [:p {} "This is some simple markdown"])
+```
 
 Process files:
 
-    $ echo '[:p#myid "an example"]' > example.clj
-    $ bootleg -o example.html example.clj
-    $ cat example.html
-    <p id="myid">an example</p>
+```shell
+$ echo '[:p#myid "an example"]' > example.clj
+$ bootleg -o example.html example.clj
+$ cat example.html
+<p id="myid">an example</p>
+```
 
 ## Installation
 
 Bootleg is distributed for linux as a single executable file. Download the latest tarball from https://github.com/retrogradeorbit/bootleg/releases and then extract it. Once extracted, move the binary to your path. For system wide installation try `/usr/local/bin` or for personal use `~/bin`
 
-    $ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.1/bootleg-0.1.1-linux-amd64.tgz
-    $ tar xvf bootleg-0.1.1-linux-amd64.tgz
-    $ mv bootleg /usr/local/bin
+```shell
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.1/bootleg-0.1.1-linux-amd64.tgz
+$ tar xvf bootleg-0.1.1-linux-amd64.tgz
+$ mv bootleg /usr/local/bin
+```
 
 ### Other Platforms
 
-Although there is nothing preventing bootleg from running on winodws or MacOS, binary builds are not yet available. In the meantime you can use the jar release file and run it like:
+Although there is nothing preventing bootleg from running on winodws or MacOS, binary builds are not yet available. Although startup and execution time will be much slower, in the meantime you can use the jar release file and run it as follows:
 
-    $ java -jar bootleg-0.1.1.jar
+```shell
+$ java -jar bootleg-0.1.1.jar
+```
 
 ## Usage
 
 Run at the command line for options:
 
-    $ bootleg -h
-    Static website generation made simple. A powerful, fast, clojure html templating solution.
+```shell
+$ bootleg -h
+Static website generation made simple. A powerful, fast, clojure html templating solution.
 
-    Usage: bootleg [options] [clj-file]
+Usage: bootleg [options] [clj-file]
 
-    Options:
-      -h, --help           Print the command line help
-      -v, --version        Print the version string and exit
-      -e, --evaluate CODE  Pass in the hiccup to evaluate on the command line
-      -d, --data           Output the rendered template as a clojure form instead of html
-      -o, --output FILE    Write the output to the specified file instead of stdout
+Options:
+  -h, --help           Print the command line help
+  -v, --version        Print the version string and exit
+  -e, --evaluate CODE  Pass in the hiccup to evaluate on the command line
+  -d, --data           Output the rendered template as a clojure form instead of html
+  -o, --output FILE    Write the output to the specified file instead of stdout
+```
 
 ## Overview
 
@@ -173,17 +197,21 @@ Options can be used to alter the behaviour of the function. Options are a list o
 
 eg.
 
-    $ bootleg -e '(mustache "<p>{{var1}}</p><div>{{&var2}}</div>" {:var1 "value 1" :var2 "<p>markup</p>"} :data)'
-    <p>value 1</p><div><p>markup</p></div>
+```clojure
+$ bootleg -e '(mustache "<p>{{var1}}</p><div>{{&var2}}</div>" {:var1 "value 1" :var2 "<p>markup</p>"} :data)'
+<p>value 1</p><div><p>markup</p></div>
+```
 
-    $ bootleg -d -e '(mustache "<p>{{var1}}</p>" {:var1 "value 1"} :data :hiccup-seq)'
-    ([:p {} "value 1"])
+```clojure
+$ bootleg -d -e '(mustache "<p>{{var1}}</p>" {:var1 "value 1"} :data :hiccup-seq)'
+([:p {} "value 1"])
+```
 
 #### slurp
 
 `(slurp source)`
 
-Load the contents of a file, from a local or remote source, into memory and return it. Unline clojure's inbuilt `slurp`, this `slurp` can load from URLs. Does no interpretation of the file contents at all. Returns them as is.
+Load the contents of a file, from a local or remote source, into memory and return it. This `slurp` can load from URLs. Does no interpretation of the file contents at all. Returns them as is.
 
 #### html
 
@@ -202,11 +230,15 @@ Options can be:
 
 eg.
 
-    $ bootleg -d -e '(html "<h1>heading</h1><p>body</p>" :data :hiccup-seq)'
-    ([:h1 {} "heading"] [:p {} "body"])
+```clojure
+$ bootleg -d -e '(html "<h1>heading</h1><p>body</p>" :data :hiccup-seq)'
+([:h1 {} "heading"] [:p {} "body"])
+```
 
-    $ bootleg -d -e '(html "<div><h1>heading</h1><p>body</p></div>" :data :hiccup)'
-    [:div {} [:h1 {} "heading"] [:p {} "body"]]
+```clojure
+$ bootleg -d -e '(html "<div><h1>heading</h1><p>body</p></div>" :data :hiccup)'
+[:div {} [:h1 {} "heading"] [:p {} "body"]]
+```
 
 #### hiccup
 
@@ -276,6 +308,11 @@ $ bootleg -d -e '(convert-to "<p>one</p><p>two</p>" :hiccup-seq)'
 ([:p {} "one"] [:p {} "two"])
 ```
 
+```clojure
+$ bootleg -d -e '(convert-to {:type :element :tag :p :content ["one"]} :html)'
+"<p>one</p>"
+```
+
 **Note:** Some conversions are lossy. Converting from html or any *-seq data type to hickory or hiccup may lose forms. Only the last form will be returned.
 
 ```clojure
@@ -286,6 +323,8 @@ $ bootleg -d -e '(convert-to "<p>one</p><p>two</p>" :hiccup)'
 #### as-html
 
 `(as-html data)`
+
+Convert any supported input format passed into `data` to html output. Same as `(convert-to data :html)`
 
 ### Enlive Processing
 
