@@ -29,7 +29,7 @@ $ bootleg -e '[:div.countdown (for [n (range 10 0 -1)] [:p n]) [:p "blast off!"]
 
 Mustache:
 
-```shell
+```html
 $ cd examples/quickstart
 $ bootleg -e '(mustache "quickstart.html" (yaml "fields.yml"))'
 <h1>Bootleg</h1>
