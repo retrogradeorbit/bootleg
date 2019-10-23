@@ -48,20 +48,26 @@ $ bootleg example-dynamic.clj
 
 Mustache:
 
-```html
+```clojure
 $ cat example-mustache.clj
 (mustache "quickstart.html" (yaml "fields.yml"))
+```
 
+```html
 $ cat quickstart.html
 <h1>{{ title }}</h1>
 <h2>by {{ author }}</h2>
 <div>{{& body }}</div>
+```
 
+```yaml
 $ cat fields.yml
 title: Bootleg
 author: Crispin
 body: I'm going to rewrite all my sites with this!
+```
 
+```html
 $ bootleg example-mustache.clj
 <h1>Bootleg</h1>
 <h2>by Crispin</h2>
