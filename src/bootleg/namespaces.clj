@@ -10,7 +10,8 @@
             [net.cgrand.jsoup]
             [net.cgrand.reload]
             [net.cgrand.tagsoup]
-            [net.cgrand.xml]))
+            [net.cgrand.xml]
+            [clojure.walk]))
 
 (defn at [node-or-nodes & selector-transform-pairs]
   (let [input-type (utils/markup-type node-or-nodes)
@@ -270,4 +271,16 @@
                     'startparse-sax net.cgrand.xml/startparse-sax
                     'parse net.cgrand.xml/parse
                     }
+
+   'clojure.walk {
+                  'walk clojure.walk/walk
+                  'postwalk clojure.walk/postwalk
+                  'prewalk clojure.walk/prewalk
+                  'postwalk-demo clojure.walk/postwalk-demo
+                  'prewalk-demo clojure.walk/prewalk-demo
+                  'kewordize-keys clojure.walk/keywordize-keys
+                  'stringify-keys clojure.walk/stringify-keys
+                  'prewalk-replace clojure.walk/prewalk-replace
+                  'postwalk-replace clojure.walk/postwalk-replace
+                  }
    })
