@@ -9,5 +9,5 @@ All notable changes to this project will be documented in this file. This change
 ## [0.1.1] - 2019-10-23
 Initial release
 
-[Unreleased]: https://github.com/retrogradeorbit/bootleg/compare/0.1.1...HEAD
-[0.1.1]: https://github.com/retrogradeorbit/bootleg/compare/0.1.0...0.1.1
+[Unreleased]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.0...v0.1.1
