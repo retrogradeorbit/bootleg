@@ -151,7 +151,7 @@ $ bootleg -d example-data.clj
  "\n")
 ```
 
-```html
+```shell
 $ bootleg example-data.clj          # <- no -d flag means output will be html
 <h1>Bootleg</h1>
 <h2>by Crispin</h2>
