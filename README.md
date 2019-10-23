@@ -561,7 +561,7 @@ The `hickory` namespaces are provided at their usual namespace locations.
 
 ## Thanks
 
-`bootleg` leverages other peoples' amazing work. The following projects and people enable this to exist at all.
+`bootleg` leverages other people's amazing work. The following projects and people enable this to exist at all.
 
  * [James Reeves](https://www.booleanknot.com/) built [Hiccup](https://github.com/weavejester/hiccup)
  * [Christophe Grand](http://clj-me.cgrand.net/) built [Enlive](https://github.com/cgrand/enlive)
