@@ -28,7 +28,9 @@ $ cat example-simple.clj
  [:body
   [:h1 "A simple webpage"]
   [:p "Made with bootleg for maximum powers!"]]]
+```
 
+```html
 $ bootleg example-simple.clj
 <html><body><h1>A simple webpage</h1><p>Made with bootleg for maximum powers!</p></body></html>
 ```
@@ -41,7 +43,9 @@ $ cat example-dynamic.clj
  (for [n (range 10 0 -1)]
    [:p n])
  [:p "blast off!"]]
+```
 
+```html
 $ bootleg example-dynamic.clj
 <div class="countdown"><p>10</p><p>9</p><p>8</p><p>7</p><p>6</p><p>5</p><p>4</p><p>3</p><p>2</p><p>1</p><p>blast off!</p></div>
 ```
@@ -76,7 +80,7 @@ $ bootleg example-mustache.clj
 
 Markdown support. Evaluate from command line. Easy downloading of resources by url (for any command):
 
-```clojure
+```html
 $ bootleg -e '(markdown "https://raw.githubusercontent.com/retrogradeorbit/bootleg/master/README.md")'
 <h1>bootleg</h1><p>Static website generation made simple. A powerful, fast, clojure templating solution that rocks!...
 ```
@@ -87,7 +91,9 @@ CSS selector based processing. The magic of enlive:
 $ cat example-enlive.clj
 (-> (markdown "examples/quickstart/simple.md")
     (enlive/at [:p] (enlive/set-attr :style "color:green;")))
+```
 
+```html
 $ bootleg -e example-enlive.clj
 <h1>Markdown support</h1><p style="color:green;">This is some simple markdown</p>
 ```
@@ -99,12 +105,16 @@ $ cat example-combine.clj
 (mustache "quickstart.html"
           (assoc (yaml "fields.yml")
                  :body (markdown "simple.md" :html)))
+```
 
+```markdown
 $ cat simple.md
 # Markdown support
 
 This is some simple markdown
+```
 
+```html
 $ bootleg example-combine.clj
 <h1>Bootleg</h1>
 <h2>by Crispin</h2>
@@ -119,7 +129,9 @@ $ cat example-data.clj
               (assoc (yaml "fields.yml")
                      :body (markdown "simple.md" :html)))
     (convert-to :hickory-seq))
+```
 
+```clojure
 $ bootleg -d example-data.clj
 ({:type :element, :attrs nil, :tag :h1, :content ["Bootleg"]}
  "\n"
@@ -137,7 +149,9 @@ $ bootleg -d example-data.clj
              :tag :p,
              :content ["This is some simple markdown"]}]}
  "\n")
+```
 
+```html
 $ bootleg example-data.clj          # <- no -d flag means output will be html
 <h1>Bootleg</h1>
 <h2>by Crispin</h2>
