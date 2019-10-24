@@ -32,75 +32,51 @@
     (hickory/as-hiccup (hickory/parse markup))
     (map hickory/as-hiccup (hickory/parse-fragment markup))))
 
-#_ (html->hiccup-seq "<div>div</div><p>p</p>")
-
 (defn html->hiccup [markup]
   (last (html->hiccup-seq markup)))
 
-#_ (html->hiccup "<div>div</div><p>p</p>")
-
 (def hiccup-seq->html render/hiccup-to-html)
-
-#_ (hiccup-seq->html '([:div "div"] [:p "p"]))
 
 (defn hiccup->html [hiccup]
   (hiccup-seq->html [hiccup]))
-
-#_ (hiccup->html [:div "div"])
 
 ;;
 ;; hiccup / hickory
 ;;
 (defn hiccup->hickory [hiccup]
-  (first (convert/hiccup-fragment-to-hickory [hiccup])))
-
-#_ (hiccup->hickory [:div "div"])
+  (if (-> hiccup first name string/lower-case (= "html"))
+    (first (:content (convert/hiccup-to-hickory [hiccup])))
+    (first (convert/hiccup-fragment-to-hickory [hiccup]))))
 
 (defn hickory->hiccup [hickory]
   (-> hickory hickory-seq-add-missing-types convert/hickory-to-hiccup))
 
-#_ (hickory->hiccup {:type :element, :attrs nil, :tag :div, :content ["div"]})
-#_ (hickory->hiccup {:attrs nil, :tag :div, :content ["div"]})
-
 (defn hiccup-seq->hickory-seq [hiccup-seq]
   (map hiccup->hickory hiccup-seq))
 
-#_ (hiccup-seq->hickory-seq '([:div "div"] [:p "p"]))
-
 (defn hickory-seq->hiccup-seq [hickory-seq]
   (map hickory->hiccup hickory-seq))
-
-#_ (hickory-seq->hiccup-seq '({:type :element, :attrs nil, :tag :div, :content ["div"]} {:type :element, :attrs nil, :tag :p, :content ["p"]}))
-
-
 
 ;;
 ;; hickory / html
 ;;
 (defn html->hickory-seq [markup]
-  (map hickory/as-hickory (hickory/parse-fragment markup)))
-
-#_ (html->hickory-seq "<div>div</div><p>p</p>")
+  (if (html? markup)
+    (-> (hickory/parse markup) hickory/as-hickory :content)
+    (map hickory/as-hickory (hickory/parse-fragment markup))))
 
 (defn html->hickory [markup]
   (last (html->hickory-seq markup)))
 
-#_ (html->hickory "<div>div</div><p>p</p>")
-
 (defn hickory-seq->html [hickory]
   (apply str (map #(-> % hickory-seq-add-missing-types render/hickory-to-html) hickory)))
-
-#_ (hickory-seq->html
-    '({:type :element, :attrs nil, :tag :div, :content ["div"]} "-" {:type :element, :attrs nil, :tag :p, :content ["p"]}))
-#_ (hickory-seq->html
-    '({:attrs nil, :tag :div, :content ["div"]} "-" {:attrs nil, :tag :p, :content ["p"]}))
 
 (defn hickory->html [hickory]
   (-> hickory hickory-seq-add-missing-types render/hickory-to-html))
 
-#_ (hickory->html {:type :element, :attrs nil, :tag :div, :content ["div"]})
-#_ (hickory->html {:attrs nil, :tag :div, :content ["div"]})
-
+;;
+;; testing
+;;
 (defn is-hiccup? [data]
   (keyword? (first data)))
 
@@ -136,8 +112,8 @@
    [:hiccup :hiccup-seq] list
    [:hiccup :html] hiccup->html
 
-   [:hiccup-seq :hiccup] first
-   [:hiccup-seq :hickory] (comp first hiccup-seq->hickory-seq)
+   [:hiccup-seq :hiccup] last
+   [:hiccup-seq :hickory] (comp last hiccup-seq->hickory-seq)
    [:hiccup-seq :hickory-seq] hiccup-seq->hickory-seq
    [:hiccup-seq :hiccup-seq] identity
    [:hiccup-seq :html] hiccup-seq->html
@@ -148,8 +124,8 @@
    [:hickory :hiccup-seq] (comp list hickory->hiccup)
    [:hickory :html] hickory->html
 
-   [:hickory-seq :hiccup] (comp first hickory-seq->hiccup-seq)
-   [:hickory-seq :hickory] first
+   [:hickory-seq :hiccup] (comp last hickory-seq->hiccup-seq)
+   [:hickory-seq :hickory] last
    [:hickory-seq :hickory-seq] identity
    [:hickory-seq :hiccup-seq] hickory-seq->hiccup-seq
    [:hickory-seq :html] hickory-seq->html
@@ -181,42 +157,3 @@
   to html without throwing an error for one of them"
   [data]
   (convert-to data :html))
-
-;; full html
-#_ (hickory/parse "<html><body><h1>foo</h1></body></html>")
-#_ (hickory/parse "<h1>foo</h1>")
-
-;; fragment
-#_ (hickory/parse-fragment "<html><body><h1>foo</h1></body></html>")
-#_ (hickory/parse-fragment "<h1>foo</h1>")
-
-;; smart-parse
-#_ (smart-parse "<html><body><h1>foo</h1></body></html>")
-#_ (smart-parse "<h1>foo</h1>")
-
-;; html->hiccup-seq
-#_ (html->hiccup-seq "<html><body><h1>foo</h1></body></html>")
-#_ (html->hiccup-seq "<h1>foo</h1><p>b</p>")
-#_ (html->hiccup-seq "<h1>foo</h1>")
-
-;; html->hickory
-#_ (html->hickory "<html><body><h1>foo</h1></body></html>")
-#_ (html->hickory "<h1>foo</h1><p>b</p>")
-#_ (html->hickory "<h1>foo</h1>")
-
-;; hiccup->html
-#_ (hiccup->html [:div])
-
-;; hiccup->hickory
-#_ (hiccup->hickory [:div])
-
-;; hiccup-seq->hickory
-#_ (hiccup-seq->hickory '([:div] [:p]))
-
-;; hiccup-seq->hickory-seq
-#_ (hiccup-seq->hickory-seq '([:div] [:p]))
-
-;; hickup*->html
-#_ (hiccup*->html [:div])
-#_ (hiccup*->html '([:div]))
-#_ (hiccup*->html '("<!DOCTYPE HTML>" [:div]))
