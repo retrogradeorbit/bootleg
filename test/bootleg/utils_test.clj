@@ -150,3 +150,47 @@
     (is (= (convert-to hickory-seq-snippet :hiccup) hiccup-snippet))
     (is (= (convert-to hickory-seq-snippet-multi :hiccup) hiccup-snippet-multi))
     (is (= (convert-to hickory-seq-doc :hiccup) hiccup-doc))))
+
+
+(deftest test-issues
+  (testing "issue #7"
+    (let [html "<h1>heading</h1>\n"
+          hiccup-seq '([:h1 {} "heading"] "\n")
+          hickory-seq '({:type :element, :attrs nil, :tag :h1, :content ["heading"]}
+                        "\n")
+          hiccup (last hiccup-seq)
+          hickory (last hickory-seq)
+          html-lost "\n"
+          ]
+      ;; convert to same
+      (is (= (convert-to html :html) html))
+      (is (= (convert-to hiccup-seq :hiccup-seq) hiccup-seq))
+      (is (= (convert-to hickory-seq :hickory-seq) hickory-seq))
+      (is (= (convert-to hiccup :hiccup) hiccup))
+      (is (= (convert-to hickory :hickory) hickory))
+
+      ;; from html
+      (is (= (convert-to html :hiccup) hiccup))
+      (is (= (convert-to html :hickory) hickory))
+      (is (= (convert-to html :hiccup-seq) hiccup-seq))
+      (is (= (convert-to html :hickory-seq) hickory-seq))
+
+      ;; seq to seq
+      (is (= (convert-to hiccup-seq :html) html))
+      (is (= (convert-to hiccup-seq :hickory-seq) hickory-seq))
+      (is (= (convert-to hickory-seq :html) html))
+      (is (= (convert-to hickory-seq :hiccup-seq) hiccup-seq))
+
+      ;; seq to non-seq
+      (is (= (convert-to hiccup-seq :hiccup) hiccup))
+      (is (= (convert-to hiccup-seq :hickory) hickory))
+      (is (= (convert-to hickory-seq :hiccup) hiccup))
+      (is (= (convert-to hickory-seq :hickory) hickory))
+
+      ;; non-seq to seq
+      (is (= (convert-to hiccup :html) html-lost))
+      (is (= (convert-to hiccup :hiccup-seq) (list hiccup)))
+      (is (= (convert-to hiccup :hickory-seq) (list hickory)))
+      (is (= (convert-to hickory :html) html-lost))
+      (is (= (convert-to hickory :hiccup-seq) (list hiccup)))
+      (is (= (convert-to hickory :hickory-seq) (list hickory))))))

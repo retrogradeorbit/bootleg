@@ -43,19 +43,19 @@
 ;;
 ;; hiccup / hickory
 ;;
-(defn hiccup->hickory [hiccup]
-  (if (-> hiccup first name string/lower-case (= "html"))
-    (first (:content (convert/hiccup-to-hickory [hiccup])))
-    (first (convert/hiccup-fragment-to-hickory [hiccup]))))
-
-(defn hickory->hiccup [hickory]
-  (-> hickory hickory-seq-add-missing-types convert/hickory-to-hiccup))
-
 (defn hiccup-seq->hickory-seq [hiccup-seq]
-  (map hiccup->hickory hiccup-seq))
+  (if (some-> hiccup-seq first first name string/lower-case (= "html"))
+    (:content (convert/hiccup-to-hickory hiccup-seq))
+    (convert/hiccup-fragment-to-hickory hiccup-seq)))
 
 (defn hickory-seq->hiccup-seq [hickory-seq]
-  (map hickory->hiccup hickory-seq))
+  (map #(-> % hickory-seq-add-missing-types convert/hickory-to-hiccup) hickory-seq))
+
+(defn hiccup->hickory [hiccup]
+  (first (hiccup-seq->hickory-seq (list hiccup))))
+
+(defn hickory->hiccup [hickory]
+  (first (hickory-seq->hiccup-seq (list hickory))))
 
 ;;
 ;; hickory / html
