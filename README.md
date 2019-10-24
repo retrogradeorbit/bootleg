@@ -89,12 +89,12 @@ CSS selector based processing. The magic of enlive:
 
 ```clojure
 $ cat example-enlive.clj
-(-> (markdown "examples/quickstart/simple.md")
+(-> (markdown "simple.md")
     (enlive/at [:p] (enlive/set-attr :style "color:green;")))
 ```
 
 ```html
-$ bootleg -e example-enlive.clj
+$ bootleg example-enlive.clj
 <h1>Markdown support</h1><p style="color:green;">This is some simple markdown</p>
 ```
 
