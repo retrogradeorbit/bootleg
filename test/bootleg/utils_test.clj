@@ -193,4 +193,253 @@
       (is (= (convert-to hiccup :hickory-seq) (list hickory)))
       (is (= (convert-to hickory :html) html-lost))
       (is (= (convert-to hickory :hiccup-seq) (list hiccup)))
-      (is (= (convert-to hickory :hickory-seq) (list hickory))))))
+      (is (= (convert-to hickory :hickory-seq) (list hickory)))))
+
+  (testing "issue #2"
+    (let [html
+          "<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset=\"utf-8\">
+    <meta content=\"width=device-width, initial-scale=1\">
+    <title>ABC</title>
+  </head>
+  <body>
+    <main>
+      <h1>ABC</h1>
+      <section id=\"content\"></section>
+    </main>
+  </body>
+</html>"
+          hiccup-seq '("<!DOCTYPE html>\n"
+                       [:html {} "\n  "
+                        [:head {} "\n    "
+                         [:meta {:charset "utf-8"}] "\n    "
+                         [:meta {:content "width=device-width, initial-scale=1"}] "\n    "
+                         [:title {} "ABC"] "\n  "
+                         ] "\n  "
+                        [:body {} "\n    "
+                         [:main {} "\n      "
+                          [:h1 {} "ABC"] "\n      "
+                          [:section {:id "content"}] "\n    "
+                          ] "\n  "
+                         ] "\n"])
+
+          hickory-seq '("<!DOCTYPE html>\n" {:type :element, :attrs nil, :tag :html, :content ["\n  " {:type :element, :attrs nil, :tag :head, :content ["\n    " {:type :element, :attrs {:charset "utf-8"}, :tag :meta, :content nil} "\n    " {:type :element, :attrs {:content "width=device-width, initial-scale=1"}, :tag :meta, :content nil} "\n    " {:type :element, :attrs nil, :tag :title, :content ["ABC"]} "\n  "]} "\n  " {:type :element, :attrs nil, :tag :body, :content ["\n    " {:type :element, :attrs nil, :tag :main, :content ["\n      " {:type :element, :attrs nil, :tag :h1, :content ["ABC"]} "\n      " {:type :element, :attrs {:id "content"}, :tag :section, :content nil} "\n    "]} "\n  "]} "\n"]})
+
+          hiccup (last hiccup-seq)
+          hickory (last hickory-seq)
+          html-lost "<html>
+  <head>
+    <meta charset=\"utf-8\">
+    <meta content=\"width=device-width, initial-scale=1\">
+    <title>ABC</title>
+  </head>
+  <body>
+    <main>
+      <h1>ABC</h1>
+      <section id=\"content\"></section>
+    </main>
+  </body>
+</html>"
+          ]
+      ;; convert to same
+      (is (= (convert-to html :html) html))
+      (is (= (convert-to hiccup-seq :hiccup-seq) hiccup-seq))
+      (is (= (convert-to hickory-seq :hickory-seq) hickory-seq))
+      (is (= (convert-to hiccup :hiccup) hiccup))
+      (is (= (convert-to hickory :hickory) hickory))
+
+      ;; from html
+      (is (= (convert-to html :hiccup) hiccup))
+      (is (= (convert-to html :hickory) hickory))
+      (is (= (convert-to html :hiccup-seq) hiccup-seq))
+      (is (= (convert-to html :hickory-seq) hickory-seq))
+
+      ;; seq to seq
+      ;; (println (convert-to hiccup-seq :html))
+      ;; (println html)
+      (is (= (convert-to hiccup-seq :html) html))
+      (is (= (convert-to hiccup-seq :hickory-seq) hickory-seq))
+      (is (= (convert-to hickory-seq :html) html))
+      (is (= (convert-to hickory-seq :hiccup-seq) hiccup-seq))
+
+      ;; seq to non-seq
+      (is (= (convert-to hiccup-seq :hiccup) hiccup))
+      (is (= (convert-to hiccup-seq :hickory) hickory))
+      (is (= (convert-to hickory-seq :hiccup) hiccup))
+      (is (= (convert-to hickory-seq :hickory) hickory))
+
+      ;; non-seq to seq
+      (is (= (convert-to hiccup :html) html-lost))
+      (is (= (convert-to hiccup :hiccup-seq) (list hiccup)))
+      (is (= (convert-to hiccup :hickory-seq) (list hickory)))
+      (is (= (convert-to hickory :html) html-lost))
+      (is (= (convert-to hickory :hiccup-seq) (list hiccup)))
+      (is (= (convert-to hickory :hickory-seq) (list hickory)))))
+
+
+  (testing "issue #2 without DOCTYPE but leading whitespace"
+    (let [html
+          "
+<html>
+  <head>
+    <meta charset=\"utf-8\">
+    <meta content=\"width=device-width, initial-scale=1\">
+    <title>ABC</title>
+  </head>
+  <body>
+    <main>
+      <h1>ABC</h1>
+      <section id=\"content\"></section>
+    </main>
+  </body>
+</html>"
+          hiccup-seq '("\n"
+                       [:html {} "\n  "
+                        [:head {} "\n    "
+                         [:meta {:charset "utf-8"}] "\n    "
+                         [:meta {:content "width=device-width, initial-scale=1"}] "\n    "
+                         [:title {} "ABC"] "\n  "
+                         ] "\n  "
+                        [:body {} "\n    "
+                         [:main {} "\n      "
+                          [:h1 {} "ABC"] "\n      "
+                          [:section {:id "content"}] "\n    "
+                          ] "\n  "
+                         ] "\n"])
+
+          hickory-seq '("\n" {:type :element, :attrs nil, :tag :html, :content ["\n  " {:type :element, :attrs nil, :tag :head, :content ["\n    " {:type :element, :attrs {:charset "utf-8"}, :tag :meta, :content nil} "\n    " {:type :element, :attrs {:content "width=device-width, initial-scale=1"}, :tag :meta, :content nil} "\n    " {:type :element, :attrs nil, :tag :title, :content ["ABC"]} "\n  "]} "\n  " {:type :element, :attrs nil, :tag :body, :content ["\n    " {:type :element, :attrs nil, :tag :main, :content ["\n      " {:type :element, :attrs nil, :tag :h1, :content ["ABC"]} "\n      " {:type :element, :attrs {:id "content"}, :tag :section, :content nil} "\n    "]} "\n  "]} "\n"]})
+
+          hiccup (last hiccup-seq)
+          hickory (last hickory-seq)
+          html-lost "<html>
+  <head>
+    <meta charset=\"utf-8\">
+    <meta content=\"width=device-width, initial-scale=1\">
+    <title>ABC</title>
+  </head>
+  <body>
+    <main>
+      <h1>ABC</h1>
+      <section id=\"content\"></section>
+    </main>
+  </body>
+</html>"
+          ]
+      ;; convert to same
+      (is (= (convert-to html :html) html))
+      (is (= (convert-to hiccup-seq :hiccup-seq) hiccup-seq))
+      (is (= (convert-to hickory-seq :hickory-seq) hickory-seq))
+      (is (= (convert-to hiccup :hiccup) hiccup))
+      (is (= (convert-to hickory :hickory) hickory))
+
+      ;; from html
+      (is (= (convert-to html :hiccup) hiccup))
+      (is (= (convert-to html :hickory) hickory))
+      (is (= (convert-to html :hiccup-seq) hiccup-seq))
+      (is (= (convert-to html :hickory-seq) hickory-seq))
+
+      ;; seq to seq
+      ;; (println (convert-to hiccup-seq :html))
+      ;; (println html)
+      (is (= (convert-to hiccup-seq :html) html))
+      (is (= (convert-to hiccup-seq :hickory-seq) hickory-seq))
+      (is (= (convert-to hickory-seq :html) html))
+      (is (= (convert-to hickory-seq :hiccup-seq) hiccup-seq))
+
+      ;; seq to non-seq
+      (is (= (convert-to hiccup-seq :hiccup) hiccup))
+      (is (= (convert-to hiccup-seq :hickory) hickory))
+      (is (= (convert-to hickory-seq :hiccup) hiccup))
+      (is (= (convert-to hickory-seq :hickory) hickory))
+
+      ;; non-seq to seq
+      (is (= (convert-to hiccup :html) html-lost))
+      (is (= (convert-to hiccup :hiccup-seq) (list hiccup)))
+      (is (= (convert-to hiccup :hickory-seq) (list hickory)))
+      (is (= (convert-to hickory :html) html-lost))
+      (is (= (convert-to hickory :hiccup-seq) (list hiccup)))
+      (is (= (convert-to hickory :hickory-seq) (list hickory)))))
+
+  (testing "issue #2 without DOCTYPE"
+    (let [html
+          "<html>
+  <head>
+    <meta charset=\"utf-8\">
+    <meta content=\"width=device-width, initial-scale=1\">
+    <title>ABC</title>
+  </head>
+  <body>
+    <main>
+      <h1>ABC</h1>
+      <section id=\"content\"></section>
+    </main>
+  </body>
+</html>"
+          hiccup-seq '([:html {} "\n  "
+                        [:head {} "\n    "
+                         [:meta {:charset "utf-8"}] "\n    "
+                         [:meta {:content "width=device-width, initial-scale=1"}] "\n    "
+                         [:title {} "ABC"] "\n  "
+                         ] "\n  "
+                        [:body {} "\n    "
+                         [:main {} "\n      "
+                          [:h1 {} "ABC"] "\n      "
+                          [:section {:id "content"}] "\n    "
+                          ] "\n  "
+                         ] "\n"])
+
+          hickory-seq '({:type :element, :attrs nil, :tag :html, :content ["\n  " {:type :element, :attrs nil, :tag :head, :content ["\n    " {:type :element, :attrs {:charset "utf-8"}, :tag :meta, :content nil} "\n    " {:type :element, :attrs {:content "width=device-width, initial-scale=1"}, :tag :meta, :content nil} "\n    " {:type :element, :attrs nil, :tag :title, :content ["ABC"]} "\n  "]} "\n  " {:type :element, :attrs nil, :tag :body, :content ["\n    " {:type :element, :attrs nil, :tag :main, :content ["\n      " {:type :element, :attrs nil, :tag :h1, :content ["ABC"]} "\n      " {:type :element, :attrs {:id "content"}, :tag :section, :content nil} "\n    "]} "\n  "]} "\n"]})
+
+          hiccup (last hiccup-seq)
+          hickory (last hickory-seq)
+          html-lost "<html>
+  <head>
+    <meta charset=\"utf-8\">
+    <meta content=\"width=device-width, initial-scale=1\">
+    <title>ABC</title>
+  </head>
+  <body>
+    <main>
+      <h1>ABC</h1>
+      <section id=\"content\"></section>
+    </main>
+  </body>
+</html>"
+          ]
+      ;; convert to same
+      (is (= (convert-to html :html) html))
+      (is (= (convert-to hiccup-seq :hiccup-seq) hiccup-seq))
+      (is (= (convert-to hickory-seq :hickory-seq) hickory-seq))
+      (is (= (convert-to hiccup :hiccup) hiccup))
+      (is (= (convert-to hickory :hickory) hickory))
+
+      ;; from html
+      (is (= (convert-to html :hiccup) hiccup))
+      (is (= (convert-to html :hickory) hickory))
+      (is (= (convert-to html :hiccup-seq) hiccup-seq))
+      (is (= (convert-to html :hickory-seq) hickory-seq))
+
+      ;; seq to seq
+      ;; (println (convert-to hiccup-seq :html))
+      ;; (println html)
+      (is (= (convert-to hiccup-seq :html) html))
+      (is (= (convert-to hiccup-seq :hickory-seq) hickory-seq))
+      (is (= (convert-to hickory-seq :html) html))
+      (is (= (convert-to hickory-seq :hiccup-seq) hiccup-seq))
+
+      ;; seq to non-seq
+      (is (= (convert-to hiccup-seq :hiccup) hiccup))
+      (is (= (convert-to hiccup-seq :hickory) hickory))
+      (is (= (convert-to hickory-seq :hiccup) hiccup))
+      (is (= (convert-to hickory-seq :hickory) hickory))
+
+      ;; non-seq to seq
+      (is (= (convert-to hiccup :html) html-lost))
+      (is (= (convert-to hiccup :hiccup-seq) (list hiccup)))
+      (is (= (convert-to hiccup :hickory-seq) (list hickory)))
+      (is (= (convert-to hickory :html) html-lost))
+      (is (= (convert-to hickory :hiccup-seq) (list hiccup)))
+      (is (= (convert-to hickory :hickory-seq) (list hickory)))))
+  )

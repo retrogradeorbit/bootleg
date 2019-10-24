@@ -9,14 +9,55 @@
   "efficient case insensitive string start-with?"
   [haystack needle]
   (let [uneedle (string/upper-case needle)
-        uhaystack-start (string/upper-case (subs haystack 0 (min (count needle) (count haystack))))]
+        uhaystack-start (string/upper-case
+                         (subs haystack 0 (min (count needle) (count haystack))))]
     (= uneedle uhaystack-start)))
 
-(defn html? [markup]
-  (or (i-starts-with? markup "<!DOCTYPE HTML")
-      (i-starts-with? markup "<html")))
+(defn- html? [markup]
+  ;; todo: trim start
+  (or (i-starts-with? (string/triml markup) "<!DOCTYPE HTML")
+      (i-starts-with? (string/triml markup) "<html")))
 
-(defn hickory-seq-add-missing-types [hickory]
+(defn- doctype? [markup]
+  (i-starts-with? markup "<!DOCTYPE HTML"))
+
+(defn- split-doctype [markup]
+  (let [[_ doctype-suffix remain] (string/split markup #"<" 3)]
+    [(str "<" doctype-suffix) (str "<" remain)]))
+
+(defn- munge-html-tags [markup]
+  (-> markup
+      (string/replace #"<html" "<html-bootleg-munged")
+      (string/replace #"</html" "</html-bootleg-munged")
+      (string/replace #"<head" "<head-bootleg-munged")
+      (string/replace #"</head" "</head-bootleg-munged")
+      (string/replace #"<body" "<body-bootleg-munged")
+      (string/replace #"</body" "</body-bootleg-munged")))
+
+(def munge-map {:html :html-bootleg-munged
+                :body :body-bootleg-munged
+                :head :head-bootleg-munged})
+
+(def demunge-map
+  (into {} (for [[k v] munge-map] [v k])))
+
+(defn- demunge-hiccup-tags [hiccup]
+  (walk/postwalk #(get demunge-map % %) hiccup))
+
+(defn- munge-hiccup-tags [hiccup]
+  (walk/postwalk #(get munge-map % %) hiccup))
+
+(defn- demunge-hickory-tags [hickory]
+  (walk/postwalk #(if (:tag %)
+                    (update % :tag demunge-map (:tag %))
+                    %) hickory))
+
+(defn- munge-hickory-tags [hickory]
+  (walk/postwalk #(if (:tag %)
+                    (update % :tag munge-map (:tag %))
+                    %) hickory))
+
+(defn- hickory-seq-add-missing-types [hickory]
   (walk/postwalk
    (fn [el]
      (if (and (:tag el) (not (:type el)))
@@ -29,7 +70,13 @@
 ;;
 (defn html->hiccup-seq [markup]
   (if (html? markup)
-    (hickory/as-hiccup (hickory/parse markup))
+    (if (doctype? markup)
+      (let [[doctype markup] (split-doctype markup)]
+        (-> (map hickory/as-hiccup (hickory/parse-fragment (munge-html-tags markup)))
+            demunge-hiccup-tags
+            (conj doctype)))
+      (-> (map hickory/as-hiccup (hickory/parse-fragment (munge-html-tags markup)))
+          demunge-hiccup-tags))
     (map hickory/as-hiccup (hickory/parse-fragment markup))))
 
 (defn html->hiccup [markup]
@@ -43,36 +90,64 @@
 ;;
 ;; hiccup / hickory
 ;;
-(defn hiccup-seq->hickory-seq [hiccup-seq]
-  (if (some-> hiccup-seq first first name string/lower-case (= "html"))
-    (:content (convert/hiccup-to-hickory hiccup-seq))
-    (convert/hiccup-fragment-to-hickory hiccup-seq)))
-
-(defn hickory-seq->hiccup-seq [hickory-seq]
-  (map #(-> % hickory-seq-add-missing-types convert/hickory-to-hiccup) hickory-seq))
-
 (defn hiccup->hickory [hiccup]
-  (first (hiccup-seq->hickory-seq (list hiccup))))
+  (if (string? hiccup)
+    hiccup
+    (-> hiccup
+        munge-hiccup-tags
+        vector
+        convert/hiccup-fragment-to-hickory
+        first
+        demunge-hickory-tags)))
 
 (defn hickory->hiccup [hickory]
-  (first (hickory-seq->hiccup-seq (list hickory))))
+  (if (string? hickory)
+    hickory
+    (-> hickory
+        munge-hickory-tags
+        hickory-seq-add-missing-types
+        convert/hickory-to-hiccup
+        demunge-hiccup-tags)))
+
+(defn hiccup-seq->hickory-seq [hiccup-seq]
+  (map hiccup->hickory hiccup-seq))
+
+(defn hickory-seq->hiccup-seq [hickory-seq]
+  (map hickory->hiccup hickory-seq))
 
 ;;
 ;; hickory / html
 ;;
 (defn html->hickory-seq [markup]
   (if (html? markup)
-    (-> (hickory/parse markup) hickory/as-hickory :content)
+    (if (doctype? markup)
+      (let [[doctype markup] (split-doctype markup)]
+        (-> (map hickory/as-hickory (hickory/parse-fragment (munge-html-tags markup)))
+            demunge-hickory-tags
+            (conj doctype)
+            ))
+      (-> (map hickory/as-hickory (hickory/parse-fragment (munge-html-tags markup)))
+          demunge-hickory-tags))
     (map hickory/as-hickory (hickory/parse-fragment markup))))
 
 (defn html->hickory [markup]
-  (last (html->hickory-seq markup)))
+  (-> markup
+      html->hickory-seq
+      last))
 
 (defn hickory-seq->html [hickory]
-  (apply str (map #(-> % hickory-seq-add-missing-types render/hickory-to-html) hickory)))
+  (->> hickory
+       (map #(if (string? %)
+               %
+               (-> %
+                   hickory-seq-add-missing-types
+                   render/hickory-to-html)))
+       (apply str)))
 
 (defn hickory->html [hickory]
-  (-> hickory hickory-seq-add-missing-types render/hickory-to-html))
+  (-> hickory
+      hickory-seq-add-missing-types
+      render/hickory-to-html))
 
 ;;
 ;; testing
@@ -85,11 +160,11 @@
 
 (defn is-hickory-seq? [data]
   (and (or (seq? data) (vector? data))
-       (is-hickory? (first data))))
+       (some is-hickory? data)))
 
 (defn is-hiccup-seq? [data]
   (and (or (seq? data) (vector? data))
-       (or (string? (first data)) (is-hiccup? (first data)))))
+       (some is-hiccup? data)))
 
 (defn markup-type [data]
   (cond
