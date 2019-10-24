@@ -1,6 +1,6 @@
 GRAALVM = $(HOME)/graalvm-ce-19.2.1
 SRC = src/bootleg/core.clj
-VERSION = 0.1.3-SNAPSHOT
+VERSION = 0.1.3
 
 all: build/bootleg
 

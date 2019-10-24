@@ -1,4 +1,4 @@
-(defproject bootleg "0.1.3-SNAPSHOT"
+(defproject bootleg "0.1.3"
   :description "Simple template processing command line tool to help build static websites"
   :url "https://github.com/retrogradeorbit/bootleg"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
