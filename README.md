@@ -93,6 +93,13 @@ $ cat example-enlive.clj
     (enlive/at [:p] (enlive/set-attr :style "color:green;")))
 ```
 
+```markdown
+$ cat simple.md
+# Markdown support
+
+This is some simple markdown
+```
+
 ```html
 $ bootleg example-enlive.clj
 <h1>Markdown support</h1><p style="color:green;">This is some simple markdown</p>
@@ -105,13 +112,6 @@ $ cat example-combine.clj
 (mustache "quickstart.html"
           (assoc (yaml "fields.yml")
                  :body (markdown "simple.md" :html)))
-```
-
-```markdown
-$ cat simple.md
-# Markdown support
-
-This is some simple markdown
 ```
 
 ```html
