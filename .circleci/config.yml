@@ -144,5 +144,8 @@ workflows:
   ci:
     jobs:
       - jvm
-      - linux
       - mac
+
+      # build on free circleci account runs out of ram
+      # Error: Image build request failed with exit status 137
+      # - linux
