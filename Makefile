@@ -45,4 +45,9 @@ copy-libs-to-resource:
 package-linux:
 	cd build && tar cvzf bootleg-$(VERSION)-linux-amd64.tgz bootleg
 	cp build/*.tgz ./
-	cp target/uberjar/bootleg-$(VERSION)-standalone.jar bootleg-$(VERSION).jar
+	#cp target/uberjar/bootleg-$(VERSION)-standalone.jar bootleg-$(VERSION).jar
+
+package-macos:
+	cd build && tar cvzf bootleg-$(VERSION)-macos-amd64.tgz bootleg
+	cp build/*.tgz ./
+	#cp target/uberjar/bootleg-$(VERSION)-standalone.jar bootleg-$(VERSION).jar
