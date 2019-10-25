@@ -172,7 +172,7 @@ $ mv bootleg /usr/local/bin
 
 ### Other Platforms
 
-Although there is nothing preventing bootleg from running on winodws or MacOS, binary builds are not yet available. Although startup and execution time will be much slower, in the meantime you can use the jar release file and run it as follows:
+Although there is nothing preventing bootleg from running on windows or MacOS, binary builds are not yet available. Although startup and execution time will be much slower, in the meantime you can use the jar release file and run it as follows:
 
 ```shell
 $ java -jar bootleg-0.1.4.jar
