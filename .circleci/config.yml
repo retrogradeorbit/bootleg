@@ -47,7 +47,6 @@ jobs:
   linux:
     docker:
       - image: circleci/clojure:lein-2.8.1
-    resource_class: medium+
     working_directory: ~/repo
     environment:
       LEIN_ROOT: "true"
