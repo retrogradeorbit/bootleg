@@ -30,7 +30,6 @@ call %GRAALVM_HOME%\bin\native-image.cmd ^
   --verbose ^
   --allow-incomplete-classpath ^
   --no-fallback ^
-  --no-server ^
   "-J-Xmx4g" ^
   -H:+TraceClassInitialization -H:+PrintClassInitialization
 if %errorlevel% neq 0 exit /b %errorlevel%
