@@ -20,7 +20,6 @@ build/bootleg: target/uberjar/bootleg-$(VERSION)-standalone.jar
 	export
 	$(GRAALVM)/bin/native-image \
 		-jar target/uberjar/bootleg-$(VERSION)-standalone.jar \
-		-Dsun.java2d.opengl=false \
 		-H:Name=build/bootleg \
 		-H:+ReportExceptionStackTraces \
 		-J-Dclojure.spec.skip-macros=true \
