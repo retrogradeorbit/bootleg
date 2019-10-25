@@ -38,7 +38,7 @@ jobs:
             mkdir -p /tmp/release
             lein do clean, uberjar
             VERSION=$(head -1 project.clj | awk '{gsub(/"/, "", $3); print $3}')
-            cp target/bootleg-$VERSION-standalone.jar /tmp/release
+            cp target/uberjar/bootleg-$VERSION-standalone.jar /tmp/release
       - store_artifacts:
           path: /tmp/release
           destination: release
