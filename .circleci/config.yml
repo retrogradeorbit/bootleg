@@ -79,7 +79,7 @@ jobs:
           name: Build binary
           command: |
             make copy-libs-to-resource clean all package-linux GRAALVM=$GRAALVM_HOME
-          no_output_timeout: 30m
+          no_output_timeout: 40m
       - run:
           name: Copy artifacts
           command: |
@@ -124,7 +124,7 @@ jobs:
           name: Build binary
           command: |
             make copy-libs-to-resource clean all package-macos GRAALVM=$GRAALVM_HOME
-          no_output_timeout: 30m
+          no_output_timeout: 40m
       - run:
           name: Copy artifacts
           command: |
