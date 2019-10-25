@@ -33,7 +33,7 @@ build/bootleg: target/uberjar/bootleg-$(VERSION)-standalone.jar
 		--allow-incomplete-classpath \
 		--no-fallback \
 		--no-server \
-		"-J-Xmx8g" \
+		"-J-Xmx4g" \
 		-H:+TraceClassInitialization -H:+PrintClassInitialization
 
 copy-libs-to-resource:

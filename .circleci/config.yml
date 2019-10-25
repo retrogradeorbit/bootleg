@@ -4,9 +4,6 @@
 #
 version: 2.1
 
-orbs:
-  win: circleci/windows@1.0.0
-
 jobs:
   jvm:
     docker:
@@ -46,26 +43,6 @@ jobs:
       - store_artifacts:
           path: /tmp/release
           destination: release
-
-  windows:
-    executor:
-      name: win/vs2019
-      shell: cmd.exe
-    steps:
-      - checkout
-      - run: choco install windows-sdk-7.1
-      - run: call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd"
-      - run:
-          command: (New-Object Net.WebClient).DownloadFile('https://github.com/oracle/graal/releases/download/vm-19.1.1/graalvm-ce-windows-amd64-19.1.1.zip', 'graalvm.zip')
-          shell: powershell.exe
-      - run:
-          command: Expand-Archive graalvm.zip graalvm
-          shell: powershell.exe
-      - run:
-          command: (New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein.bat', 'lein.bat')
-          shell: powershell.exe
-      - run: call lein self-install
-
 
   linux:
     docker:
@@ -167,7 +144,6 @@ workflows:
   version: 2
   ci:
     jobs:
-      #- jvm
-      #- linux
-      - windows
-      #- mac
+      - jvm
+      - linux
+      - mac
