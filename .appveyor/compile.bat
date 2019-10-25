@@ -28,7 +28,7 @@ call %GRAALVM_HOME%\bin\native-image.cmd ^
   -H:ConfigurationFileDirectories=graal-configs/ ^
   --initialize-at-build-time ^
   -H:Log=registerResource: ^
-  -H:EnableURLProtocols=http,https ^
+  -H:EnableURLProtocols=http ^
   --verbose ^
   --allow-incomplete-classpath ^
   --no-fallback ^
