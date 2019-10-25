@@ -83,6 +83,10 @@ jobs:
               tar xzf graalvm-ce-linux-amd64-19.1.1.tar.gz
             fi
       - run:
+          name: Install make
+          command: |
+            sudo apt-get -y install make
+      - run:
           name: Build binary
           command: |
             make copy-libs-to-resource clean all package-linux
