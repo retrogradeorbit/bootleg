@@ -73,19 +73,16 @@ jobs:
           name: Install native dev tools
           command: |
             sudo apt-get update
-            sudo apt-get -y install gcc zlib1g-dev
+            sudo apt-get -y install gcc zlib1g-dev make
       - run:
           name: Download GraalVM
           command: |
             cd ~
             if ! [ -d graalvm-ce-19.1.1 ]; then
-              curl -O -sL https://github.com/oracle/graal/releases/download/vm-19.1.1/graalvm-ce-linux-amd64-19.1.1.tar.gz
+              curl -O -sL https://github.com/oracle/graal/releases/download/vm-19.2.1/graalvm-ce-linux-amd64-19.2.1.tar.gz
               tar xzf graalvm-ce-linux-amd64-19.1.1.tar.gz
             fi
-      - run:
-          name: Install make
-          command: |
-            sudo apt-get -y install make
+            graalvm-ce-19.2.1/bin/gu install native-image
       - run:
           name: Build binary
           command: |
