@@ -126,10 +126,6 @@ jobs:
           command: |
             make copy-libs-to-resource clean all package-macos GRAALVM=$GRAALVM_HOME
           no_output_timeout: 40m
-      - run:
-          name: Copy artifacts
-          command: |
-            cp *.tgz /tmp/release
       - save_cache:
           paths:
             - ~/.m2
