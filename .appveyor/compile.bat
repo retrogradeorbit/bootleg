@@ -13,6 +13,8 @@ set PATH=%PATH%;%GRAALVM_HOME%\bin
 
 echo Building bootleg %BOOTLEG_VERSION%
 
+copy %GRAALVM_HOME%\jre\bin\sunec.dll resources\sunec.dll
+
 call lein do clean, uberjar
 if %errorlevel% neq 0 exit /b %errorlevel%
 
