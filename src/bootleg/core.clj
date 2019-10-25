@@ -9,7 +9,7 @@
             [fipp.edn :refer [pprint]])
   (:gen-class))
 
-(def version "0.1.4")
+(def version "0.1.5-SNAPSHOT")
 
 (def cli-options
   [
