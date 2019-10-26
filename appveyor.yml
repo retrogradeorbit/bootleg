@@ -10,6 +10,10 @@ environment:
   GRAALVM_HOME: C:\projects\bootleg\graalvm\graalvm-ce-19.2.1
   BOOTLEG_VERSION: 0.1.5-SNAPSHOT
 
+branches:
+  only:
+    - master
+
 build_script:
 - cmd: >-
     choco install windows-sdk-7.1
