@@ -17,7 +17,7 @@
                  [enlive "1.1.6"]
 
                  ;; for hiccup eval
-                 [borkdude/sci "0.0.10"]
+                 [borkdude/sci "0.0.11-alpha.2"]
                  [hickory "0.7.1"]
 
                  ;; clojures pprint doesn't work under graal native-image
