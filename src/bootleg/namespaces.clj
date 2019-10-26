@@ -1,16 +1,18 @@
 (ns bootleg.namespaces
   (:require [bootleg.utils :as utils]
+            [bootleg.enlive :as enlive]
             [hickory.convert]
             [hickory.hiccup-utils]
             [hickory.render]
             [hickory.select]
             [hickory.utils]
             [hickory.zip]
-            [net.cgrand.enlive-html :as enlive]
+            [net.cgrand.enlive-html :as enlive-html]
             [net.cgrand.jsoup]
             [net.cgrand.reload]
             [net.cgrand.tagsoup]
             [net.cgrand.xml]
+            [sci.core :as sci]
             [clojure.walk]))
 
 (defn at [node-or-nodes & selector-transform-pairs]
@@ -136,27 +138,28 @@
                  'hiccup-zip hickory.zip/hickory-zip
                  }
    'enlive {'at at
-            'content enlive/content
-            'html-content enlive/html-content
-            'wrap enlive/wrap
-            'unwrap enlive/unwrap
-            'set-attr enlive/set-attr
-            'remove-attr enlive/remove-attr
-            'add-class enlive/add-class
-            'remove-class enlive/remove-class
-            'do-> enlive/do->
-            'append enlive/append
-            'prepend enlive/prepend
-            'after enlive/after
-            'before enlive/before
-            'substitute enlive/substitute
-            'move enlive/move
+            'content enlive-html/content
+            'html-content enlive-html/html-content
+            'wrap enlive-html/wrap
+            'unwrap enlive-html/unwrap
+            'set-attr enlive-html/set-attr
+            'remove-attr enlive-html/remove-attr
+            'add-class enlive-html/add-class
+            'remove-class enlive-html/remove-class
+            'do-> enlive-html/do->
+            'append enlive-html/append
+            'prepend enlive-html/prepend
+            'after enlive-html/after
+            'before enlive-html/before
+            'substitute enlive-html/substitute
+            'move enlive-html/move
 
             ;; macro
-            ;;'clone-for enlive/clone-for
+            'clone-for (with-meta @#'enlive-html/clone-for {:sci/macro true})
+
             }
 
-   'net.cgrand.enlive-html {'at at
+   'net.cgrand.enlive-html {
                             'ns-options net.cgrand.enlive-html/ns-options
                             'set-ns-options! net.cgrand.enlive-html/set-ns-options!
                             'alter-ns-options! net.cgrand.enlive-html/alter-ns-options!
@@ -253,7 +256,44 @@
                             'text net.cgrand.enlive-html/text
                             'texts net.cgrand.enlive-html/texts
                             'sniptest* net.cgrand.enlive-html/sniptest*
-                            'html net.cgrand.enlive-html/html}
+                            'html net.cgrand.enlive-html/html
+
+                            ;; macros
+
+                            ;; using the following at definition, the final
+                            ;; evaluation of at simply returns the last form,
+                            ;; the transformation function
+                            ;; eg. #object[net.cgrand.enlive_html$set_attr$fn__2532 "0x3c0036b" "net.cgrand.enlive_html$set_attr$fn__2532@3c0036b"]
+                            ;;'at (with-meta @#'enlive-html/at {:sci/macro true})
+
+                            ;; the following definition works
+                            'at (with-meta enlive/at {:sci/macro true})
+
+                            'with-options (with-meta @#'enlive-html/with-options {:sci/macro true})
+                            'transformation (with-meta @#'enlive-html/transformation {:sci/macro true})
+                            'lockstep-transformation (with-meta @#'enlive-html/lockstep-transformation {:sci/macro true})
+
+                            'snippet* (with-meta @#'enlive/snippet* {:sci/macro true})
+                            ;; the following gives bootleg.enlive/template the error
+                            ;; Exception in thread "main" clojure.lang.ArityException: Wrong number of args (2) passed to: net.cgrand.enlive-html/snippet*
+                            ;; 'snippet* (with-meta @#'enlive-html/snippet* {:sci/macro true})
+
+                            'snippet (with-meta @#'enlive-html/snippet {:sci/macro true})
+
+                            'template (with-meta enlive/template {:sci/macro true})
+                            ;;'template (with-meta @#'enlive-html/template {:sci/macro true})
+
+                            'defsnippet (with-meta @#'enlive-html/defsnippet {:sci/macro true})
+
+                            ;;'deftemplate (with-meta enlive/deftemplate {:sci/macro true})
+                            'deftemplate (with-meta @#'enlive-html/deftemplate {:sci/macro true})
+                            'defsnippets (with-meta @#'enlive-html/defsnippets {:sci/macro true})
+                            'transform-content (with-meta @#'enlive-html/transform-content {:sci/macro true})
+                            'clone-for (with-meta @#'enlive-html/clone-for {:sci/macro true})
+                            'strict-mode (with-meta @#'enlive-html/strict-mode {:sci/macro true})
+                            'let-select (with-meta @#'enlive-html/let-select {:sci/macro true})
+                            'sniptest (with-meta @#'enlive-html/sniptest {:sci/macro true})
+                            }
 
    'net.cgrand.jsoup {'parser net.cgrand.jsoup/parser}
    'net.cgrand.tagsoup {
