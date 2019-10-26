@@ -323,4 +323,9 @@
                   'prewalk-replace clojure.walk/prewalk-replace
                   'postwalk-replace clojure.walk/postwalk-replace
                   }
+
+   ;; https://github.com/borkdude/sci/issues/124
+   'extra-core {
+                'find-ns (fn [_] 'user)
+                }
    })
