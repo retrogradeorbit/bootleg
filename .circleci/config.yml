@@ -6,6 +6,9 @@ version: 2.1
 
 jobs:
   jvm:
+    branches:
+      only:
+        - master
     docker:
       # specify the version you desire here
       - image: circleci/clojure:lein-2.8.1
@@ -45,6 +48,9 @@ jobs:
           destination: release
 
   linux:
+    branches:
+      only:
+        - master
     docker:
       - image: circleci/clojure:lein-2.8.1
     working_directory: ~/repo
@@ -94,6 +100,9 @@ jobs:
           path: /tmp/release
           destination: release
   mac:
+    branches:
+      only:
+        - master
     macos:
       xcode: "9.0"
     environment:
