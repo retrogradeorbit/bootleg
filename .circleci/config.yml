@@ -138,14 +138,15 @@ jobs:
 workflows:
   version: 2
   ci:
-    triggers:
-      - schedule:
-          branches:
-              only:
-                - master
     jobs:
-      - jvm
-      - mac
+      - jvm:
+          filters:
+            branches:
+              only: master
+      - mac:
+          filters:
+            branches:
+              only: master
 
       # build on free circleci account runs out of ram
       # Error: Image build request failed with exit status 137
