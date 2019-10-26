@@ -140,8 +140,7 @@ workflows:
   ci:
     triggers:
       - schedule:
-          filters:
-            branches:
+          branches:
               only:
                 - master
     jobs:
