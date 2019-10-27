@@ -58,10 +58,7 @@
                    :bindings assoc 'load-file
                    #(load-file*
                      ctx
-                     (file/path-join path %))))
-
-          ;; hickory hiccup->html cant handle numbers
-          (->> (walk/postwalk #(if (number? %) (str %) %)))))))
+                     (file/path-join path %))))))))
 
 (defn process-hiccup [path file]
   (->> file

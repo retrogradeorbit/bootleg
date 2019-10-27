@@ -82,7 +82,11 @@
 (defn html->hiccup [markup]
   (last (html->hiccup-seq markup)))
 
-(def hiccup-seq->html render/hiccup-to-html)
+(defn hiccup-seq->html [hiccup-seq]
+  (->> hiccup-seq
+       ;; hiccup-to-html cant handle numbers
+       (walk/postwalk #(if (number? %) (str %) %))
+       render/hiccup-to-html))
 
 (defn hiccup->html [hiccup]
   (hiccup-seq->html [hiccup]))
