@@ -51,16 +51,17 @@
               'println println
               'pprint pprint
               }}]
-    (-> data
-        (sci/eval-string
-         (update ctx
-                 :bindings assoc 'load-file
-                 #(load-file*
-                   ctx
-                   (file/path-join path %))))
+    (context/with-path path
+      (-> data
+          (sci/eval-string
+           (update ctx
+                   :bindings assoc 'load-file
+                   #(load-file*
+                     ctx
+                     (file/path-join path %))))
 
-        ;; hickory hiccup->html cant handle numbers
-        (->> (walk/postwalk #(if (number? %) (str %) %))))))
+          ;; hickory hiccup->html cant handle numbers
+          (->> (walk/postwalk #(if (number? %) (str %) %)))))))
 
 (defn process-hiccup [path file]
   (->> file
