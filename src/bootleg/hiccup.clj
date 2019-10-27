@@ -8,6 +8,7 @@
             [bootleg.json :as json]
             [bootleg.edn :as edn]
             [bootleg.namespaces :as namespaces]
+            [bootleg.context :as context]
             [net.cgrand.enlive-html :as enlive]
             [clojure.walk :as walk]
             [sci.core :as sci]

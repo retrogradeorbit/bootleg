@@ -1,5 +1,6 @@
 (ns bootleg.file
-  (:require [clojure.java.io :as io]
+  (:require [bootleg.context :as context]
+            [clojure.java.io :as io]
             [clojure.string :as string]))
 
 (defn path-split
@@ -38,3 +39,6 @@
 (defmethod input-stream :default [path file] (file-input-stream path file))
 (defmethod input-stream "http" [_ url] (url-input-stream url))
 (defmethod input-stream "https" [_ url] (url-input-stream url))
+
+(defn path-relative [filename]
+  (path-join context/*path* filename))
