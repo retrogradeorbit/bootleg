@@ -160,6 +160,7 @@
             }
 
    'net.cgrand.enlive-html {
+                            '*options* net.cgrand.enlive-html/*options*
                             'ns-options net.cgrand.enlive-html/ns-options
                             'set-ns-options! net.cgrand.enlive-html/set-ns-options!
                             'alter-ns-options! net.cgrand.enlive-html/alter-ns-options!
@@ -259,40 +260,20 @@
                             'html net.cgrand.enlive-html/html
 
                             ;; macros
-
-                            ;; using the following at definition, the final
-                            ;; evaluation of at simply returns the last form,
-                            ;; the transformation function
-                            ;; eg. #object[net.cgrand.enlive_html$set_attr$fn__2532 "0x3c0036b" "net.cgrand.enlive_html$set_attr$fn__2532@3c0036b"]
-                            ;;'at (with-meta @#'enlive-html/at {:sci/macro true})
-
-                            ;; the following definition works
                             'at (with-meta enlive/at {:sci/macro true})
-
-                            'with-options (with-meta @#'enlive-html/with-options {:sci/macro true})
-                            'transformation (with-meta @#'enlive-html/transformation {:sci/macro true})
-                            'lockstep-transformation (with-meta @#'enlive-html/lockstep-transformation {:sci/macro true})
-
-                            'snippet* (with-meta @#'enlive/snippet* {:sci/macro true})
-                            ;; the following gives bootleg.enlive/template the error
-                            ;; Exception in thread "main" clojure.lang.ArityException: Wrong number of args (2) passed to: net.cgrand.enlive-html/snippet*
-                            ;; 'snippet* (with-meta @#'enlive-html/snippet* {:sci/macro true})
-
-                            'snippet (with-meta @#'enlive-html/snippet {:sci/macro true})
-
+                            'transformation (with-meta enlive/transformation {:sci/macro true})
+                            'lockstep-transformation (with-meta enlive/lockstep-transformation {:sci/macro true})
+                            'snippet* (with-meta enlive/snippet* {:sci/macro true})
+                            'snippet (with-meta enlive/snippet {:sci/macro true})
                             'template (with-meta enlive/template {:sci/macro true})
-                            ;;'template (with-meta @#'enlive-html/template {:sci/macro true})
-
-                            'defsnippet (with-meta @#'enlive-html/defsnippet {:sci/macro true})
-
-                            ;;'deftemplate (with-meta enlive/deftemplate {:sci/macro true})
-                            'deftemplate (with-meta @#'enlive-html/deftemplate {:sci/macro true})
-                            'defsnippets (with-meta @#'enlive-html/defsnippets {:sci/macro true})
-                            'transform-content (with-meta @#'enlive-html/transform-content {:sci/macro true})
-                            'clone-for (with-meta @#'enlive-html/clone-for {:sci/macro true})
-                            'strict-mode (with-meta @#'enlive-html/strict-mode {:sci/macro true})
-                            'let-select (with-meta @#'enlive-html/let-select {:sci/macro true})
-                            'sniptest (with-meta @#'enlive-html/sniptest {:sci/macro true})
+                            'defsnippet (with-meta enlive/defsnippet {:sci/macro true})
+                            'deftemplate (with-meta enlive/deftemplate {:sci/macro true})
+                            'defsnippets (with-meta enlive/defsnippets {:sci/macro true})
+                            'transform-content (with-meta enlive/transform-content {:sci/macro true})
+                            'clone-for (with-meta enlive/clone-for {:sci/macro true})
+                            'strict-mode (with-meta enlive/strict-mode {:sci/macro true})
+                            'let-select (with-meta enlive/let-select {:sci/macro true})
+                            'sniptest (with-meta enlive/sniptest {:sci/macro true})
                             }
 
    'net.cgrand.jsoup {'parser net.cgrand.jsoup/parser}
@@ -327,5 +308,6 @@
    ;; https://github.com/borkdude/sci/issues/124
    'extra-core {
                 'find-ns (fn [_] 'user)
+                'doall doall
                 }
    })
