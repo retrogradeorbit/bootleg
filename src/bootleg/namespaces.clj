@@ -61,6 +61,29 @@
           'toRadians #(Math/toRadians %1)
           'E Math/E
           'PI Math/PI}
+   'bootleg.utils {
+                   'html->hiccup-seq bootleg.utils/html->hiccup-seq
+                   'html->hiccup bootleg.utils/html->hiccup
+                   'hiccup-seq->html bootleg.utils/hiccup-seq->html
+                   'hiccup->html bootleg.utils/hiccup->html
+                   'hiccup->hickory bootleg.utils/hiccup->hickory
+                   'hickory->hiccup bootleg.utils/hickory->hiccup
+                   'hiccup-seq->hickory-seq bootleg.utils/hiccup-seq->hickory-seq
+                   'hickory-seq->hiccup-seq bootleg.utils/hickory-seq->hiccup-seq
+                   'html->hickory-seq bootleg.utils/html->hickory-seq
+                   'html->hickory bootleg.utils/html->hickory
+                   'hickory-seq->html bootleg.utils/hickory-seq->html
+                   'hickory->html bootleg.utils/hickory->html
+                   'is-hiccup? bootleg.utils/is-hiccup?
+                   'is-hickory? bootleg.utils/is-hickory?
+                   'is-hickory-seq? bootleg.utils/is-hickory-seq?
+                   'is-hiccup-seq? bootleg.utils/is-hiccup-seq?
+                   'markup-type bootleg.utils/markup-type
+                   'conversion-fns bootleg.utils/conversion-fns
+                   'convert-to bootleg.utils/convert-to
+                   'html-output-to bootleg.utils/html-output-to
+                   'as-html bootleg.utils/as-html
+                   }
    'hickory.convert {
                      'hiccup-to-hickory hickory.convert/hiccup-to-hickory
                      'hiccup-fragment-to-hickory hickory.convert/hiccup-fragment-to-hickory
