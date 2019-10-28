@@ -19,6 +19,7 @@
                  ~(into {} (for [[s t] t]
                              [(if (#'net.cgrand.enlive-html/static-selector? s) (net.cgrand.enlive-html/cacheable s) s) t])))
                `(net.cgrand.enlive-html/transform ~(if (#'net.cgrand.enlive-html/static-selector? s) (net.cgrand.enlive-html/cacheable s) s) ~t)))
+         bootleg.utils/hickory-seq-add-missing-types
          (bootleg.utils/convert-to input-type#))))
 
 (defn template [source args & forms]
@@ -37,11 +38,9 @@
   (let [nodesym (gensym "nodes")]
     `(let [~nodesym (map net.cgrand.enlive-html/annotate ~nodes)]
        (fn ~@(do
-               (println "for approaches")
                (let [res (for [[args & forms] (#'net.cgrand.enlive-html/bodies body)]
                            `(~args
                              (extra-core/doall (net.cgrand.enlive-html/flatmap (net.cgrand.enlive-html/transformation ~@forms) ~nodesym))))]
-                 (println "resulted in:" res)
                  res
                  ))))))
 

@@ -57,7 +57,7 @@
                     (update % :tag munge-map (:tag %))
                     %) hickory))
 
-(defn- hickory-seq-add-missing-types [hickory]
+(defn hickory-seq-add-missing-types [hickory]
   (walk/postwalk
    (fn [el]
      (if (and (:tag el) (not (:type el)))
@@ -160,7 +160,7 @@
   (keyword? (first data)))
 
 (defn is-hickory? [data]
-  (and (map? data) (:type data)))
+  (and (map? data) (:tag data)))
 
 (defn is-hickory-seq? [data]
   (and (or (seq? data) (vector? data))
