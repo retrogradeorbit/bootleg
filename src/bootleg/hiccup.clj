@@ -45,6 +45,7 @@
 
               ;; conversions
               'convert-to utils/convert-to
+              'markup-type utils/markup-type
               'as-html utils/as-html
 
               ;; debug
