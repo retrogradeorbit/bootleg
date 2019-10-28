@@ -10,13 +10,16 @@
   (-> path file/path-relative io/input-stream loader))
 
 (defn at [node-or-nodes & rules]
-  `(-> ~node-or-nodes net.cgrand.enlive-html/as-nodes
-       ~@(for [[s t] (partition 2 rules)]
-           (if (= :lockstep s)
-             `(net.cgrand.enlive-html/lockstep-transform
-               ~(into {} (for [[s t] t]
-                           [(if (#'net.cgrand.enlive-html/static-selector? s) (net.cgrand.enlive-html/cacheable s) s) t])))
-             `(net.cgrand.enlive-html/transform ~(if (#'net.cgrand.enlive-html/static-selector? s) (net.cgrand.enlive-html/cacheable s) s) ~t)))))
+  `(let [input-type# (bootleg.utils/markup-type ~node-or-nodes)
+         converted-nodes# (bootleg.utils/convert-to ~node-or-nodes :hickory-seq)]
+     (-> converted-nodes# net.cgrand.enlive-html/as-nodes
+         ~@(for [[s t] (partition 2 rules)]
+             (if (= :lockstep s)
+               `(net.cgrand.enlive-html/lockstep-transform
+                 ~(into {} (for [[s t] t]
+                             [(if (#'net.cgrand.enlive-html/static-selector? s) (net.cgrand.enlive-html/cacheable s) s) t])))
+               `(net.cgrand.enlive-html/transform ~(if (#'net.cgrand.enlive-html/static-selector? s) (net.cgrand.enlive-html/cacheable s) s) ~t)))
+         (bootleg.utils/convert-to input-type#))))
 
 (defn template [source args & forms]
   (let [[options source & body]
