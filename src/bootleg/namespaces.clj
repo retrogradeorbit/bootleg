@@ -15,18 +15,6 @@
             [sci.core :as sci]
             [clojure.walk]))
 
-(defn at [node-or-nodes & selector-transform-pairs]
-  (let [input-type (utils/markup-type node-or-nodes)
-        converted-nodes (utils/convert-to node-or-nodes :hickory-seq)]
-    (->
-     (reduce
-      (fn [node [selector transform]]
-        (enlive/at node selector transform))
-      converted-nodes
-      (partition 2 selector-transform-pairs))
-
-     (utils/convert-to input-type))))
-
 (def namespaces
   {'Math {
           'abs #(Math/abs %1)
