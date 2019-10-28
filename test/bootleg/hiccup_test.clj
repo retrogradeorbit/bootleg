@@ -53,4 +53,18 @@
     <h1>Markdown support</h1><p>This is some simple markdown</p>
   </body>
 </html>
-"))))
+")))
+  (testing "enlive"
+    (is (= (process-hiccup-data "test/files"
+                                "(-> [:div [:p] [:p#id]]
+                                     (convert-to :hickory-seq)
+                                     (net.cgrand.enlive-html/at
+                                       [:p#id] (net.cgrand.enlive-html/content \"new content\"))
+                                     (convert-to :hiccup))")
+           [:div {} [:p {}] [:p {:id "id"} "new content"]]))
+    (is (= (process-hiccup-data "test/files"
+                                "(-> [:div [:p] [:p#id]]
+                                     (net.cgrand.enlive-html/at
+                                       [:p#id] (net.cgrand.enlive-html/content \"new content\")))")
+           [:div {} [:p {}] [:p {:id "id"} "new content"]]))
+    ))
