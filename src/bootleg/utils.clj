@@ -23,7 +23,7 @@
 
 (defn- split-doctype [markup]
   (let [[_ doctype-suffix remain] (string/split markup #"<" 3)]
-    [(str "<" doctype-suffix) (str "<" remain)]))
+    [(str "<" doctype-suffix) (if remain (str "<" remain) "")]))
 
 (defn- munge-html-tags [markup]
   (-> markup
@@ -62,6 +62,15 @@
    (fn [el]
      (if (and (:tag el) (not (:type el)))
        (assoc el :type :element)
+       el))
+   hickory))
+
+(defn hickory-seq-convert-dtd [hickory]
+  (walk/postwalk
+   (fn [el]
+     (if (and (= :dtd (:type el)) (:data el))
+       (let [[name publicid systemid] (:data el)]
+         (str "<!DOCTYPE " name ">"))
        el))
    hickory))
 
@@ -104,13 +113,20 @@
         first
         demunge-hickory-tags)))
 
+(defn hickory-to-hiccup-preserve-doctype [hickory]
+  (if (and (string? hickory)
+           (i-starts-with? (string/triml hickory) "<!DOCTYPE"))
+    hickory
+    (convert/hickory-to-hiccup hickory)))
+
 (defn hickory->hiccup [hickory]
   (if (string? hickory)
     hickory
     (-> hickory
+        hickory-seq-convert-dtd
         munge-hickory-tags
         hickory-seq-add-missing-types
-        convert/hickory-to-hiccup
+        hickory-to-hiccup-preserve-doctype
         demunge-hiccup-tags)))
 
 (defn hiccup-seq->hickory-seq [hiccup-seq]
@@ -139,19 +155,27 @@
       html->hickory-seq
       last))
 
+(defn- hickory-to-html-preserve-doctype [hickory]
+  (if (and (string? hickory)
+           (i-starts-with? (string/triml hickory) "<!DOCTYPE"))
+    hickory
+    (render/hickory-to-html hickory)))
+
 (defn hickory-seq->html [hickory]
   (->> hickory
        (map #(if (string? %)
                %
                (-> %
+                   hickory-seq-convert-dtd
                    hickory-seq-add-missing-types
-                   render/hickory-to-html)))
+                   hickory-to-html-preserve-doctype)))
        (apply str)))
 
 (defn hickory->html [hickory]
   (-> hickory
+      hickory-seq-convert-dtd
       hickory-seq-add-missing-types
-      render/hickory-to-html))
+      hickory-to-html-preserve-doctype))
 
 ;;
 ;; testing
@@ -160,7 +184,7 @@
   (keyword? (first data)))
 
 (defn is-hickory? [data]
-  (and (map? data) (:tag data)))
+  (and (map? data) (or (:tag data) (:type data))))
 
 (defn is-hickory-seq? [data]
   (and (or (seq? data) (vector? data))
