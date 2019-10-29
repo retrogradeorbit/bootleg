@@ -67,9 +67,9 @@
  `(def ~name (net.cgrand.enlive-html/snippet ~source ~selector ~args ~@forms)))
 
 (defn transformation
- ([] `identity)
- ([form] form)
- ([form & forms] `(fn [node#] (net.cgrand.enlive-html/at node# ~form ~@forms))))
+  ([] `identity)
+  ([form] form)
+  ([form & forms] `(fn [node#] (net.cgrand.enlive-html/at node# ~form ~@forms))))
 
 (defn lockstep-transformation
  [& forms] `(fn [node#] (net.cgrand.enlive-html/at node# :lockstep ~(apply array-map forms))))
@@ -116,3 +116,11 @@
   `(net.cgrand.enlive-html/sniptest*
     (net.cgrand.enlive-html/html-snippet ~source-string)
     (net.cgrand.enlive-html/transformation ~@forms)))
+
+
+;; coercing transformations
+(defn content
+ "Replaces the content of the element. Values can be nodes or collection of nodes."
+ [& values]
+  (fn [el]
+    (assoc el :content (apply concat (map #(bootleg.utils/convert-to % :hickory-seq) values)))))

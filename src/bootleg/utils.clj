@@ -201,6 +201,7 @@
     (is-hickory? data) :hickory
     (is-hickory-seq? data) :hickory-seq
     (string? data) :html
+    (every? string? data) :hiccup-seq
     :else nil))
 
 (def conversion-fns
