@@ -76,22 +76,4 @@
            [:div {} [:p {}] [:p {:id "flag"} [:p {} "foo"]]]))
 
 
-
-
-
     ))
-
-
-#_
-(defn at [node-or-nodes & rules]
-  `(let [input-type# (or (bootleg.utils/markup-type ~node-or-nodes) :hickory)
-         converted-nodes# (bootleg.utils/convert-to ~node-or-nodes :hickory-seq)]
-     (-> converted-nodes# net.cgrand.enlive-html/as-nodes
-         ~@(for [[s t] (partition 2 rules)]
-             (if (= :lockstep s)
-               `(net.cgrand.enlive-html/lockstep-transform
-                 ~(into {} (for [[s t] t]
-                             [(if (#'net.cgrand.enlive-html/static-selector? s) (net.cgrand.enlive-html/cacheable s) s) t])))
-               `(net.cgrand.enlive-html/transform ~(if (#'net.cgrand.enlive-html/static-selector? s) (net.cgrand.enlive-html/cacheable s) s) ~t)))
-         bootleg.utils/hickory-seq-add-missing-types
-         (bootleg.utils/convert-to input-type#))))
