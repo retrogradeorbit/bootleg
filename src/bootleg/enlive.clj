@@ -5,6 +5,7 @@
             [clojure.java.io :as io]
             ))
 
+;; implement our own resource getter that abides by path
 (defmethod net.cgrand.enlive-html/get-resource String
   [path loader]
   (-> path file/path-relative io/input-stream loader))
@@ -41,12 +42,9 @@
 (defn snippet* [nodes & body]
   (let [nodesym (gensym "nodes")]
     `(let [~nodesym (map net.cgrand.enlive-html/annotate ~nodes)]
-       (fn ~@(do
-               (let [res (for [[args & forms] (#'net.cgrand.enlive-html/bodies body)]
-                           `(~args
-                             (extra-core/doall (net.cgrand.enlive-html/flatmap (net.cgrand.enlive-html/transformation ~@forms) ~nodesym))))]
-                 res
-                 ))))))
+       (fn ~@(for [[args & forms] (#'net.cgrand.enlive-html/bodies body)]
+               `(~args
+                 (extra-core/doall (net.cgrand.enlive-html/flatmap (net.cgrand.enlive-html/transformation ~@forms) ~nodesym))))))))
 
 (defn snippet
  "A snippet is a function that returns a seq of nodes."
@@ -57,7 +55,11 @@
                    ~options)
            source# ~source]
        (net.cgrand.enlive-html/register-resource! source#)
-       (net.cgrand.enlive-html/snippet* (net.cgrand.enlive-html/select (net.cgrand.enlive-html/html-resource source# opts#) ~selector) ~args ~@forms))))
+       (net.cgrand.enlive-html/snippet*
+        (net.cgrand.enlive-html/select
+         (net.cgrand.enlive-html/html-resource source# opts#)
+         ~selector)
+        ~args ~@forms))))
 
 (defn defsnippet
  "Define a named snippet -- equivalent to (def name (snippet source selector args ...))."
