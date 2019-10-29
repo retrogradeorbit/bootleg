@@ -29,7 +29,11 @@
                         ~options)
            source# ~source]
        (net.cgrand.enlive-html/register-resource! source#)
-       (comp net.cgrand.enlive-html/emit* (net.cgrand.enlive-html/snippet* (net.cgrand.enlive-html/html-resource source# opts#) ~@body)))))
+       (comp #(bootleg.utils/convert-to % :hiccup-seq)
+             bootleg.utils/hickory-seq-convert-dtd
+             (net.cgrand.enlive-html/snippet*
+              (net.cgrand.enlive-html/html-resource source# opts#)
+              ~@body)))))
 
 (defn deftemplate [name source args & forms]
   `(def ~name (net.cgrand.enlive-html/template ~source ~args ~@forms)))
