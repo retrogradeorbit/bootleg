@@ -51,6 +51,7 @@
           'PI Math/PI}
    'bootleg.utils {
                    'hickory-seq-add-missing-types bootleg.utils/hickory-seq-add-missing-types
+                   'hickory-seq-convert-dtd bootleg.utils/hickory-seq-convert-dtd
                    'html->hiccup-seq bootleg.utils/html->hiccup-seq
                    'html->hiccup bootleg.utils/html->hiccup
                    'hiccup-seq->html bootleg.utils/hiccup-seq->html
