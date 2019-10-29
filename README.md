@@ -435,11 +435,11 @@ Convert any supported input format passed into `data` to html output. Same as `(
 
 ### Enlive Processing
 
-Enlive html functions are to be found in the `enlive` namespace. The enlive macros are not supported (`deftemplate`, `defsnippet`, `clone-for`). A reimplementation of `at` is supplied that provides automatic type coercion for the inputs and outputs.
+Enlive html functions are to be found in the `enlive` namespace. A new version of `at` is supplied that provides automatic type coercion for the inputs and outputs.
 
 In addition to this the standard enlive namespaces are available in their usual locations:
 
- * net.cgrand.enlive-html (but does not include macros)
+ * net.cgrand.enlive-html
  * net.cgrand.jsoup
  * net.cgrand.tagsoup
  * net.cgrand.xml
@@ -450,11 +450,23 @@ In addition to this the standard enlive namespaces are available in their usual 
 
 Take the markup `data` and process every element matching `selector` through the transform `transform`
 
+#### deftemplate
+
+#### defsnippet
+
 ### Enlive Transforms
 
 #### content
 
 `(content & values)`
+
+Replaces the content of the element. Values can be any supported formats: hickory, hickory-seq, hiccup, hiccup-seq or html.
+
+** note: ** This is different to the standard enlive `content` function. The standard function is present as `content*`. Passing html to `content` will embed that markup in the output. In contrast, passing html to `content*` will insert that html in an escaped form.
+
+#### content*
+
+`(content* & values)`
 
 Replaces the content of the element. Values can be hickory nodes, collection of hikory nodes, or plain text strings.
 
@@ -468,7 +480,7 @@ Concatenate values as a string and then parse it with tagsoup. html-snippet does
 
 `(html-content & values)`
 
-Replaces the content of the element. Values are strings containing html code.
+Replaces the content of the element. Values are strings containing html code. This is present for backwards compatibility. The new `content` function can take and embed html code and should be used instead.
 
 #### wrap
 
