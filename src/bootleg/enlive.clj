@@ -10,7 +10,7 @@
   (-> path file/path-relative io/input-stream loader))
 
 (defn at [node-or-nodes & rules]
-  `(let [input-type# (bootleg.utils/markup-type ~node-or-nodes)
+  `(let [input-type# (or (bootleg.utils/markup-type ~node-or-nodes) :hickory)
          converted-nodes# (bootleg.utils/convert-to ~node-or-nodes :hickory-seq)]
      (-> converted-nodes# net.cgrand.enlive-html/as-nodes
          ~@(for [[s t] (partition 2 rules)]
