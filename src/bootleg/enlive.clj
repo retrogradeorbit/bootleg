@@ -120,7 +120,40 @@
 
 ;; coercing transformations
 (defn content
- "Replaces the content of the element. Values can be nodes or collection of nodes."
- [& values]
+  "Replaces the content of the element. Values can be nodes or collection of nodes."
+  [& values]
   (fn [el]
     (assoc el :content (apply concat (map #(bootleg.utils/convert-to % :hickory-seq) values)))))
+
+(defn append
+  "Appends the values to the content of the selected element."
+  [& values]
+  (fn [el]
+    (assoc el :content (concat (:content el) (map #(bootleg.utils/convert-to % :hickory-seq) values)))))
+
+(defn prepend
+  "Prepends the values to the content of the selected element."
+  [& values]
+  (fn [el]
+    (assoc el :content (concat (map #(bootleg.utils/convert-to % :hickory-seq) values) (:content el)))))
+
+(defn after
+  "Inserts the values after the current selection (node or fragment)."
+  [& values]
+  (fn [el]
+    (net.cgrand.enlive-html/flatten-nodes-coll
+     (cons el (map #(bootleg.utils/convert-to % :hickory-seq) values)))))
+
+(defn before
+  "Inserts the values before the current selection (node or fragment)."
+  [& values]
+  (fn [el]
+    (net.cgrand.enlive-html/flatten-nodes-coll
+     (concat (map #(bootleg.utils/convert-to % :hickory-seq) values) [el]))))
+
+(defn substitute
+  "Replaces the current selection (node or fragment)."
+  [& values]
+  (constantly
+   (net.cgrand.enlive-html/flatten-nodes-coll
+    (map #(bootleg.utils/convert-to % :hickory-seq) values))))

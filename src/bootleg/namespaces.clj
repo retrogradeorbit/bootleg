@@ -316,7 +316,6 @@
                             'content* net.cgrand.enlive-html/content
                             'html-snippet net.cgrand.enlive-html/html-snippet
                             'html-content net.cgrand.enlive-html/html-content
-
                             'wrap net.cgrand.enlive-html/wrap
                             'unwrap net.cgrand.enlive-html/unwrap
                             'replace-vars net.cgrand.enlive-html/replace-vars
@@ -326,11 +325,11 @@
                             'add-class net.cgrand.enlive-html/add-class
                             'remove-class net.cgrand.enlive-html/remove-class
                             'do-> net.cgrand.enlive-html/do->
-                            'append net.cgrand.enlive-html/append
-                            'prepend net.cgrand.enlive-html/prepend
-                            'after net.cgrand.enlive-html/after
-                            'before net.cgrand.enlive-html/before
-                            'substitute net.cgrand.enlive-html/substitute
+                            'append* net.cgrand.enlive-html/append
+                            'prepend* net.cgrand.enlive-html/prepend
+                            'after* net.cgrand.enlive-html/after
+                            'before* net.cgrand.enlive-html/before
+                            'substitute* net.cgrand.enlive-html/substitute
                             'move net.cgrand.enlive-html/move
                             'strict-mode* net.cgrand.enlive-html/strict-mode*
                             'attr? net.cgrand.enlive-html/attr?
@@ -386,6 +385,11 @@
                             'sniptest (with-meta enlive/sniptest {:sci/macro true})
 
                             'content enlive/content
+                            'append enlive/append
+                            'prepend enlive/prepend
+                            'after enlive/after
+                            'before enlive/before
+                            'substitute enlive/substitute
                             }
 
    'net.cgrand.jsoup {'parser net.cgrand.jsoup/parser}
