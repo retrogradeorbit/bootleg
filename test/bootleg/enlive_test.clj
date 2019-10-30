@@ -3,8 +3,8 @@
             [bootleg.enlive :refer :all]
             [bootleg.hiccup :refer :all]))
 
-(deftest tranform-tests
-  (testing "transform content*"
+(deftest transform-tests
+  (testing "transform content"
     (is (= (process-hiccup-data
             "test/files"
             "
@@ -73,7 +73,63 @@
 (-> [:div [:p] [:p#flag]]
     (html/at [:p#flag] (html/content {:type :element :tag :p :attrs nil :content [\"foo\"]})))
 ")
-           [:div {} [:p {}] [:p {:id "flag"} [:p {} "foo"]]]))
+           [:div {} [:p {}] [:p {:id "flag"} [:p {} "foo"]]])))
 
 
-    ))
+  (testing "transform append"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[net.cgrand.enlive-html :as html])
+
+(-> [:div [:p] [:p#flag \"foo\"]]
+    (html/at [:p#flag] (html/append [:div \"one\"] \"<div>two</div>\" {:type :element :tag :div :attrs nil :content [\"three\"]})))
+")
+           [:div {} [:p {}] [:p {:id "flag"} "foo" [:div {} "one"] [:div {} "two"] [:div {} "three"]]])))
+
+  (testing "transform prepend"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[net.cgrand.enlive-html :as html])
+
+(-> [:div [:p] [:p#flag \"foo\"]]
+    (html/at [:p#flag] (html/prepend [:div \"one\"] \"<div>two</div>\" {:type :element :tag :div :attrs nil :content [\"three\"]})))
+")
+           [:div {} [:p {}] [:p {:id "flag"} [:div {} "one"] [:div {} "two"] [:div {} "three"] "foo"]])))
+
+  (testing "transform after"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[net.cgrand.enlive-html :as html])
+
+(-> [:div [:p] [:p#flag \"foo\"]]
+    (html/at [:p#flag] (html/after [:div \"one\"] \"<div>two</div>\" {:type :element :tag :div :attrs nil :content [\"three\"]})))
+")
+           [:div {} [:p {}] [:p {:id "flag"} "foo"] [:div {} "one"] [:div {} "two"] [:div {} "three"]])))
+
+  (testing "transform before"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[net.cgrand.enlive-html :as html])
+
+(-> [:div [:p] [:p#flag \"foo\"]]
+    (html/at [:p#flag] (html/before [:div \"one\"] \"<div>two</div>\" {:type :element :tag :div :attrs nil :content [\"three\"]})))
+")
+           [:div {} [:p {}] [:div {} "one"] [:div {} "two"] [:div {} "three"] [:p {:id "flag"} "foo"]])))
+
+  (testing "transform substitute"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[net.cgrand.enlive-html :as html])
+
+(-> [:div [:p] [:p#flag \"foo\"]]
+    (html/at [:p#flag] (html/substitute [:div \"one\"] \"<div>two</div>\" {:type :element :tag :div :attrs nil :content [\"three\"]})))
+")
+           [:div {} [:p {}] [:div {} "one"] [:div {} "two"] [:div {} "three"]])))
+
+
+  )

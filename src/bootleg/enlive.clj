@@ -129,13 +129,13 @@
   "Appends the values to the content of the selected element."
   [& values]
   (fn [el]
-    (assoc el :content (concat (:content el) (map #(bootleg.utils/convert-to % :hickory-seq) values)))))
+    (assoc el :content (concat (:content el) (map #(bootleg.utils/convert-to % :hickory) values)))))
 
 (defn prepend
   "Prepends the values to the content of the selected element."
   [& values]
   (fn [el]
-    (assoc el :content (concat (map #(bootleg.utils/convert-to % :hickory-seq) values) (:content el)))))
+    (assoc el :content (concat (map #(bootleg.utils/convert-to % :hickory) values) (:content el)))))
 
 (defn after
   "Inserts the values after the current selection (node or fragment)."
