@@ -10,8 +10,7 @@
 #_ (bracket-processor "[!abc]")
 
 (defn replace-inside [s re func]
-  (let [
-        surrounds (string/split s re -1)
+  (let [surrounds (string/split s re -1)
         founds (re-seq re s)]
     (->> surrounds last list
          (concat (interleave surrounds (map func founds)))
@@ -36,13 +35,8 @@
     (re-matches re s)))
 
 #_ (glob-match "foo*bin?" "foobarbing")
-
 #_ (glob->regex "*.[cC]?j")
-
 #_ (re-matches (re-pattern (glob->regex "*.[!d-z]?j")) "myfile.clj")
-
-(defn recursive? [pattern]
-  (re-find #"\*\*" pattern))
 
 (defn glob-pattern? [s]
   (or
@@ -53,7 +47,6 @@
 #_ (glob-pattern? "[a-z].clj")
 #_ (glob-pattern? "file.*")
 
-
 (defn find-matching
   "path must be a directory"
   [path glob]
@@ -61,8 +54,7 @@
   (let [files  (.listFiles path)
         names (map #(.getName %) files)
         matcher (re-pattern (glob->regex glob))
-        match? (partial re-matches matcher)
-        ]
+        match? (partial re-matches matcher)]
     (filter match? names)))
 
 #_ (find-matching (io/file ".") "s??")
@@ -95,7 +87,6 @@
 #_ (count fset)
 #_ (count (distinct fset))
 
-
 (defn glob-files
   "walk the path for files matching glob and return
   a seq of java.io.File objects"
@@ -113,7 +104,6 @@
 (defn glob [path pattern]
   (->> (glob-files path pattern)
        (map #(.getPath %))
-       (map (partial file/relativise path))
-       ))
+       (map (partial file/relativise path))))
 
 #_ (glob "." "**/foo/**/*.txt")
