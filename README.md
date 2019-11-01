@@ -629,6 +629,45 @@ The `hickory` namespaces are provided at their usual namespace locations.
  * hickory.utils
  * hickory.zip
 
+### Examples
+
+#### Blog post with reading time
+
+This file is in a directory `blog/1/index.clj` with a global page mustache template in `blog/template.html`. Post overview vars are in `blog/1/vars.yml`. Post content is in markdown format in `blog/1/body.md` with some style post processing with enlive.
+
+```clojure
+(require '[clojure.string :as string])
+
+(def words-per-minute 150)
+
+(defn word-count [data]
+  (-> data
+      (convert-to :html)
+      (string/replace #"<[^>]+>" " ")
+      string/trim
+      (string/split #"\s+")
+      count))
+
+(defn read-time-minutes [data]
+  (let [words (word-count data)]
+    (-> (/ words words-per-minute)
+        Math/ceil
+        int)))
+
+(let [body (markdown "body.md")
+      read-time (read-time-minutes body)]
+  (-> (mustache
+       "../template.html"
+       (assoc (yaml "vars.yml")
+              :read-time read-time
+              :body (-> body
+                        (enlive/at [:img] (enlive/add-class "image" "fit")
+                                   [:pre] (enlive/set-attr "style" "border-radius:8px;margin-bottom:32px;")
+                                   [:code] (enlive/set-attr "style" "adding:0px;"))
+                        (convert-to :html))))
+      (enlive/at [:img.blog-splash] (enlive/add-class "image" "fit"))))
+```
+
 ## Thanks
 
 `bootleg` leverages other people's amazing work. The following projects and people enable this to exist at all.
