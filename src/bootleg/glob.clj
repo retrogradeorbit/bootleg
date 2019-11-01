@@ -1,7 +1,7 @@
 (ns bootleg.glob
-  (:require [clojure.string :as string]
-            [clojure.java.io :as io])
-  (:import [java.nio.file Paths]))
+  (:require [bootleg.file :as file]
+            [clojure.string :as string]
+            [clojure.java.io :as io]))
 
 (defn bracket-processor [contents]
   (-> contents
@@ -110,19 +110,10 @@
 #_ (glob-files "." "./src/../../**/bootleg/*.clj")
 #_ (glob-files "." "**/foo/**/*.txt")
 
-(defn relativize [source target]
-  (let [source-parent (.getParent (io/as-file (.getAbsolutePath (io/as-file source))))
-        source-path (Paths/get (.toURI (io/as-file source-parent)))
-        target-path (Paths/get (.toURI (io/as-file target)))]
-    (-> source-path
-        (.relativize target-path)
-        .toFile
-        .getPath)))
-
 (defn glob [path pattern]
   (->> (glob-files path pattern)
        (map #(.getPath %))
-       (map (partial relativize path))
+       (map (partial file/relativise path))
        ))
 
 #_ (glob "." "**/foo/**/*.txt")
