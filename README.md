@@ -347,7 +347,7 @@ Loads and evaluates the clojure source from another file.
 
 Returns a sequence of files that match the globbing pattern `pattern`. Supports `*`, `**`, `?`, `[abc]`, `[a-z]`, `[!a]`
 
-```clojure
+```shell
 $ bootleg -d -e '(glob "**/*.y?l")'
 (".github/workflows/deploy.yml"
  ".circleci/config.yml"
