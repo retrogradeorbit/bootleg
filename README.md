@@ -345,7 +345,7 @@ Loads and evaluates the clojure source from another file.
 
 `(glob pattern)`
 
-Returns a sequence of files that match the globbing pattern `pattern`. Supports `*`, `**`, `?`, `[abc]`, `[a-z]`, `[!a]`
+Returns a sequence of files that match the globbing pattern `pattern`. Supports `*`, `**`, `?`, `[abc]`, `[a-z]`, `[!a]` and relative file paths `.` and `..`. File paths are returned relative to the directory of the executing file.
 
 ```shell
 $ bootleg -d -e '(glob "**/*.y?l")'
