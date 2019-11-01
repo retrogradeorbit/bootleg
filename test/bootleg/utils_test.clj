@@ -455,4 +455,20 @@
     (is (= (convert-to "<!DOCTYPE html>" :hickory) "<!DOCTYPE html>"))
     )
 
+  (testing "text seq conversions"
+    (is (= (convert-to ["text"] :html)
+           "text"))
+    (is (= (convert-to ["text"] :hiccup-seq)
+           ["text"]))
+    (is (= (convert-to ["text"] :hickory-seq)
+           ["text"]))
+    (is (= (convert-to ["text" "string"] :html)
+           "textstring"))
+    (is (= (convert-to ["text" "string"] :hiccup-seq)
+           ["text" "string"]))
+    (is (= (convert-to ["text" "string"] :hickory-seq)
+           ["text" "string"]))
+
+    )
+
   )

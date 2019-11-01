@@ -151,121 +151,122 @@
                  'hiccup-zip hickory.zip/hickory-zip
                  }
    'enlive {
-                            '*options* net.cgrand.enlive-html/*options*
-                            'ns-options net.cgrand.enlive-html/ns-options
-                            'set-ns-options! net.cgrand.enlive-html/set-ns-options!
-                            'alter-ns-options! net.cgrand.enlive-html/alter-ns-options!
-                            'set-ns-parser! net.cgrand.enlive-html/set-ns-parser!
-                            'xml-parser net.cgrand.enlive-html/xml-parser
-                            'get-resource net.cgrand.enlive-html/get-resource
-                            'register-resource! net.cgrand.enlive-html/register-resource!
-                            'html-resource net.cgrand.enlive-html/html-resource
-                            'xml-resource net.cgrand.enlive-html/xml-resource
-                            'self-closing-tags net.cgrand.enlive-html/self-closing-tags
-                            'append! net.cgrand.enlive-html/append!
-                            'emit-tag net.cgrand.enlive-html/emit-tag
-                            'emit* net.cgrand.enlive-html/emit*
-                            'annotate net.cgrand.enlive-html/annotate
-                            'as-nodes net.cgrand.enlive-html/as-nodes
-                            'flatten-nodes-coll net.cgrand.enlive-html/flatten-nodes-coll
-                            'flatmap net.cgrand.enlive-html/flatmap
-                            'attr-values net.cgrand.enlive-html/attr-values
-                            'zip-pred net.cgrand.enlive-html/zip-pred
-                            'pred net.cgrand.enlive-html/pred
-                            'text-pred net.cgrand.enlive-html/text-pred
-                            're-pred net.cgrand.enlive-html/re-pred
-                            'whitespace net.cgrand.enlive-html/whitespace
-                            'any net.cgrand.enlive-html/any
-                            'tag= net.cgrand.enlive-html/tag=
-                            'id= net.cgrand.enlive-html/id=
-                            'attr-has net.cgrand.enlive-html/attr-has
-                            'has-class net.cgrand.enlive-html/has-class
-                            'intersection net.cgrand.enlive-html/intersection
-                            'union net.cgrand.enlive-html/union
-                            'cacheable net.cgrand.enlive-html/cacheable
-                            'cacheable? net.cgrand.enlive-html/cacheable?
-                            'fragment-selector? net.cgrand.enlive-html/fragment-selector?
-                            'node-selector? net.cgrand.enlive-html/node-selector?
-                            'transform net.cgrand.enlive-html/transform
-                            'lockstep-transform net.cgrand.enlive-html/lockstep-transform
-                            'at* net.cgrand.enlive-html/at*
-                            'zip-select-nodes* net.cgrand.enlive-html/zip-select-nodes*
-                            'select-nodes* net.cgrand.enlive-html/select-nodes*
-                            'zip-select-fragments* net.cgrand.enlive-html/zip-select-fragments*
-                            'select-fragments* net.cgrand.enlive-html/select-fragments*
-                            'select net.cgrand.enlive-html/select
-                            'zip-select net.cgrand.enlive-html/zip-select
-                            'content net.cgrand.enlive-html/content
-                            'html-snippet net.cgrand.enlive-html/html-snippet
-                            'html-content net.cgrand.enlive-html/html-content
-                            'wrap net.cgrand.enlive-html/wrap
-                            'unwrap net.cgrand.enlive-html/unwrap
-                            'replace-vars net.cgrand.enlive-html/replace-vars
-                            'replace-words net.cgrand.enlive-html/replace-words
-                            'set-attr net.cgrand.enlive-html/set-attr
-                            'remove-attr net.cgrand.enlive-html/remove-attr
-                            'add-class net.cgrand.enlive-html/add-class
-                            'remove-class net.cgrand.enlive-html/remove-class
-                            'do-> net.cgrand.enlive-html/do->
-                            'append net.cgrand.enlive-html/append
-                            'prepend net.cgrand.enlive-html/prepend
-                            'after net.cgrand.enlive-html/after
-                            'before net.cgrand.enlive-html/before
-                            'substitute net.cgrand.enlive-html/substitute
-                            'move net.cgrand.enlive-html/move
-                            'strict-mode* net.cgrand.enlive-html/strict-mode*
-                            'attr? net.cgrand.enlive-html/attr?
-                            'attr= net.cgrand.enlive-html/attr=
-                            'attr-starts net.cgrand.enlive-html/attr-starts
-                            'attr-ends net.cgrand.enlive-html/attr-ends
-                            'attr-contains net.cgrand.enlive-html/attr-contains
-                            'attr|= net.cgrand.enlive-html/attr|=
-                            'root net.cgrand.enlive-html/root
-                            'nth-child net.cgrand.enlive-html/nth-child
-                            'nth-last-child net.cgrand.enlive-html/nth-last-child
-                            'nth-of-type net.cgrand.enlive-html/nth-of-type
-                            'nth-last-of-type net.cgrand.enlive-html/nth-last-of-type
-                            'first-child net.cgrand.enlive-html/first-child
-                            'last-child net.cgrand.enlive-html/last-child
-                            'first-of-type net.cgrand.enlive-html/first-of-type
-                            'last-of-type net.cgrand.enlive-html/last-of-type
-                            'only-child net.cgrand.enlive-html/only-child
-                            'only-of-type net.cgrand.enlive-html/only-of-type
-                            'void net.cgrand.enlive-html/void
-                            'odd net.cgrand.enlive-html/odd
-                            'even net.cgrand.enlive-html/even
-                            'has net.cgrand.enlive-html/has
-                            'but-node net.cgrand.enlive-html/but-node
-                            'but net.cgrand.enlive-html/but
-                            'left net.cgrand.enlive-html/left
-                            'lefts net.cgrand.enlive-html/lefts
-                            'right net.cgrand.enlive-html/right
-                            'rights net.cgrand.enlive-html/rights
-                            'any-node net.cgrand.enlive-html/any-node
-                            'this-node net.cgrand.enlive-html/this-node
-                            'text-node net.cgrand.enlive-html/text-node
-                            'comment-node net.cgrand.enlive-html/comment-node
-                            'text net.cgrand.enlive-html/text
-                            'texts net.cgrand.enlive-html/texts
-                            'sniptest* net.cgrand.enlive-html/sniptest*
-                            'html net.cgrand.enlive-html/html
+            '*options* net.cgrand.enlive-html/*options*
+            'ns-options net.cgrand.enlive-html/ns-options
+            'set-ns-options! net.cgrand.enlive-html/set-ns-options!
+            'alter-ns-options! net.cgrand.enlive-html/alter-ns-options!
+            'set-ns-parser! net.cgrand.enlive-html/set-ns-parser!
+            'xml-parser net.cgrand.enlive-html/xml-parser
+            'get-resource net.cgrand.enlive-html/get-resource
+            'register-resource! net.cgrand.enlive-html/register-resource!
+            'html-resource net.cgrand.enlive-html/html-resource
+            'xml-resource net.cgrand.enlive-html/xml-resource
+            'self-closing-tags net.cgrand.enlive-html/self-closing-tags
+            'append! net.cgrand.enlive-html/append!
+            'emit-tag net.cgrand.enlive-html/emit-tag
+            'emit* net.cgrand.enlive-html/emit*
+            'annotate net.cgrand.enlive-html/annotate
+            'as-nodes net.cgrand.enlive-html/as-nodes
+            'flatten-nodes-coll net.cgrand.enlive-html/flatten-nodes-coll
+            'flatmap net.cgrand.enlive-html/flatmap
+            'attr-values net.cgrand.enlive-html/attr-values
+            'zip-pred net.cgrand.enlive-html/zip-pred
+            'pred net.cgrand.enlive-html/pred
+            'text-pred net.cgrand.enlive-html/text-pred
+            're-pred net.cgrand.enlive-html/re-pred
+            'whitespace net.cgrand.enlive-html/whitespace
+            'any net.cgrand.enlive-html/any
+            'tag= net.cgrand.enlive-html/tag=
+            'id= net.cgrand.enlive-html/id=
+            'attr-has net.cgrand.enlive-html/attr-has
+            'has-class net.cgrand.enlive-html/has-class
+            'intersection net.cgrand.enlive-html/intersection
+            'union net.cgrand.enlive-html/union
+            'cacheable net.cgrand.enlive-html/cacheable
+            'cacheable? net.cgrand.enlive-html/cacheable?
+            'fragment-selector? net.cgrand.enlive-html/fragment-selector?
+            'node-selector? net.cgrand.enlive-html/node-selector?
+            'transform net.cgrand.enlive-html/transform
+            'lockstep-transform net.cgrand.enlive-html/lockstep-transform
+            'at* net.cgrand.enlive-html/at*
+            'zip-select-nodes* net.cgrand.enlive-html/zip-select-nodes*
+            'select-nodes* net.cgrand.enlive-html/select-nodes*
+            'zip-select-fragments* net.cgrand.enlive-html/zip-select-fragments*
+            'select-fragments* net.cgrand.enlive-html/select-fragments*
+            'select net.cgrand.enlive-html/select
+            'zip-select net.cgrand.enlive-html/zip-select
+            'content* net.cgrand.enlive-html/content
+            'html-snippet net.cgrand.enlive-html/html-snippet
+            'html-content net.cgrand.enlive-html/html-content
+            'content enlive/content
+            'wrap net.cgrand.enlive-html/wrap
+            'unwrap net.cgrand.enlive-html/unwrap
+            'replace-vars net.cgrand.enlive-html/replace-vars
+            'replace-words net.cgrand.enlive-html/replace-words
+            'set-attr net.cgrand.enlive-html/set-attr
+            'remove-attr net.cgrand.enlive-html/remove-attr
+            'add-class net.cgrand.enlive-html/add-class
+            'remove-class net.cgrand.enlive-html/remove-class
+            'do-> net.cgrand.enlive-html/do->
+            'append net.cgrand.enlive-html/append
+            'prepend net.cgrand.enlive-html/prepend
+            'after net.cgrand.enlive-html/after
+            'before net.cgrand.enlive-html/before
+            'substitute net.cgrand.enlive-html/substitute
+            'move net.cgrand.enlive-html/move
+            'strict-mode* net.cgrand.enlive-html/strict-mode*
+            'attr? net.cgrand.enlive-html/attr?
+            'attr= net.cgrand.enlive-html/attr=
+            'attr-starts net.cgrand.enlive-html/attr-starts
+            'attr-ends net.cgrand.enlive-html/attr-ends
+            'attr-contains net.cgrand.enlive-html/attr-contains
+            'attr|= net.cgrand.enlive-html/attr|=
+            'root net.cgrand.enlive-html/root
+            'nth-child net.cgrand.enlive-html/nth-child
+            'nth-last-child net.cgrand.enlive-html/nth-last-child
+            'nth-of-type net.cgrand.enlive-html/nth-of-type
+            'nth-last-of-type net.cgrand.enlive-html/nth-last-of-type
+            'first-child net.cgrand.enlive-html/first-child
+            'last-child net.cgrand.enlive-html/last-child
+            'first-of-type net.cgrand.enlive-html/first-of-type
+            'last-of-type net.cgrand.enlive-html/last-of-type
+            'only-child net.cgrand.enlive-html/only-child
+            'only-of-type net.cgrand.enlive-html/only-of-type
+            'void net.cgrand.enlive-html/void
+            'odd net.cgrand.enlive-html/odd
+            'even net.cgrand.enlive-html/even
+            'has net.cgrand.enlive-html/has
+            'but-node net.cgrand.enlive-html/but-node
+            'but net.cgrand.enlive-html/but
+            'left net.cgrand.enlive-html/left
+            'lefts net.cgrand.enlive-html/lefts
+            'right net.cgrand.enlive-html/right
+            'rights net.cgrand.enlive-html/rights
+            'any-node net.cgrand.enlive-html/any-node
+            'this-node net.cgrand.enlive-html/this-node
+            'text-node net.cgrand.enlive-html/text-node
+            'comment-node net.cgrand.enlive-html/comment-node
+            'text net.cgrand.enlive-html/text
+            'texts net.cgrand.enlive-html/texts
+            'sniptest* net.cgrand.enlive-html/sniptest*
+            'html net.cgrand.enlive-html/html
 
-                            ;; macros
-                            'at (with-meta enlive/at {:sci/macro true})
-                            'transformation (with-meta enlive/transformation {:sci/macro true})
-                            'lockstep-transformation (with-meta enlive/lockstep-transformation {:sci/macro true})
-                            'snippet* (with-meta enlive/snippet* {:sci/macro true})
-                            'snippet (with-meta enlive/snippet {:sci/macro true})
-                            'template (with-meta enlive/template {:sci/macro true})
-                            'defsnippet (with-meta enlive/defsnippet {:sci/macro true})
-                            'deftemplate (with-meta enlive/deftemplate {:sci/macro true})
-                            'defsnippets (with-meta enlive/defsnippets {:sci/macro true})
-                            'transform-content (with-meta enlive/transform-content {:sci/macro true})
-                            'clone-for (with-meta enlive/clone-for {:sci/macro true})
-                            'strict-mode (with-meta enlive/strict-mode {:sci/macro true})
-                            'let-select (with-meta enlive/let-select {:sci/macro true})
-                            'sniptest (with-meta enlive/sniptest {:sci/macro true})
-                            }
+            ;; macros
+            'at (with-meta enlive/at {:sci/macro true})
+            'transformation (with-meta enlive/transformation {:sci/macro true})
+            'lockstep-transformation (with-meta enlive/lockstep-transformation {:sci/macro true})
+            'snippet* (with-meta enlive/snippet* {:sci/macro true})
+            'snippet (with-meta enlive/snippet {:sci/macro true})
+            'template (with-meta enlive/template {:sci/macro true})
+            'defsnippet (with-meta enlive/defsnippet {:sci/macro true})
+            'deftemplate (with-meta enlive/deftemplate {:sci/macro true})
+            'defsnippets (with-meta enlive/defsnippets {:sci/macro true})
+            'transform-content (with-meta enlive/transform-content {:sci/macro true})
+            'clone-for (with-meta enlive/clone-for {:sci/macro true})
+            'strict-mode (with-meta enlive/strict-mode {:sci/macro true})
+            'let-select (with-meta enlive/let-select {:sci/macro true})
+            'sniptest (with-meta enlive/sniptest {:sci/macro true})
+            }
 
    'net.cgrand.enlive-html {
                             '*options* net.cgrand.enlive-html/*options*
@@ -312,7 +313,7 @@
                             'select-fragments* net.cgrand.enlive-html/select-fragments*
                             'select net.cgrand.enlive-html/select
                             'zip-select net.cgrand.enlive-html/zip-select
-                            'content net.cgrand.enlive-html/content
+                            'content* net.cgrand.enlive-html/content
                             'html-snippet net.cgrand.enlive-html/html-snippet
                             'html-content net.cgrand.enlive-html/html-content
                             'wrap net.cgrand.enlive-html/wrap
@@ -324,11 +325,11 @@
                             'add-class net.cgrand.enlive-html/add-class
                             'remove-class net.cgrand.enlive-html/remove-class
                             'do-> net.cgrand.enlive-html/do->
-                            'append net.cgrand.enlive-html/append
-                            'prepend net.cgrand.enlive-html/prepend
-                            'after net.cgrand.enlive-html/after
-                            'before net.cgrand.enlive-html/before
-                            'substitute net.cgrand.enlive-html/substitute
+                            'append* net.cgrand.enlive-html/append
+                            'prepend* net.cgrand.enlive-html/prepend
+                            'after* net.cgrand.enlive-html/after
+                            'before* net.cgrand.enlive-html/before
+                            'substitute* net.cgrand.enlive-html/substitute
                             'move net.cgrand.enlive-html/move
                             'strict-mode* net.cgrand.enlive-html/strict-mode*
                             'attr? net.cgrand.enlive-html/attr?
@@ -382,6 +383,13 @@
                             'strict-mode (with-meta enlive/strict-mode {:sci/macro true})
                             'let-select (with-meta enlive/let-select {:sci/macro true})
                             'sniptest (with-meta enlive/sniptest {:sci/macro true})
+
+                            'content enlive/content
+                            'append enlive/append
+                            'prepend enlive/prepend
+                            'after enlive/after
+                            'before enlive/before
+                            'substitute enlive/substitute
                             }
 
    'net.cgrand.jsoup {'parser net.cgrand.jsoup/parser}

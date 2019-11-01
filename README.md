@@ -435,11 +435,11 @@ Convert any supported input format passed into `data` to html output. Same as `(
 
 ### Enlive Processing
 
-Enlive html functions are to be found in the `enlive` namespace. The enlive macros are not supported (`deftemplate`, `defsnippet`, `clone-for`). A reimplementation of `at` is supplied that provides automatic type coercion for the inputs and outputs.
+Enlive html functions are to be found in the `enlive` namespace. A new version of `at` is supplied that provides automatic type coercion for the inputs and outputs.
 
 In addition to this the standard enlive namespaces are available in their usual locations:
 
- * net.cgrand.enlive-html (but does not include macros)
+ * net.cgrand.enlive-html
  * net.cgrand.jsoup
  * net.cgrand.tagsoup
  * net.cgrand.xml
@@ -450,13 +450,19 @@ In addition to this the standard enlive namespaces are available in their usual 
 
 Take the markup `data` and process every element matching `selector` through the transform `transform`
 
+#### deftemplate
+
+#### defsnippet
+
 ### Enlive Transforms
 
 #### content
 
 `(content & values)`
 
-Replaces the content of the element. Values can be hickory nodes, collection of hikory nodes, or plain text strings.
+Replaces the content of the element. Values can be any supported formats: hickory, hickory-seq, hiccup, hiccup-seq or html.
+
+** note: ** This is different to the standard enlive `content` function. The standard function is present as `content*`. Passing html to `content` will embed that markup in the output. In contrast, passing html to `content*` will insert that html in an escaped form.
 
 #### html-snippet
 
@@ -468,7 +474,7 @@ Concatenate values as a string and then parse it with tagsoup. html-snippet does
 
 `(html-content & values)`
 
-Replaces the content of the element. Values are strings containing html code.
+Replaces the content of the element. Values are strings containing html code. This is present for backwards compatibility. The new `content` function can take and embed html code and should be used instead.
 
 #### wrap
 
@@ -518,11 +524,15 @@ Chains (composes) several transformations. Applies functions from left to right.
 
 Appends the values to the content of the selected element. eg. `(append "xyz" a-node "abc")`
 
+Values can be any supported formats: hickory, hickory-seq, hiccup, hiccup-seq or html.
+
 #### prepend
 
 `(prepend & values)`
 
 Prepends the values to the content of the selected element. eg. `(prepend "xyz" a-node "abc")`
+
+Values can be any supported formats: hickory, hickory-seq, hiccup, hiccup-seq or html.
 
 #### after
 
@@ -530,11 +540,15 @@ Prepends the values to the content of the selected element. eg. `(prepend "xyz" 
 
 Inserts the values after the current selection (node or fragment). eg. `(after "xyz" a-node "abc")`
 
+Values can be any supported formats: hickory, hickory-seq, hiccup, hiccup-seq or html.
+
 #### before
 
 `(before & values)`
 
 Inserts the values before the current selection (node or fragment). eg. `(before "xyz" a-node "abc")`
+
+Values can be any supported formats: hickory, hickory-seq, hiccup, hiccup-seq or html.
 
 #### substitute
 
@@ -542,12 +556,51 @@ Inserts the values before the current selection (node or fragment). eg. `(before
 
 Replaces the current selection (node or fragment). eg. `(substitute "xyz" a-node "abc")`
 
+Values can be any supported formats: hickory, hickory-seq, hiccup, hiccup-seq or html.
+
 #### move
 
 `(move src-selector dest-selector)`
 `(src-selector dest-selector combiner)`
 
 Takes all nodes (under the current element) matched by src-selector, removes them and combines them with the elements matched by dest-selector. eg. `(move [:.footnote] [:#footnotes] content)`
+
+
+#### content*
+
+`(content* & values)`
+
+The original enlive content transformer. Replaces the content of the element. Values can be hickory nodes, collection of hikory nodes, or plain text strings.
+
+#### append*
+
+`(append* & values)`
+
+The original enlive append transformer. Appends the values to the content of the selected element. eg. `(append "xyz" a-node "abc")`
+
+#### prepend*
+
+`(prepend* & values)`
+
+The original enlive prepend transformer. Prepends the values to the content of the selected element. eg. `(prepend "xyz" a-node "abc")`
+
+#### after*
+
+`(after* & values)`
+
+The original enlive after transformer. Inserts the values after the current selection (node or fragment). eg. `(after "xyz" a-node "abc")`
+
+#### before*
+
+`(before* & values)`
+
+The original enlive before transformer. Inserts the values before the current selection (node or fragment). eg. `(before "xyz" a-node "abc")`
+
+#### substitute*
+
+`(substitute* & values)`
+
+The original enlive substitute transformer. Replaces the current selection (node or fragment). eg. `(substitute "xyz" a-node "abc")`
 
 ### Hickory
 
