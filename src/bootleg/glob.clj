@@ -90,6 +90,10 @@
 #_ (flatten (glob-walk (io/file ".") ["src" "bootle*"]))
 #_ (flatten (glob-walk (io/file ".") ["**" "bootleg" "*.clj"]))
 #_ (flatten (glob-walk (io/file ".") ["**" "*.clj"]))
+#_ (def fset (flatten (glob-walk (io/file ".") ["**" "foo" "**" "a.txt"])))
+#_ (count fset)
+#_ (count (distinct fset))
+
 
 (defn glob-files
   "walk the path for files matching glob and return
@@ -98,9 +102,9 @@
   (let [;; resolve . and .. into canonical path
         glob (.getCanonicalPath (io/file (io/as-file path) glob))
         sep (java.io.File/separator)
-        glob-parts (rest (string/split glob (re-pattern sep))) ]
-    (flatten (glob-walk (io/file "/") glob-parts)))
-  )
+        glob-parts (rest (string/split glob (re-pattern sep)))]
+    (distinct (flatten (glob-walk (io/file "/") glob-parts)))))
 
 #_ (glob-files "." "./src/../../*/*/bootleg/*.clj")
 #_ (glob-files "." "./src/../../**/bootleg/*.clj")
+#_ (glob-files "." "**/foo/**/*.txt")
