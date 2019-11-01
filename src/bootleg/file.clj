@@ -1,7 +1,8 @@
 (ns bootleg.file
   (:require [bootleg.context :as context]
             [clojure.java.io :as io]
-            [clojure.string :as string]))
+            [clojure.string :as string])
+  (:import [java.nio.file Paths]))
 
 (defn path-split
   "give a full path filename, return a tuple of
@@ -42,3 +43,15 @@
 
 (defn path-relative [filename]
   (path-join context/*path* filename))
+
+(defn relativise
+  "return the relative path that gets you from a working directory
+  `source` to the file or directory `target`"
+  [source target]
+  (let [source-parent (.getParent (io/as-file (.getAbsolutePath (io/as-file source))))
+        source-path (Paths/get (.toURI (io/as-file source-parent)))
+        target-path (Paths/get (.toURI (io/as-file target)))]
+    (-> source-path
+        (.relativize target-path)
+        .toFile
+        .getPath)))

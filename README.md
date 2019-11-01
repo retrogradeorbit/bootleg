@@ -339,6 +339,22 @@ $ bootleg -d -e '(html "<div><h1>heading</h1><p>body</p></div>" :data :hiccup)'
 
 Loads and evaluates the clojure source from another file.
 
+### Filesystem Functions
+
+#### glob
+
+`(glob pattern)`
+
+Returns a sequence of files that match the globbing pattern `pattern`. Supports `*`, `**`, `?`, `[abc]`, `[a-z]`, `[!a]`
+
+```shell
+$ bootleg -d -e '(glob "**/*.y?l")'
+(".github/workflows/deploy.yml"
+ ".circleci/config.yml"
+ "examples/quickstart/fields.yml"
+ "test/files/simple.yml")
+```
+
 ### Var Loading Functions
 
 #### yaml
@@ -612,6 +628,45 @@ The `hickory` namespaces are provided at their usual namespace locations.
  * hickory.select
  * hickory.utils
  * hickory.zip
+
+### Examples
+
+#### Blog post with reading time
+
+This file is in a directory `blog/1/index.clj` with a global page mustache template in `blog/template.html`. Post overview vars are in `blog/1/vars.yml`. Post content is in markdown format in `blog/1/body.md` with some style post processing with enlive.
+
+```clojure
+(require '[clojure.string :as string])
+
+(def words-per-minute 150)
+
+(defn word-count [data]
+  (-> data
+      (convert-to :html)
+      (string/replace #"<[^>]+>" " ")
+      string/trim
+      (string/split #"\s+")
+      count))
+
+(defn read-time-minutes [data]
+  (let [words (word-count data)]
+    (-> (/ words words-per-minute)
+        Math/ceil
+        int)))
+
+(let [body (markdown "body.md")
+      read-time (read-time-minutes body)]
+  (-> (mustache
+       "../template.html"
+       (assoc (yaml "vars.yml")
+              :read-time read-time
+              :body (-> body
+                        (enlive/at [:img] (enlive/add-class "image" "fit")
+                                   [:pre] (enlive/set-attr "style" "border-radius:8px;margin-bottom:32px;")
+                                   [:code] (enlive/set-attr "style" "adding:0px;"))
+                        (convert-to :html))))
+      (enlive/at [:img.blog-splash] (enlive/add-class "image" "fit"))))
+```
 
 ## Thanks
 
