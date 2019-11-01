@@ -9,6 +9,7 @@
             [bootleg.edn :as edn]
             [bootleg.namespaces :as namespaces]
             [bootleg.context :as context]
+            [bootleg.glob :as glob]
             [sci.core :as sci]
             [fipp.edn :refer [pprint]]))
 
@@ -34,6 +35,9 @@
               'yaml (partial yaml/load-yaml path)
               'json (partial json/load-json path)
               'edn (partial edn/load-edn path)
+
+              ;; directories and filenames
+              'glob (partial glob/glob path)
 
               ;; testing
               'is-hiccup? utils/is-hiccup?
