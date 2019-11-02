@@ -17,7 +17,7 @@
     (is (= (process-hiccup-data
             "test/files"
             "
-(selmer.parser/set-resource-path! \"/home/crispin/dev/epiccastle/bootleg/test/files/\")
+(selmer.parser/set-resource-path! \"../test/files/\")
 (selmer.parser/render-file \"test.selmer\" {:nums [1 2 3]})")
            "<div>\n<p>1</p><p>2</p><p>3</p>\n</div>"))
 
