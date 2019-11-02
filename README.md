@@ -300,6 +300,33 @@ $ bootleg -d -e '(mustache "<p>{{var1}}</p>" {:var1 "value 1"} :data :hiccup-seq
 ([:p {} "value 1"])
 ```
 
+#### selmer
+
+`(selmer source vars & options)`
+
+Load a selmer template from the file specified in `source` and render it substituting the vars from `vars`. `source` can be a local file path (relative to the executing hiccup file location) or a URL to gather the markdown from.
+
+Options can be used to alter the behaviour of the function. Options are a list of keywords and can be specified in any order after the source parameter. Options can be:
+
+ * `:data` Interpret the `source` argument as selmer data, not a file to load
+ * `:hiccup` Return the rendered selmer as hiccup
+ * `:hiccup-seq` Return the rendered selmer as a hiccup sequence data structure
+ * `:hickory` Return the rendered selmer as hickory
+ * `:hickory-seq` Return the rendered selmer as a hickory sequence data structure
+ * `:html` Return the rendered selmer as an html string
+
+eg.
+
+```clojure
+$ bootleg -e '(selmer "<p>Hello {{name|capitalize}}!</p>" {:name "world"} :data)'
+<p>Hello World!</p>
+```
+
+```clojure
+$ bootleg -d -e '(selmer "<p>Hello {{name|capitalize}}!</p>" {:name "world"} :data :hiccup-seq)'
+([:p {} "Hello World!"])
+```
+
 #### slurp
 
 `(slurp source)`
