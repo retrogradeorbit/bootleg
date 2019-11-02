@@ -15,10 +15,11 @@
 
                  [cljstache "2.0.4"]
                  [enlive "1.1.6"]
+                 [hickory "0.7.1"]
+                 [selmer "1.12.17"]
 
                  ;; for hiccup eval
                  [borkdude/sci "0.0.11-alpha.2"]
-                 [hickory "0.7.1"]
 
                  ;; clojures pprint doesn't work under graal native-image
                  [fipp "0.6.21"]
