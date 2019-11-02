@@ -1,6 +1,7 @@
 (ns bootleg.namespaces
   (:require [bootleg.utils :as utils]
             [bootleg.enlive :as enlive]
+            [bootleg.selmer :as selmer]
             [hickory.convert]
             [hickory.hiccup-utils]
             [hickory.render]
@@ -427,8 +428,6 @@
                           'filter-str->fn selmer.filter-parser/filter-str->fn
                           'safe-filter selmer.filter-parser/safe-filter
                           'literal? selmer.filter-parser/literal?
-                          ;;'parse-literal selmer.filter-parser/parse-literal
-                          ;;'apply-filters selmer.filter-parser/apply-filters
                           'get-accessor selmer.filter-parser/get-accessor
                           'split-value selmer.filter-parser/split-value
                           'compile-filter-body selmer.filter-parser/compile-filter-body
@@ -454,8 +453,6 @@
 
    'selmer.node {
                  'INode selmer.node/INode
-                 ;;'FunctionNode selmer.node/FunctionNode
-                 ;;'TextNode selmer.node/TextNode
                  }
 
    'selmer.parser {
@@ -482,11 +479,10 @@
                    'parse-input selmer.parser/parse-input
                    'parse-file selmer.parser/parse-file
                    'parse selmer.parser/parse
-                   ;;'parse-variables selmer.parser/parse-variables
                    'known-variables selmer.parser/known-variables
 
                    ;; macros
-                   ;;add-tag!
+                   'add-tag! (with-meta selmer/add-tag! {:sci/macro true})
                    }
 
    'selmer.tags {
@@ -600,10 +596,10 @@
                  'parse-accessor selmer.util/parse-accessor
 
                  ;; macro
-                 ;; exception
-                 ;; with-escaping
-                 ;; without-escaping
-                 ;; ->buf
+                 'exception (with-meta selmer/exception {:sci/macro true})
+                 'with-escaping (with-meta selmer/with-escaping {:sci/macro true})
+                 'without-escaping (with-meta selmer/without-escaping {:sci/macro true})
+                 '->buf (with-meta selmer/->buf {:sci/macro true})
                  }
 
    'selmer.validator {
