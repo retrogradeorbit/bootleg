@@ -3,6 +3,7 @@
             [bootleg.utils :as utils]
             [bootleg.markdown :as markdown]
             [bootleg.mustache :as mustache]
+            [bootleg.selmer :as selmer]
             [bootleg.html :as html]
             [bootleg.yaml :as yaml]
             [bootleg.json :as json]
@@ -30,6 +31,7 @@
               'slurp #(slurp (file/input-stream path %))
               'html (html/make-html-fn path)
               'hiccup (partial process-hiccup path)
+              'selmer selmer/selmer
 
               ;; vars files
               'yaml (partial yaml/load-yaml path)
