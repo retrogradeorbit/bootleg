@@ -631,8 +631,7 @@
                   }
 
    ;; https://github.com/borkdude/sci/issues/124
-   'extra-core {
-                'find-ns (fn [_] 'user)
-                'doall doall
-                }
+   'clojure.core {
+                 'find-ns (fn [_] 'user)
+                 }
    })

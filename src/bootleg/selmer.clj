@@ -8,25 +8,25 @@
 ;; (add-tag! :joined (fn [args context-map] (clojure.string/join "," args)))
 (defn add-tag!
   "tag name, fn handler, and maybe tags "
-  [k handler & tags]
+  [_ _ k handler & tags]
   `(do
      (selmer.parser/set-closing-tags! ~k ~@tags)
      (swap! selmer.tags/expr-tags assoc ~k (selmer.parser/tag-handler ~handler ~k ~@tags))))
 
-(defn exception [& [param & more :as params]]
+(defn exception [_ _ & [param & more :as params]]
   (if (class? param)
     `(throw (new ~param (str ~@more)))
     `(throw (Exception. (str ~@params)))))
 
-(defn with-escaping [& body]
+(defn with-escaping [_ _ & body]
   `(binding [selmer.util/*escape-variables* true]
      ~@body))
 
-(defn without-escaping [& body]
+(defn without-escaping [_ _ & body]
   `(binding [selmer.util/*escape-variables* false]
      ~@body))
 
-(defn ->buf [[buf] & body]
+(defn ->buf [_ _ [buf] & body]
   `(let [~buf (StringBuilder.)]
      (do ~@body)
      (.toString ~buf)))
