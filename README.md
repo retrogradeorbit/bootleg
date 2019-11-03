@@ -507,7 +507,19 @@ Take the markup `data` and process every element matching `selector` through the
 
 #### deftemplate
 
+`(deftemplate name source args & forms)`
+
+Defines a template as a function that returns a *hiccup-seq*.
+
+** Note ** the original deftemplate returned a sequence of strings
+
 #### defsnippet
+
+`(defsnippet name source selector args & forms)`
+
+Define a named snippet -- equivalent to (def name (snippet source selector args ...)).
+
+Returns a hickory-seq on nodes.
 
 ### Enlive Transforms
 
