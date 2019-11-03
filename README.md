@@ -281,12 +281,12 @@ Load a mustache template from the file specified in `source` and render it subst
 
 Options can be used to alter the behaviour of the function. Options are a list of keywords and can be specified in any order after the source parameter. Options can be:
 
- * `:data` Interpret the `source` argument as markdown data, not a file to load
- * `:hiccup` Return the rendered markdown as hiccup
- * `:hiccup-seq` Return the rendered markdown as a hiccup sequence data structure
- * `:hickory` Return the rendered markdown as hickory
- * `:hickory-seq` Return the rendered markdown as a hickory sequence data structure
- * `:html` Return the rendered markdown as an html string
+ * `:data` Interpret the `source` argument as mustache data, not a file to load
+ * `:hiccup` Return the rendered mustache as hiccup
+ * `:hiccup-seq` Return the rendered mustache as a hiccup sequence data structure
+ * `:hickory` Return the rendered mustache as hickory
+ * `:hickory-seq` Return the rendered mustache as a hickory sequence data structure
+ * `:html` Return the rendered mustache as an html string
 
 eg.
 
@@ -299,6 +299,45 @@ $ bootleg -e '(mustache "<p>{{var1}}</p><div>{{&var2}}</div>" {:var1 "value 1" :
 $ bootleg -d -e '(mustache "<p>{{var1}}</p>" {:var1 "value 1"} :data :hiccup-seq)'
 ([:p {} "value 1"])
 ```
+
+#### selmer
+
+`(selmer source vars & options)`
+
+Load a selmer template from the file specified in `source` and render it substituting the vars from `vars`. `source` can be a local file path (relative to the executing hiccup file location) or a URL to gather the markdown from.
+
+Options can be used to alter the behaviour of the function. Options are a list of keywords and can be specified in any order after the source parameter. Options can be:
+
+ * `:data` Interpret the `source` argument as selmer data, not a file to load
+ * `:hiccup` Return the rendered selmer as hiccup
+ * `:hiccup-seq` Return the rendered selmer as a hiccup sequence data structure
+ * `:hickory` Return the rendered selmer as hickory
+ * `:hickory-seq` Return the rendered selmer as a hickory sequence data structure
+ * `:html` Return the rendered selmer as an html string
+
+eg.
+
+```clojure
+$ bootleg -e '(selmer "<p>Hello {{name|capitalize}}!</p>" {:name "world"} :data)'
+<p>Hello World!</p>
+```
+
+```clojure
+$ bootleg -d -e '(selmer "<p>Hello {{name|capitalize}}!</p>" {:name "world"} :data :hiccup-seq)'
+([:p {} "Hello World!"])
+```
+
+The `selmer` namespaces are also provided at their usual namespace locations.
+
+ * selmer.filter-parser
+ * selmer.filters
+ * selmer.middleware
+ * selmer.node
+ * selmer.parser
+ * selmer.tags
+ * selmer.template-parser
+ * selmer.util
+ * selmer.validator
 
 #### slurp
 
@@ -672,10 +711,11 @@ This file is in a directory `blog/1/index.clj` with a global page mustache templ
 
 `bootleg` leverages other people's amazing work. The following projects and people enable this to exist at all.
 
+ * [Michiel Borkent](https://www.michielborkent.nl/) built [Sci](https://github.com/borkdude/sci)
  * [James Reeves](https://www.booleanknot.com/) built [Hiccup](https://github.com/weavejester/hiccup)
  * [Christophe Grand](http://clj-me.cgrand.net/) built [Enlive](https://github.com/cgrand/enlive)
  * [David Santiago](https://github.com/davidsantiago) built [Hickory](https://github.com/davidsantiago/hickory)
- * [Michiel Borkent](https://www.michielborkent.nl/) built [Sci](https://github.com/borkdude/sci)
+ * [Dmitri Sotnikov](https://yogthos.net/) built [Selmer](https://github.com/yogthos/Selmer)
 
 ## License
 

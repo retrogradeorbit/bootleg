@@ -1,6 +1,7 @@
 (ns bootleg.namespaces
   (:require [bootleg.utils :as utils]
             [bootleg.enlive :as enlive]
+            [bootleg.selmer :as selmer]
             [hickory.convert]
             [hickory.hiccup-utils]
             [hickory.render]
@@ -12,6 +13,15 @@
             [net.cgrand.reload]
             [net.cgrand.tagsoup]
             [net.cgrand.xml]
+            [selmer.filter-parser]
+            [selmer.filters]
+            [selmer.middleware]
+            [selmer.node]
+            [selmer.parser]
+            [selmer.tags]
+            [selmer.template-parser]
+            [selmer.util]
+            [selmer.validator]
             [sci.core :as sci]
             [clojure.walk]))
 
@@ -408,6 +418,205 @@
                     'startparse-sax net.cgrand.xml/startparse-sax
                     'parse net.cgrand.xml/parse
                     }
+
+   'selmer.filter-parser {
+                          'escape-html* selmer.filter-parser/escape-html*
+                          'strip-doublequotes selmer.filter-parser/strip-doublequotes
+                          'escape-html selmer.filter-parser/escape-html
+                          'fix-filter-args selmer.filter-parser/fix-filter-args
+                          'lookup-args selmer.filter-parser/lookup-args
+                          'filter-str->fn selmer.filter-parser/filter-str->fn
+                          'safe-filter selmer.filter-parser/safe-filter
+                          'literal? selmer.filter-parser/literal?
+                          'get-accessor selmer.filter-parser/get-accessor
+                          'split-value selmer.filter-parser/split-value
+                          'compile-filter-body selmer.filter-parser/compile-filter-body
+                          }
+
+   'selmer.filters {
+                    'valid-date-formats selmer.filters/valid-date-formats
+                    'fix-date selmer.filters/fix-date
+                    'parse-number selmer.filters/parse-number
+                    'throw-when-expecting-seqable selmer.filters/throw-when-expecting-seqable
+                    'throw-when-expecting-number selmer.filters/throw-when-expecting-number
+                    'filters selmer.filters/filters
+                    'get-filter selmer.filters/get-filter
+                    'call-filter selmer.filters/call-filter
+                    'add-filter! selmer.filters/add-filter!
+                    'remove-filter! selmer.filters/remove-filter!
+                    }
+
+   'selmer.middleware {
+                       'handle-template-parsing-error selmer.middleware/handle-template-parsing-error
+                       'wrap-error-page selmer.middleware/wrap-error-page
+                       }
+
+   'selmer.node {
+                 'INode selmer.node/INode
+                 }
+
+   'selmer.parser {
+                   'templates selmer.parser/templates
+                   'cache? selmer.parser/cache?
+                   'cache-on! selmer.parser/cache-on!
+                   'cache-off! selmer.parser/cache-off!
+                   'set-resource-path! selmer.parser/set-resource-path!
+                   'update-tag selmer.parser/update-tag
+                   'set-closing-tags! selmer.parser/set-closing-tags!
+                   'remove-tag! selmer.parser/remove-tag!
+                   'render-template selmer.parser/render-template
+                   'render selmer.parser/render
+                   'render-file selmer.parser/render-file
+                   'expr-tag selmer.parser/expr-tag
+                   'filter-tag selmer.parser/filter-tag
+                   'parse-tag selmer.parser/parse-tag
+                   'append-node selmer.parser/append-node
+                   'update-tags selmer.parser/update-tags
+                   'tag-content selmer.parser/tag-content
+                   'skip-short-comment-tag selmer.parser/skip-short-comment-tag
+                   'add-node selmer.parser/add-node
+                   'parse* selmer.parser/parse*
+                   'parse-input selmer.parser/parse-input
+                   'parse-file selmer.parser/parse-file
+                   'parse selmer.parser/parse
+                   'known-variables selmer.parser/known-variables
+
+                   ;; macros
+                   'add-tag! (with-meta selmer/add-tag! {:sci/macro true})
+                   }
+
+   'selmer.tags {
+                 'create-value-mappings selmer.tags/create-value-mappings
+                 'aggregate-args selmer.tags/aggregate-args
+                 'compile-filters selmer.tags/compile-filters
+                 'apply-filters selmer.tags/apply-filters
+                 'for-handler selmer.tags/for-handler
+                 'render-if selmer.tags/render-if
+                 'if-result selmer.tags/if-result
+                 'if-default-handler selmer.tags/if-default-handler
+                 'match-comparator selmer.tags/match-comparator
+                 ;;'num? selmer.tags/num?
+                 'parse-numeric-params selmer.tags/parse-numeric-params
+                 'render-if-numeric selmer.tags/render-if-numeric
+                 'if-numeric-handler selmer.tags/if-numeric-handler
+                 'render-if-any-all selmer.tags/render-if-any-all
+                 'if-handler selmer.tags/if-handler
+                 'compare-tag selmer.tags/compare-tag
+                 'parse-eq-args selmer.tags/parse-eq-args
+                 'ifequal-handler selmer.tags/ifequal-handler
+                 'ifunequal-handler selmer.tags/ifunequal-handler
+                 'block-handler selmer.tags/block-handler
+                 'sum-handler selmer.tags/sum-handler
+                 'now-handler selmer.tags/now-handler
+                 'comment-handler selmer.tags/comment-handler
+                 'first-of-handler selmer.tags/first-of-handler
+                 'read-verbatim selmer.tags/read-verbatim
+                 'verbatim-handler selmer.tags/verbatim-handler
+                 'compile-args selmer.tags/compile-args
+                 'with-handler selmer.tags/with-handler
+                 'script-handler selmer.tags/script-handler
+                 'style-handler selmer.tags/style-handler
+                 'cycle-handler selmer.tags/cycle-handler
+                 'safe-handler selmer.tags/safe-handler
+                 'debug-handler selmer.tags/debug-handler
+                 'expr-tags selmer.tags/expr-tags
+                 'closing-tags selmer.tags/closing-tags
+                 'render-tags selmer.tags/render-tags
+                 'tag-handler selmer.tags/tag-handler
+                 }
+
+   'selmer.template-parser {
+                            'get-tag-params selmer.template-parser/get-tag-params
+                            'parse-defaults selmer.template-parser/parse-defaults
+                            'split-include-tag selmer.template-parser/split-include-tag
+                            'string->reader selmer.template-parser/string->reader
+                            'insert-includes selmer.template-parser/insert-includes
+                            'get-parent selmer.template-parser/get-parent
+                            'write-tag? selmer.template-parser/write-tag?
+                            'consume-block selmer.template-parser/consume-block
+                            'rewrite-super selmer.template-parser/rewrite-super
+                            'read-block selmer.template-parser/read-block
+                            'process-block selmer.template-parser/process-block
+                            'wrap-in-expression-tag selmer.template-parser/wrap-in-expression-tag
+                            'wrap-in-variable-tag selmer.template-parser/wrap-in-variable-tag
+                            'trim-regex selmer.template-parser/trim-regex
+                            'trim-variable-tag selmer.template-parser/trim-variable-tag
+                            'trim-expression-tag selmer.template-parser/trim-expression-tag
+                            'to-expression-string selmer.template-parser/to-expression-string
+                            'add-default selmer.template-parser/add-default
+                            'try-add-default selmer.template-parser/try-add-default
+                            'add-defaults-to-variable-tag selmer.template-parser/add-defaults-to-variable-tag
+                            'add-defaults-to-expression-tag selmer.template-parser/add-defaults-to-expression-tag
+                            'get-template-path selmer.template-parser/get-template-path
+                            'read-template selmer.template-parser/read-template
+                            'preprocess-template selmer.template-parser/preprocess-template
+                            }
+
+   'selmer.util {
+                 'set-custom-resource-path! selmer.util/set-custom-resource-path!
+                 'turn-off-escaping! selmer.util/turn-off-escaping!
+                 'turn-on-escaping! selmer.util/turn-on-escaping!
+                 'pattern selmer.util/pattern
+                 'read-char selmer.util/read-char
+                 'assoc-in* selmer.util/assoc-in*
+                 '*tag-open* selmer.util/*tag-open*
+                 '*tag-close* selmer.util/*tag-close*
+                 '*filter-open* selmer.util/*filter-open*
+                 '*filter-close* selmer.util/*filter-close*
+                 '*tag-second* selmer.util/*tag-second*
+                 '*short-comment-second* selmer.util/*short-comment-second*
+                 '*tag-second-pattern* selmer.util/*tag-second-pattern*
+                 '*filter-open-pattern* selmer.util/*filter-open-pattern*
+                 '*filter-close-pattern* selmer.util/*filter-close-pattern*
+                 '*filter-pattern* selmer.util/*filter-pattern*
+                 '*tag-open-pattern* selmer.util/*tag-open-pattern*
+                 '*tag-close-pattern* selmer.util/*tag-close-pattern*
+                 '*tag-pattern* selmer.util/*tag-pattern*
+                 '*include-pattern* selmer.util/*include-pattern*
+                 '*extends-pattern* selmer.util/*extends-pattern*
+                 '*block-pattern* selmer.util/*block-pattern*
+                 '*block-super-pattern* selmer.util/*block-super-pattern*
+                 '*endblock-pattern* selmer.util/*endblock-pattern*
+                 '*tags* selmer.util/*tags*
+                 'check-tag-args selmer.util/check-tag-args
+                 'read-tag-info selmer.util/read-tag-info
+                 'peek-rdr selmer.util/peek-rdr
+                 'read-tag-content selmer.util/read-tag-content
+                 'open-tag? selmer.util/open-tag?
+                 'open-short-comment? selmer.util/open-short-comment?
+                 'split-by-args selmer.util/split-by-args
+                 'resource-path selmer.util/resource-path
+                 'resource-last-modified selmer.util/resource-last-modified
+                 'check-template-exists selmer.util/check-template-exists
+                 'default-missing-value-formatter selmer.util/default-missing-value-formatter
+                 '*missing-value-formatter* selmer.util/*missing-value-formatter*
+                 '*filter-missing-values* selmer.util/*filter-missing-values*
+                 'set-missing-value-formatter! selmer.util/set-missing-value-formatter!
+                 'fix-accessor selmer.util/fix-accessor
+                 'parse-accessor selmer.util/parse-accessor
+
+                 ;; macro
+                 'exception (with-meta selmer/exception {:sci/macro true})
+                 'with-escaping (with-meta selmer/with-escaping {:sci/macro true})
+                 'without-escaping (with-meta selmer/without-escaping {:sci/macro true})
+                 '->buf (with-meta selmer/->buf {:sci/macro true})
+                 }
+
+   'selmer.validator {
+                      'error-template selmer.validator/error-template
+                      'validate? selmer.validator/validate?
+                      'validate-on! selmer.validator/validate-on!
+                      'validate-off! selmer.validator/validate-off!
+                      'format-tag selmer.validator/format-tag
+                      'validation-error selmer.validator/validation-error
+                      'validate-filters selmer.validator/validate-filters
+                      'close-tags selmer.validator/close-tags
+                      'valide-tag selmer.validator/valide-tag
+                      'skip-verbatim-tags selmer.validator/skip-verbatim-tags
+                      'read-tag selmer.validator/read-tag
+                      'validate-tags selmer.validator/validate-tags
+                      'validate selmer.validator/validate
+                      }
 
    'clojure.walk {
                   'walk clojure.walk/walk

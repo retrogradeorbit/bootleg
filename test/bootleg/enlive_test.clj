@@ -1,6 +1,5 @@
 (ns bootleg.enlive-test
   (:require [clojure.test :refer :all]
-            [bootleg.enlive :refer :all]
             [bootleg.hiccup :refer :all]))
 
 (deftest transform-tests

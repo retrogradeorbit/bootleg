@@ -1,0 +1,3 @@
+<div>
+{% for n in nums %}<p>{{ n }}</p>{% endfor %}
+</div>
