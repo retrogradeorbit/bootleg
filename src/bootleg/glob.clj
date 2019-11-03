@@ -1,5 +1,6 @@
 (ns bootleg.glob
   (:require [bootleg.file :as file]
+            [bootleg.context :as context]
             [clojure.string :as string]
             [clojure.java.io :as io]))
 
@@ -101,9 +102,11 @@
 #_ (glob-files "." "./src/../../**/bootleg/*.clj")
 #_ (glob-files "." "**/foo/**/*.txt")
 
-(defn glob [path pattern]
-  (->> (glob-files path pattern)
-       (map #(.getPath %))
-       (map (partial file/relativise path))))
+(defn glob
+  ([pattern] (glob context/*path* pattern))
+  ([path pattern]
+   (->> (glob-files path pattern)
+        (map #(.getPath %))
+        (map (partial file/relativise path)))))
 
 #_ (glob "." "**/foo/**/*.txt")
