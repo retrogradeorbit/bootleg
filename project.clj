@@ -6,6 +6,7 @@
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/tools.cli "0.4.2"]
                  [org.clojure/data.json "0.2.6"]
+                 [clojure-term-colors "0.1.0"]
                  [markdown-clj "1.10.0"]
 
                  ;; https://github.com/owainlewis/yaml/issues/35
