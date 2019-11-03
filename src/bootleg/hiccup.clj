@@ -12,7 +12,8 @@
             [bootleg.context :as context]
             [bootleg.glob :as glob]
             [sci.core :as sci]
-            [fipp.edn :refer [pprint]]))
+            [fipp.edn :refer [pprint]]
+            [clojure.java.io :as io]))
 
 (defn load-file* [ctx file]
   (let [s (slurp file)]
@@ -26,20 +27,20 @@
              :bindings
              {
               ;; file loading
-              'markdown (markdown/make-markdown-fn path)
-              'mustache (mustache/make-mustache-fn path)
-              'slurp #(slurp (file/input-stream path %))
-              'html (html/make-html-fn path)
-              'hiccup (partial process-hiccup path)
+              'markdown markdown/markdown
+              'mustache mustache/mustache
+              'slurp #(-> % file/path-relative io/input-stream)
+              'html html/html
+              'hiccup process-hiccup
               'selmer selmer/selmer
 
               ;; vars files
-              'yaml (partial yaml/load-yaml path)
-              'json (partial json/load-json path)
-              'edn (partial edn/load-edn path)
+              'yaml yaml/load-yaml
+              'json json/load-json
+              'edn edn/load-edn
 
               ;; directories and filenames
-              'glob (partial glob/glob path)
+              'glob glob/glob
 
               ;; testing
               'is-hiccup? utils/is-hiccup?
@@ -65,8 +66,10 @@
                      ctx
                      (file/path-join path %))))))))
 
-(defn process-hiccup [path file]
-  (->> file
-       (file/path-join path)
-       slurp
-       (process-hiccup-data path)))
+(defn process-hiccup
+  ([file] (process-hiccup context/*path* file))
+  ([path file]
+   (->> file
+        (file/path-join path)
+        slurp
+        (process-hiccup-data path))))
