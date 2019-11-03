@@ -327,6 +327,18 @@ $ bootleg -d -e '(selmer "<p>Hello {{name|capitalize}}!</p>" {:name "world"} :da
 ([:p {} "Hello World!"])
 ```
 
+The `selmer` namespaces are also provided at their usual namespace locations.
+
+ * selmer.filter-parser
+ * selmer.filters
+ * selmer.middleware
+ * selmer.node
+ * selmer.parser
+ * selmer.tags
+ * selmer.template-parser
+ * selmer.util
+ * selmer.validator
+
 #### slurp
 
 `(slurp source)`
