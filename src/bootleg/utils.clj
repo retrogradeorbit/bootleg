@@ -4,8 +4,7 @@
             [hickory.render :as render]
             [hickory.convert :as convert]
             [clojure.walk :as walk]
-            [clojure.term.colors :as colors]
-            ))
+            [clojure.term.colors :as colors]))
 
 (defn- i-starts-with?
   "efficient case insensitive string start-with?"
