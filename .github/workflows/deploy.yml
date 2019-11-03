@@ -34,51 +34,51 @@ jobs:
         run: lein test
 
   # Use GraalVM on macOS to convert JAR to a native macOS binary
-  native-image-mac:
-    needs: [build-jar]
-    runs-on: macOS-10.14
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v1
-        with:
-          fetch-depth: 1
+  # native-image-mac:
+  #   needs: [build-jar]
+  #   runs-on: macOS-10.14
+  #   steps:
+  #     - name: Git checkout
+  #       uses: actions/checkout@v1
+  #       with:
+  #         fetch-depth: 1
 
-      - name: Parse Ref
-        id: parse-ref
-        run: |
-          echo ::set-output name=version::${GITHUB_REF#refs/tags/}
+  #     - name: Parse Ref
+  #       id: parse-ref
+  #       run: |
+  #         echo ::set-output name=version::${GITHUB_REF#refs/tags/}
 
-      - name: Setup java
-        uses: actions/setup-java@v1
-        with:
-          java-version: '9.0.4'
+  #     - name: Setup java
+  #       uses: actions/setup-java@v1
+  #       with:
+  #         java-version: '9.0.4'
 
-      - name: Setup clojure
-        uses: DeLaGuardo/setup-clojure@2.0
-        with:
-          tools-deps: '1.10.1.469'
+  #     - name: Setup clojure
+  #       uses: DeLaGuardo/setup-clojure@2.0
+  #       with:
+  #         tools-deps: '1.10.1.469'
 
-      - name: Parse Ref
-        id: parse-ref
-        run: |
-          echo ::set-output name=version::${GITHUB_REF#refs/tags/}
+  #     - name: Parse Ref
+  #       id: parse-ref
+  #       run: |
+  #         echo ::set-output name=version::${GITHUB_REF#refs/tags/}
 
-      # - uses: actions/download-artifact@v1
-      #   with:
-      #     name: jar
-      #     path: .
+  #     # - uses: actions/download-artifact@v1
+  #     #   with:
+  #     #     name: jar
+  #     #     path: .
 
-      - name: Prepare GraalVM
-        uses: DeLaGuardo/setup-graalvm@1.0
-        with:
-          graalvm-version: "19.2.1"
+  #     - name: Prepare GraalVM
+  #       uses: DeLaGuardo/setup-graalvm@1.0
+  #       with:
+  #         graalvm-version: "19.2.1"
 
-      - name: Install native-image
-        run: gu install native-image
+  #     - name: Install native-image
+  #       run: gu install native-image
 
-      - name: Run tests
-        run: lein test
+  #     - name: Run tests
+  #       run: lein test
 
-      - name: Build macOS native image
-        run: |
-          make copy-libs-to-resource clean all package-macos
+  #     - name: Build macOS native image
+  #       run: |
+  #         make copy-libs-to-resource clean all package-macos
