@@ -48,7 +48,7 @@
   "return the relative path that gets you from a working directory
   `source` to the file or directory `target`"
   [source target]
-  (let [source-path (Paths/get (.toURI (io/as-file source)))
+  (let [source-path (Paths/get (.toURI (io/as-file (.getCanonicalPath (io/as-file source)))))
         target-path (Paths/get (.toURI (io/as-file target)))]
     (-> source-path
         (.relativize target-path)
