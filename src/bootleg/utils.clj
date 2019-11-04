@@ -3,8 +3,7 @@
             [hickory.core :as hickory]
             [hickory.render :as render]
             [hickory.convert :as convert]
-            [clojure.walk :as walk]
-            [clojure.term.colors :as colors]))
+            [clojure.walk :as walk]))
 
 (defn- i-starts-with?
   "efficient case insensitive string start-with?"
@@ -205,11 +204,18 @@
     (every? string? data) :hiccup-seq
     :else nil))
 
+(defn- escape-code [n]
+  (str "\033[" n "m"))
+
 (defn warn-last [from to data]
   (when (< 1 (count data))
     (let [n (dec (count data))]
       (binding [*out* *err*]
-        (println (colors/yellow "Warning: converting markup from " from " to " to " lost " n " form" (when (< 1 n) "s"))))))
+        (println
+         (str
+          (escape-code 33)
+          "Warning: converting markup from " from " to " to " lost " n " form" (when (< 1 n) "s")
+          (escape-code 0))))))
   (last data))
 
 (def conversion-fns
