@@ -22,7 +22,7 @@
             [selmer.template-parser]
             [selmer.util]
             [selmer.validator]
-            [sci.core :as sci]
+            [edamame.core :refer [parse-string]]
             [clojure.walk]))
 
 (def namespaces
@@ -632,6 +632,8 @@
 
    ;; https://github.com/borkdude/sci/issues/124
    'clojure.core {
-                 'find-ns (fn [_] 'user)
+                  'find-ns (fn [_] 'user)
+                  'parse-string parse-string
+                  'parse-int #(Integer/parseInt %)
                  }
    })
