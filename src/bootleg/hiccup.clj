@@ -67,7 +67,10 @@
                      (file/path-join path %))))))))
 
 (defn process-hiccup
-  ([file] (process-hiccup context/*path* file))
+  ([file]
+   (let [fullpath (file/path-join context/*path* file)
+         [path file] (file/path-split fullpath)]
+     (process-hiccup path file)))
   ([path file]
    (->> file
         (file/path-join path)
