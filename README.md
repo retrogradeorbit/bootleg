@@ -236,6 +236,20 @@ html (or any type of xml) is represented internally as a string. This is a flexi
 
 The following functions are inbuilt into the clojure interpreter:
 
+### General
+
+#### pprint
+
+`(pprint form)`
+
+Pretty print to stdout the passed in form. If `--colour` is passed on command line then print with colour highlighting.
+
+#### parse-string
+
+`(parse-string string)`
+
+Parse the passed in string into a clojure type. Useful for converting strings to numbers, keywords, vectors or hashmaps. A binding of [edamame's](https://github.com/borkdude/edamame) `parse-string` is used for parsing.
+
 ### Markup Processing Functions
 
 #### markdown

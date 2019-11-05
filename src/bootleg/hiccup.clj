@@ -12,7 +12,6 @@
             [bootleg.context :as context]
             [bootleg.glob :as glob]
             [sci.core :as sci]
-            [fipp.edn :refer [pprint]]
             [clojure.java.io :as io]))
 
 (defn load-file* [ctx file]
@@ -52,10 +51,6 @@
               'convert-to utils/convert-to
               'markup-type utils/markup-type
               'as-html utils/as-html
-
-              ;; debug
-              'println println
-              'pprint pprint
               }}]
     (context/with-path path
       (-> data
