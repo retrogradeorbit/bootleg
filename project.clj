@@ -23,6 +23,7 @@
 
                  ;; clojures pprint doesn't work under graal native-image
                  [fipp "0.6.21"]
+                 [mvxcvi/puget "1.2.0"]
                  ]
   :main ^:skip-aot bootleg.core
   :target-path "target/%s"

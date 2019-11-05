@@ -23,7 +23,6 @@
             [selmer.util]
             [selmer.validator]
             [edamame.core :refer [parse-string]]
-            [fipp.edn :refer [pprint]]
             [clojure.walk]))
 
 (def namespaces
@@ -637,6 +636,6 @@
                   'parse-string parse-string
                   'parse-int #(Integer/parseInt %)
                   'println println
-                  'pprint pprint
+                  'pprint utils/pprint
                   }
    })

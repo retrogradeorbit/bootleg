@@ -1,9 +1,12 @@
 (ns bootleg.utils
-  (:require [clojure.string :as string]
+  (:require [bootleg.context :as context]
+            [clojure.string :as string]
             [hickory.core :as hickory]
             [hickory.render :as render]
             [hickory.convert :as convert]
-            [clojure.walk :as walk]))
+            [clojure.walk :as walk]
+            [fipp.edn :as fipp]
+            [puget.printer :as puget]))
 
 (defn- i-starts-with?
   "efficient case insensitive string start-with?"
@@ -205,7 +208,16 @@
     :else nil))
 
 (defn- escape-code [n]
-  (str "\033[" n "m"))
+  (str "\033[" (or n 0) "m"))
+
+(def colour-map
+  {:red 31
+   :yellow 33})
+
+(defn colour [& [colour-name]]
+  (if context/*colour*
+    (escape-code (colour-map colour-name))
+    ""))
 
 (defn warn-last [from to data]
   (when (< 1 (count data))
@@ -213,9 +225,9 @@
       (binding [*out* *err*]
         (println
          (str
-          (escape-code 33)
+          (colour :yellow)
           "Warning: converting markup from " from " to " to " lost " n " form" (when (< 1 n) "s")
-          (escape-code 0))))))
+          (colour))))))
   (last data))
 
 (def conversion-fns
@@ -277,3 +289,8 @@
   to html without throwing an error for one of them"
   [data]
   (convert-to data :html))
+
+(defn pprint [& forms]
+  (if context/*colour*
+    (apply puget/cprint forms)
+    (apply fipp/pprint forms)))

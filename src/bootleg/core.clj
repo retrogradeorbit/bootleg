@@ -3,10 +3,10 @@
             [bootleg.utils :as utils]
             [bootleg.hiccup :as hiccup]
             [bootleg.config :as config]
+            [bootleg.context :as context]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as string]
-            [clojure.java.io :as io]
-            [fipp.edn :refer [pprint]])
+            [clojure.java.io :as io])
   (:gen-class))
 
 (def version "0.1.5-SNAPSHOT")
@@ -19,6 +19,7 @@
    ["-d" "--data" "Output the rendered template as a clojure form instead of html"]
    ["-o" "--output FILE" "Write the output to the specified file instead of stdout"]
    ["-t" "--traceback" "Print the full exception traceback"]
+   ["-c" "--colour" "Print outputs in colour where appropriate"]
    ])
 
 (defn usage [options-summary]
@@ -40,7 +41,7 @@
               *out*)]
     (try
       (if (:data options)
-        (-> result (pprint {:writer out}))
+        (-> result (utils/pprint {:writer out}))
         (->> result utils/as-html (.write out)))
       (finally
         (if (:output options)
@@ -52,40 +53,46 @@
   [& args]
   (config/init!)
   (let [{:keys [options summary arguments]} (parse-opts args cli-options)]
-    (try
-      (cond
-        (:help options)
-        (println (usage summary))
+    (context/with-colour (:colour options)
+      (try
+        (cond
+          (:help options)
+          (println (usage summary))
 
-        (:version options)
-        (println "Version:" version)
+          (:version options)
+          (println "Version:" version)
 
-        (:evaluate options)
-        (let [result (->> options :evaluate (hiccup/process-hiccup-data "."))]
-          (output-result options result))
+          (:evaluate options)
+          (let [result (->> options :evaluate (hiccup/process-hiccup-data "."))]
+            (output-result options result))
 
-        (= 1 (count arguments))
-        (let [result (-> arguments first process)]
-          (output-result options result))
+          (= 1 (count arguments))
+          (let [result (-> arguments first process)]
+            (output-result options result))
 
-        :else
-        (println (usage summary)))
-      (catch java.io.FileNotFoundException e
-        (if (:traceback options)
-          (throw e)
-          (binding [*out* *err*]
-            (println
-             (str "bootleg: " (.getMessage e)))))
-        (System/exit 1))
-      (catch clojure.lang.ExceptionInfo e
-        (if (:traceback options)
-          (throw e)
-          (let [{:keys [type] :as data} (ex-data e)]
-            (if (= type :sci/error)
-              (let [{:keys [row col]} (ex-data e)
-                    message (.getMessage (.getCause e))]
-                (binding [*out* *err*]
-                  (println
-                   (str "bootleg: script error at line " row ", column " col ": " message))))
-              (throw e))))
-        (System/exit 2)))))
+          :else
+          (println (usage summary)))
+        (catch java.io.FileNotFoundException e
+          (if (:traceback options)
+            (throw e)
+            (binding [*out* *err*]
+              (println
+               (str (utils/colour :red)
+                    "bootleg: " (.getMessage e)
+                    (utils/colour)))))
+          (System/exit 1))
+        (catch clojure.lang.ExceptionInfo e
+          (if (:traceback options)
+            (throw e)
+            (let [{:keys [type] :as data} (ex-data e)]
+              (if (= type :sci/error)
+                (let [{:keys [row col]} (ex-data e)
+                      message (.getMessage (.getCause e))]
+                  (binding [*out* *err*]
+                    (println
+                     (str
+                      (utils/colour :red)
+                      "bootleg: script error at line " row ", column " col ": " message
+                      (utils/colour)))))
+                (throw e))))
+          (System/exit 2))))))
