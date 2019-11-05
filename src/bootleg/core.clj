@@ -20,6 +20,7 @@
    ["-o" "--output FILE" "Write the output to the specified file instead of stdout"]
    ["-t" "--traceback" "Print the full exception traceback"]
    ["-c" "--colour" "Print outputs in colour where appropriate"]
+   [nil  "--color" "Alias for --colour"]
    ])
 
 (defn usage [options-summary]
@@ -53,7 +54,7 @@
   [& args]
   (config/init!)
   (let [{:keys [options summary arguments]} (parse-opts args cli-options)]
-    (context/with-colour (:colour options)
+    (context/with-colour (or (:colour options) (:color options))
       (try
         (cond
           (:help options)

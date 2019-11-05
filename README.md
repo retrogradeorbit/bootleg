@@ -194,6 +194,9 @@ Options:
   -e, --evaluate CODE  Pass in the hiccup to evaluate on the command line
   -d, --data           Output the rendered template as a clojure form instead of html
   -o, --output FILE    Write the output to the specified file instead of stdout
+  -t, --traceback      Print the full exception traceback
+  -c, --colour         Print outputs in colour where appropriate
+      --color          Alias for --colour
 ```
 
 ## Overview
