@@ -18,6 +18,7 @@
    ["-e" "--evaluate CODE" "Pass in the hiccup to evaluate on the command line"]
    ["-d" "--data" "Output the rendered template as a clojure form instead of html"]
    ["-o" "--output FILE" "Write the output to the specified file instead of stdout"]
+   ["-t" "--traceback" "Print the full exception traceback"]
    ])
 
 (defn usage [options-summary]
@@ -51,20 +52,35 @@
   [& args]
   (config/init!)
   (let [{:keys [options summary arguments]} (parse-opts args cli-options)]
-    (cond
-      (:help options)
-      (println (usage summary))
+    (try
+      (cond
+        (:help options)
+        (println (usage summary))
 
-      (:version options)
-      (println "Version:" version)
+        (:version options)
+        (println "Version:" version)
 
-      (:evaluate options)
-      (let [result (->> options :evaluate (hiccup/process-hiccup-data "."))]
-        (output-result options result))
+        (:evaluate options)
+        (let [result (->> options :evaluate (hiccup/process-hiccup-data "."))]
+          (output-result options result))
 
-      (= 1 (count arguments))
-      (let [result (-> arguments first process)]
-        (output-result options result))
+        (= 1 (count arguments))
+        (let [result (-> arguments first process)]
+          (output-result options result))
 
-      :else
-      (println (usage summary)))))
+        :else
+        (println (usage summary)))
+      (catch java.io.FileNotFoundException e
+        (if (:traceback options)
+          (throw e)
+          (binding [*out* *err*]
+            (println "bootleg:" (.getMessage e))))
+        (System/exit 1))
+      (catch clojure.lang.ExceptionInfo e
+        (if (:traceback options)
+          (throw e)
+          (let [{:keys [type row col]} (ex-data e)
+                message (.getMessage (.getCause e))]
+            (binding [*out* *err*]
+              (println "bootleg: script error at line" row "column" col ":" message))))
+        (System/exit 2)))))
