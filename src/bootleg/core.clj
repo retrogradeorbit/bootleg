@@ -79,7 +79,7 @@
             (binding [*out* *err*]
               (println
                (str (utils/colour :red)
-                    "bootleg: " (.getMessage e)
+                    "bootleg: File not found: " (.getMessage e)
                     (utils/colour)))))
           (System/exit 1))
         (catch clojure.lang.ExceptionInfo e
@@ -88,12 +88,18 @@
             (let [{:keys [type] :as data} (ex-data e)]
               (if (= type :sci/error)
                 (let [{:keys [row col]} (ex-data e)
-                      message (.getMessage (.getCause e))]
+                      cause (.getCause e)
+                      message (.getMessage cause)
+                      cause-class (class cause)
+                      file-not-found? (= java.io.FileNotFoundException cause-class)
+                      ]
                   (binding [*out* *err*]
                     (println
                      (str
                       (utils/colour :red)
-                      "bootleg: script error at line " row ", column " col ": " message
+                      "bootleg: script error at line " row ", column " col ": "
+                      (when file-not-found? "File not found: ")
+                      message
                       (utils/colour)))))
                 (throw e))))
           (System/exit 2))))))
