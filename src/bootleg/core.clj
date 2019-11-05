@@ -74,13 +74,18 @@
         (if (:traceback options)
           (throw e)
           (binding [*out* *err*]
-            (println "bootleg:" (.getMessage e))))
+            (println
+             (str "bootleg: " (.getMessage e)))))
         (System/exit 1))
       (catch clojure.lang.ExceptionInfo e
         (if (:traceback options)
           (throw e)
-          (let [{:keys [type row col]} (ex-data e)
-                message (.getMessage (.getCause e))]
-            (binding [*out* *err*]
-              (println "bootleg: script error at line" row "column" col ":" message))))
+          (let [{:keys [type] :as data} (ex-data e)]
+            (if (= type :sci/error)
+              (let [{:keys [row col]} (ex-data e)
+                    message (.getMessage (.getCause e))]
+                (binding [*out* *err*]
+                  (println
+                   (str "bootleg: script error at line " row ", column " col ": " message))))
+              (throw e))))
         (System/exit 2)))))
