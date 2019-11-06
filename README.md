@@ -253,6 +253,24 @@ Pretty print to stdout the passed in form. If `--colour` is passed on command li
 
 Parse the passed in string into a clojure type. Useful for converting strings to numbers, keywords, vectors or hashmaps. A binding of [edamame's](https://github.com/borkdude/edamame) `parse-string` is used for parsing.
 
+#### symlink
+
+`(symlink link target)`
+
+Make a symlink from `link` to `target`
+
+#### mkdir
+
+`(mkdir path)`
+
+Make a directory `path`. Does not create any parent directories.
+
+#### mkdirs
+
+`(mkdirs path)`
+
+Make a directory `path` including all the parent directories.
+
 ### Markup Processing Functions
 
 #### markdown
