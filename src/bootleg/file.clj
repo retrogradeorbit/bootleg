@@ -2,7 +2,8 @@
   (:require [bootleg.context :as context]
             [clojure.java.io :as io]
             [clojure.string :as string])
-  (:import [java.nio.file Paths]))
+  (:import [java.nio.file Paths Files]
+           [java.nio.file.attribute FileAttribute]))
 
 (defn path-split
   "give a full path filename, return a tuple of
@@ -54,3 +55,25 @@
         (.relativize target-path)
         .toFile
         .getPath)))
+
+(def empty-string-array
+  (make-array String 0))
+
+(def empty-file-attribute-array
+  (make-array FileAttribute 0))
+
+(defn symlink [link target]
+  (Files/createSymbolicLink
+   (Paths/get (path-relative link) empty-string-array)
+   (Paths/get target empty-string-array)
+   empty-file-attribute-array))
+
+(defn mkdir [path]
+  (Files/createDirectory
+   (Paths/get (path-relative path) empty-string-array)
+   empty-file-attribute-array))
+
+(defn mkdirs [path]
+  (Files/createDirectories
+   (Paths/get (path-relative path) empty-string-array)
+   empty-file-attribute-array))

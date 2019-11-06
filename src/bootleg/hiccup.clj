@@ -40,6 +40,9 @@
 
               ;; directories and filenames
               'glob glob/glob
+              'symlink file/symlink
+              'mkdir file/mkdir
+              'mkdirs file/mkdirs
 
               ;; testing
               'is-hiccup? utils/is-hiccup?
