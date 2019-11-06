@@ -294,3 +294,26 @@
   (if context/*colour*
     (apply puget/cprint forms)
     (apply fipp/pprint forms)))
+
+(defn split-camel-case [s]
+  (let [parts (string/split s #"[a-z][A-Z]")
+        split-points (-> (map (comp inc inc count) parts)
+                         (->> (into []))
+                         (update 0 dec)
+                         (->> (reductions + 0)))
+        from-to (map vector split-points (rest split-points))]
+    (map
+     (fn [[from to]] (subs s from (min to (count s))))
+     from-to)))
+
+(defn exception-nice-name
+  "Turn a class java.nio.file.FileAlreadyExistsException
+  into the string \"File already exists\""
+  [e]
+  (-> e class str
+      (string/split #"[ .]")
+      last
+      (string/replace #"Exception" "")
+      split-camel-case
+      (->> (string/join " ")
+           (string/capitalize))))

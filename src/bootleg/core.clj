@@ -90,15 +90,13 @@
                 (let [{:keys [row col]} (ex-data e)
                       cause (.getCause e)
                       message (.getMessage cause)
-                      cause-class (class cause)
-                      file-not-found? (= java.io.FileNotFoundException cause-class)
-                      ]
+                      nice-name (utils/exception-nice-name cause)]
                   (binding [*out* *err*]
                     (println
                      (str
                       (utils/colour :red)
                       "bootleg: script error at line " row ", column " col ": "
-                      (when file-not-found? "File not found: ")
+                      nice-name ": "
                       message
                       (utils/colour)))))
                 (throw e))))
