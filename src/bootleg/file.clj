@@ -2,7 +2,7 @@
   (:require [bootleg.context :as context]
             [clojure.java.io :as io]
             [clojure.string :as string])
-  (:import [java.nio.file Paths Files]
+  (:import [java.nio.file Paths Files LinkOption]
            [java.nio.file.attribute FileAttribute]))
 
 (defn path-split
@@ -62,18 +62,58 @@
 (def empty-file-attribute-array
   (make-array FileAttribute 0))
 
+(def empty-link-options
+  (make-array LinkOption 0))
+
+(def no-follow-links
+  (into-array LinkOption [LinkOption/NOFOLLOW_LINKS]))
+
 (defn symlink [link target]
-  (Files/createSymbolicLink
-   (Paths/get (path-relative link) empty-string-array)
-   (Paths/get target empty-string-array)
-   empty-file-attribute-array))
+  (let [link-path (Paths/get (path-relative link) empty-string-array)]
+    (when (Files/exists link-path no-follow-links)
+      ;; link path exists
+      (if (Files/isSymbolicLink link-path)
+        ;; and its a symlink
+        (Files/delete link-path)
 
-(defn mkdir [path]
-  (Files/createDirectory
-   (Paths/get (path-relative path) empty-string-array)
-   empty-file-attribute-array))
+        ;; its something else
+        (throw (ex-info (str link " already exists and is not a symlink")
+                        {:path link}))))
 
-(defn mkdirs [path]
-  (Files/createDirectories
-   (Paths/get (path-relative path) empty-string-array)
-   empty-file-attribute-array))
+    (.toString
+     (Files/createSymbolicLink
+      link-path
+      (Paths/get target empty-string-array)
+      empty-file-attribute-array))))
+
+(defn mkdir [directory]
+  (let [path (Paths/get (path-relative directory) empty-string-array)]
+    (if (Files/exists path empty-link-options)
+      ;; file exists
+      (if (Files/isDirectory path empty-link-options)
+        ;; directory already exists
+        (.toString path)
+
+        ;; exists but isnt a directory
+        (throw (ex-info (str directory " already exists and is not a directory")
+                        {:path directory})))
+
+      ;; nothing exists. create it
+      (.toString
+       (Files/createDirectory path empty-file-attribute-array)))))
+
+(defn mkdirs [directory]
+  (let [path (Paths/get (path-relative directory) empty-string-array)]
+    (if (Files/exists path empty-link-options)
+      ;; file exists
+      (if (Files/isDirectory path empty-link-options)
+        ;; directory already exists
+        (.toString path)
+
+        ;; exists but isnt a directory
+        (throw (ex-info (str directory " already exists and is not a directory")
+                        {:path directory})))
+
+      ;; nothing exists. create it
+      (.toString
+       (Files/createDirectories path empty-file-attribute-array)))))

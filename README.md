@@ -257,19 +257,19 @@ Parse the passed in string into a clojure type. Useful for converting strings to
 
 `(symlink link target)`
 
-Make a symlink from `link` to `target`
+Make a symlink from `link` to `target`. Operates idempotently. If the link already exists it does nothing. If the `link` exists but points to another target, changes the link to point to the specified `target`. If the `link` exists but is not a symbolic link, throws an exception. On success returns the path of the link.
 
 #### mkdir
 
 `(mkdir path)`
 
-Make a directory `path`. Does not create any parent directories.
+Make a directory `path`. Does not create any parent directories. Operates idempotently. If the direcotry exists, it does nothing. Otherwise it tries to create the directory. On success it returns the directory path.
 
 #### mkdirs
 
 `(mkdirs path)`
 
-Make a directory `path` including all the parent directories.
+Make a directory `path` including all the parent directories. Operates idempotently. If the direcotry exists, it does nothing. Otherwise it tries to create the directories. On success it returns the final directory path.
 
 ### Markup Processing Functions
 
