@@ -6,12 +6,20 @@ Bootleg is a command line tool that rapidly renders clojure based templates. Wit
 
 ## Quickstart
 
-Install:
+Install for Linux:
 
 ```shell
 $ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.5/bootleg-0.1.5-linux-amd64.tgz
 $ tar xvf bootleg-0.1.5-linux-amd64.tgz
 $ mv bootleg ~/bin
+```
+
+Install for MacOS:
+
+```shell
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.5/bootleg-0.1.5-macos-amd64.zip
+$ unzip bootleg-0.1.5-macos-amd64.zip
+$ mv bootleg /usr/local/bin
 ```
 
 Clone this repository and change into the `examples/quickstart` directory:
@@ -172,7 +180,9 @@ $ mv bootleg /usr/local/bin
 
 ### Other Platforms
 
-Although there is nothing preventing bootleg from running on windows or MacOS, binary builds are not yet available. Although startup and execution time will be much slower, in the meantime you can use the jar release file and run it as follows:
+Windows support is experimental. Download (https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.5/bootleg-0.1.5-windows-amd64.zip) and unzip the archive. Copy the bootleg.exe binary to somewhere on your path.
+
+The jar release file is also an option if you have java installed. You can run it as follows:
 
 ```shell
 $ java -jar bootleg-0.1.5.jar
