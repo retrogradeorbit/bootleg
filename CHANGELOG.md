@@ -3,6 +3,25 @@ All notable changes to this project will be documented in this file. This change
 
 ## [Unreleased]
 
+## [0.1.5] - 2019-11-8
+### Fixed
+- File Not Found error when yaml file missing - #17
+- Github actions - #22
+- Friendly error reporting - #8
+
+### Added
+- MacOS build - #14
+- Windows build - #15
+- Selmer template support - #16
+- Enlive macros - #13
+- Autocoerce Enlive transforms - #9
+- File globbing - #18
+- Print warning on data coercion loss - #11
+- Coloured output
+- string parsing with edamame
+- symlink and directory making
+- many unit tests
+
 ## [0.1.4] - 2019-10-24
 ### Fixed
 - Fixed more data conversion errors - #2
@@ -24,7 +43,8 @@ All notable changes to this project will be documented in this file. This change
 ## [0.1.1] - 2019-10-23
 Initial release
 
-[Unreleased]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.4...HEAD
+[Unreleased]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.5...HEAD
+[0.1.5]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.1...v0.1.2

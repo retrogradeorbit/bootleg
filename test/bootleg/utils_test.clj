@@ -442,4 +442,33 @@
       (is (= (convert-to hickory :html) html-lost))
       (is (= (convert-to hickory :hiccup-seq) (list hiccup)))
       (is (= (convert-to hickory :hickory-seq) (list hickory)))))
+
+  (testing "dtd conversions"
+    (is (= (convert-to {:type :dtd :data ["html" nil nil]} :html)
+           "<!DOCTYPE html>"))
+    (is (= (convert-to {:type :dtd :data ["html" nil nil]} :hiccup)
+           "<!DOCTYPE html>"))
+    (is (= (convert-to '({:type :dtd :data ["html" nil nil]}) :hiccup-seq)
+           ["<!DOCTYPE html>"]))
+    (is (= (markup-type "<!DOCTYPE html>") :html))
+    (is (= (convert-to "<!DOCTYPE html>" :hiccup) "<!DOCTYPE html>"))
+    (is (= (convert-to "<!DOCTYPE html>" :hickory) "<!DOCTYPE html>"))
+    )
+
+  (testing "text seq conversions"
+    (is (= (convert-to ["text"] :html)
+           "text"))
+    (is (= (convert-to ["text"] :hiccup-seq)
+           ["text"]))
+    (is (= (convert-to ["text"] :hickory-seq)
+           ["text"]))
+    (is (= (convert-to ["text" "string"] :html)
+           "textstring"))
+    (is (= (convert-to ["text" "string"] :hiccup-seq)
+           ["text" "string"]))
+    (is (= (convert-to ["text" "string"] :hickory-seq)
+           ["text" "string"]))
+
+    )
+
   )

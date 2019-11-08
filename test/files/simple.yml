@@ -1,0 +1,12 @@
+foo: bar
+bar:
+  - one
+  - two
+  - baz: bing
+    boof: bong
+  - pow: |
+      This is some preserved
+      newline block text
+  - wap: >
+      This is a multiline
+      string

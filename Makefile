@@ -32,7 +32,7 @@ build/bootleg: target/uberjar/bootleg-$(VERSION)-standalone.jar
 		--allow-incomplete-classpath \
 		--no-fallback \
 		--no-server \
-		"-J-Xmx4g" \
+		"-J-Xmx6g" \
 		-H:+TraceClassInitialization -H:+PrintClassInitialization
 
 copy-libs-to-resource:
@@ -47,7 +47,7 @@ package-linux:
 	cp target/uberjar/bootleg-$(VERSION)-standalone.jar bootleg-$(VERSION).jar
 
 package-macos:
-	cd build && zip bootleg-$(VERSION)-darwin-amd64.zip bootleg
+	cd build && zip bootleg-$(VERSION)-macos-amd64.zip bootleg
 	cp build/*.zip .
 
 	rm -rf /tmp/release

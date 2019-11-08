@@ -1,4 +1,4 @@
-(defproject bootleg "0.1.5-SNAPSHOT"
+(defproject bootleg "0.1.5"
   :description "Simple template processing command line tool to help build static websites"
   :url "https://github.com/retrogradeorbit/bootleg"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
@@ -15,13 +15,15 @@
 
                  [cljstache "2.0.4"]
                  [enlive "1.1.6"]
+                 [hickory "0.7.1"]
+                 [selmer "1.12.17"]
 
                  ;; for hiccup eval
-                 [borkdude/sci "0.0.10"]
-                 [hickory "0.7.1"]
+                 [borkdude/sci "0.0.11-alpha.6"]
 
                  ;; clojures pprint doesn't work under graal native-image
                  [fipp "0.6.21"]
+                 [mvxcvi/puget "1.2.0"]
                  ]
   :main ^:skip-aot bootleg.core
   :target-path "target/%s"

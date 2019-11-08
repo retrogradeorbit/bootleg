@@ -3,15 +3,16 @@
             [bootleg.utils :as utils]
             [bootleg.markdown :as markdown]
             [bootleg.mustache :as mustache]
+            [bootleg.selmer :as selmer]
             [bootleg.html :as html]
             [bootleg.yaml :as yaml]
             [bootleg.json :as json]
             [bootleg.edn :as edn]
             [bootleg.namespaces :as namespaces]
-            [net.cgrand.enlive-html :as enlive]
-            [clojure.walk :as walk]
+            [bootleg.context :as context]
+            [bootleg.glob :as glob]
             [sci.core :as sci]
-            [fipp.edn :refer [pprint]]))
+            [clojure.java.io :as io]))
 
 (defn load-file* [ctx file]
   (let [s (slurp file)]
@@ -25,16 +26,23 @@
              :bindings
              {
               ;; file loading
-              'markdown (markdown/make-markdown-fn path)
-              'mustache (mustache/make-mustache-fn path)
-              'slurp #(slurp (file/input-stream path %))
-              'html (html/make-html-fn path)
-              'hiccup (partial process-hiccup path)
+              'markdown markdown/markdown
+              'mustache mustache/mustache
+              'slurp #(-> % file/path-relative io/input-stream)
+              'html html/html
+              'hiccup process-hiccup
+              'selmer selmer/selmer
 
               ;; vars files
-              'yaml (partial yaml/load-yaml path)
-              'json (partial json/load-json path)
-              'edn (partial edn/load-edn path)
+              'yaml yaml/load-yaml
+              'json json/load-json
+              'edn edn/load-edn
+
+              ;; directories and filenames
+              'glob glob/glob
+              'symlink file/symlink
+              'mkdir file/mkdir
+              'mkdirs file/mkdirs
 
               ;; testing
               'is-hiccup? utils/is-hiccup?
@@ -44,25 +52,25 @@
 
               ;; conversions
               'convert-to utils/convert-to
+              'markup-type utils/markup-type
               'as-html utils/as-html
-
-              ;; debug
-              'println println
-              'pprint pprint
               }}]
-    (-> data
-        (sci/eval-string
-         (update ctx
-                 :bindings assoc 'load-file
-                 #(load-file*
-                   ctx
-                   (file/path-join path %))))
+    (context/with-path path
+      (-> data
+          (sci/eval-string
+           (update ctx
+                   :bindings assoc 'load-file
+                   #(load-file*
+                     ctx
+                     (file/path-join path %))))))))
 
-        ;; hickory hiccup->html cant handle numbers
-        (->> (walk/postwalk #(if (number? %) (str %) %))))))
-
-(defn process-hiccup [path file]
-  (->> file
-       (file/path-join path)
-       slurp
-       (process-hiccup-data path)))
+(defn process-hiccup
+  ([file]
+   (let [fullpath (file/path-join context/*path* file)
+         [path file] (file/path-split fullpath)]
+     (process-hiccup path file)))
+  ([path file]
+   (->> file
+        (file/path-join path)
+        slurp
+        (process-hiccup-data path))))

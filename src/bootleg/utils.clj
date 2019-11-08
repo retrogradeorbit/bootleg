@@ -1,9 +1,12 @@
 (ns bootleg.utils
-  (:require [clojure.string :as string]
+  (:require [bootleg.context :as context]
+            [clojure.string :as string]
             [hickory.core :as hickory]
             [hickory.render :as render]
             [hickory.convert :as convert]
-            [clojure.walk :as walk]))
+            [clojure.walk :as walk]
+            [fipp.edn :as fipp]
+            [puget.printer :as puget]))
 
 (defn- i-starts-with?
   "efficient case insensitive string start-with?"
@@ -23,7 +26,7 @@
 
 (defn- split-doctype [markup]
   (let [[_ doctype-suffix remain] (string/split markup #"<" 3)]
-    [(str "<" doctype-suffix) (str "<" remain)]))
+    [(str "<" doctype-suffix) (if remain (str "<" remain) "")]))
 
 (defn- munge-html-tags [markup]
   (-> markup
@@ -57,11 +60,20 @@
                     (update % :tag munge-map (:tag %))
                     %) hickory))
 
-(defn- hickory-seq-add-missing-types [hickory]
+(defn hickory-seq-add-missing-types [hickory]
   (walk/postwalk
    (fn [el]
      (if (and (:tag el) (not (:type el)))
        (assoc el :type :element)
+       el))
+   hickory))
+
+(defn hickory-seq-convert-dtd [hickory]
+  (walk/postwalk
+   (fn [el]
+     (if (and (= :dtd (:type el)) (:data el))
+       (let [[name publicid systemid] (:data el)]
+         (str "<!DOCTYPE " name ">"))
        el))
    hickory))
 
@@ -82,7 +94,11 @@
 (defn html->hiccup [markup]
   (last (html->hiccup-seq markup)))
 
-(def hiccup-seq->html render/hiccup-to-html)
+(defn hiccup-seq->html [hiccup-seq]
+  (->> hiccup-seq
+       ;; hiccup-to-html cant handle numbers
+       (walk/postwalk #(if (number? %) (str %) %))
+       render/hiccup-to-html))
 
 (defn hiccup->html [hiccup]
   (hiccup-seq->html [hiccup]))
@@ -100,13 +116,20 @@
         first
         demunge-hickory-tags)))
 
+(defn hickory-to-hiccup-preserve-doctype [hickory]
+  (if (and (string? hickory)
+           (i-starts-with? (string/triml hickory) "<!DOCTYPE"))
+    hickory
+    (convert/hickory-to-hiccup hickory)))
+
 (defn hickory->hiccup [hickory]
   (if (string? hickory)
     hickory
     (-> hickory
+        hickory-seq-convert-dtd
         munge-hickory-tags
         hickory-seq-add-missing-types
-        convert/hickory-to-hiccup
+        hickory-to-hiccup-preserve-doctype
         demunge-hiccup-tags)))
 
 (defn hiccup-seq->hickory-seq [hiccup-seq]
@@ -135,19 +158,27 @@
       html->hickory-seq
       last))
 
+(defn- hickory-to-html-preserve-doctype [hickory]
+  (if (and (string? hickory)
+           (i-starts-with? (string/triml hickory) "<!DOCTYPE"))
+    hickory
+    (render/hickory-to-html hickory)))
+
 (defn hickory-seq->html [hickory]
   (->> hickory
        (map #(if (string? %)
                %
                (-> %
+                   hickory-seq-convert-dtd
                    hickory-seq-add-missing-types
-                   render/hickory-to-html)))
+                   hickory-to-html-preserve-doctype)))
        (apply str)))
 
 (defn hickory->html [hickory]
   (-> hickory
+      hickory-seq-convert-dtd
       hickory-seq-add-missing-types
-      render/hickory-to-html))
+      hickory-to-html-preserve-doctype))
 
 ;;
 ;; testing
@@ -156,7 +187,7 @@
   (keyword? (first data)))
 
 (defn is-hickory? [data]
-  (and (map? data) (:type data)))
+  (and (map? data) (or (:tag data) (:type data))))
 
 (defn is-hickory-seq? [data]
   (and (or (seq? data) (vector? data))
@@ -173,13 +204,37 @@
     (is-hickory? data) :hickory
     (is-hickory-seq? data) :hickory-seq
     (string? data) :html
+    (every? string? data) :hiccup-seq
     :else nil))
+
+(defn- escape-code [n]
+  (str "\033[" (or n 0) "m"))
+
+(def colour-map
+  {:red 31
+   :yellow 33})
+
+(defn colour [& [colour-name]]
+  (if context/*colour*
+    (escape-code (colour-map colour-name))
+    ""))
+
+(defn warn-last [from to data]
+  (when (< 1 (count data))
+    (let [n (dec (count data))]
+      (binding [*out* *err*]
+        (println
+         (str
+          (colour :yellow)
+          "Warning: converting markup from " from " to " to " lost " n " form" (when (< 1 n) "s")
+          (colour))))))
+  (last data))
 
 (def conversion-fns
   ;; keys: [from-type to-type]
   ;; values: converter function
   ;;
-  ;; WARNING: some of these are possibly lossy (once using `first`)
+  ;; WARNING: some of these are possibly lossy (ones using warn-last)
   {
    [:hiccup :hiccup] identity
    [:hiccup :hickory] hiccup->hickory
@@ -187,8 +242,9 @@
    [:hiccup :hiccup-seq] list
    [:hiccup :html] hiccup->html
 
-   [:hiccup-seq :hiccup] last
-   [:hiccup-seq :hickory] (comp last hiccup-seq->hickory-seq)
+   [:hiccup-seq :hiccup] (partial warn-last :hiccup-seq :hiccup)
+   [:hiccup-seq :hickory] (comp (partial warn-last :hiccup-seq :hickory)
+                                hiccup-seq->hickory-seq)
    [:hiccup-seq :hickory-seq] hiccup-seq->hickory-seq
    [:hiccup-seq :hiccup-seq] identity
    [:hiccup-seq :html] hiccup-seq->html
@@ -199,8 +255,9 @@
    [:hickory :hiccup-seq] (comp list hickory->hiccup)
    [:hickory :html] hickory->html
 
-   [:hickory-seq :hiccup] (comp last hickory-seq->hiccup-seq)
-   [:hickory-seq :hickory] last
+   [:hickory-seq :hiccup] (comp (partial warn-last :hickory-seq :hiccup)
+                                hickory-seq->hiccup-seq)
+   [:hickory-seq :hickory] (partial warn-last :hickory-seq :hickory)
    [:hickory-seq :hickory-seq] identity
    [:hickory-seq :hiccup-seq] hickory-seq->hiccup-seq
    [:hickory-seq :html] hickory-seq->html
@@ -232,3 +289,31 @@
   to html without throwing an error for one of them"
   [data]
   (convert-to data :html))
+
+(defn pprint [& forms]
+  (if context/*colour*
+    (apply puget/cprint forms)
+    (apply fipp/pprint forms)))
+
+(defn split-camel-case [s]
+  (let [parts (string/split s #"[a-z][A-Z]")
+        split-points (-> (map (comp inc inc count) parts)
+                         (->> (into []))
+                         (update 0 dec)
+                         (->> (reductions + 0)))
+        from-to (map vector split-points (rest split-points))]
+    (map
+     (fn [[from to]] (subs s from (min to (count s))))
+     from-to)))
+
+(defn exception-nice-name
+  "Turn a class java.nio.file.FileAlreadyExistsException
+  into the string \"File already exists\""
+  [e]
+  (-> e class str
+      (string/split #"[ .]")
+      last
+      (string/replace #"Exception" "")
+      split-camel-case
+      (->> (string/join " ")
+           (string/capitalize))))

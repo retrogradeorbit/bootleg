@@ -6,12 +6,20 @@ Bootleg is a command line tool that rapidly renders clojure based templates. Wit
 
 ## Quickstart
 
-Install:
+Install for Linux:
 
 ```shell
-$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.4/bootleg-0.1.4-linux-amd64.tgz
-$ tar xvf bootleg-0.1.4-linux-amd64.tgz
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.5/bootleg-0.1.5-linux-amd64.tgz
+$ tar xvf bootleg-0.1.5-linux-amd64.tgz
 $ mv bootleg ~/bin
+```
+
+Install for MacOS:
+
+```shell
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.5/bootleg-0.1.5-macos-amd64.zip
+$ unzip bootleg-0.1.5-macos-amd64.zip
+$ mv bootleg /usr/local/bin
 ```
 
 Clone this repository and change into the `examples/quickstart` directory:
@@ -165,17 +173,19 @@ $ bootleg example-data.clj          # <- no -d flag means output will be html
 Bootleg is distributed for linux as a single executable file. Download the latest tarball from https://github.com/retrogradeorbit/bootleg/releases and then extract it. Once extracted, move the binary to your path. For system wide installation try `/usr/local/bin` or for personal use `~/bin`
 
 ```shell
-$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.4/bootleg-0.1.4-linux-amd64.tgz
-$ tar xvf bootleg-0.1.4-linux-amd64.tgz
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.5/bootleg-0.1.5-linux-amd64.tgz
+$ tar xvf bootleg-0.1.5-linux-amd64.tgz
 $ mv bootleg /usr/local/bin
 ```
 
 ### Other Platforms
 
-Although there is nothing preventing bootleg from running on windows or MacOS, binary builds are not yet available. Although startup and execution time will be much slower, in the meantime you can use the jar release file and run it as follows:
+Windows support is experimental. Download (https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.5/bootleg-0.1.5-windows-amd64.zip) and unzip the archive. Copy the bootleg.exe binary to somewhere on your path.
+
+The jar release file is also an option if you have java installed. You can run it as follows:
 
 ```shell
-$ java -jar bootleg-0.1.4.jar
+$ java -jar bootleg-0.1.5.jar
 ```
 
 ## Usage
@@ -194,6 +204,9 @@ Options:
   -e, --evaluate CODE  Pass in the hiccup to evaluate on the command line
   -d, --data           Output the rendered template as a clojure form instead of html
   -o, --output FILE    Write the output to the specified file instead of stdout
+  -t, --traceback      Print the full exception traceback
+  -c, --colour         Print outputs in colour where appropriate
+      --color          Alias for --colour
 ```
 
 ## Overview
@@ -235,6 +248,38 @@ html (or any type of xml) is represented internally as a string. This is a flexi
 ## Inbuilt functions
 
 The following functions are inbuilt into the clojure interpreter:
+
+### General
+
+#### pprint
+
+`(pprint form)`
+
+Pretty print to stdout the passed in form. If `--colour` is passed on command line then print with colour highlighting.
+
+#### parse-string
+
+`(parse-string string)`
+
+Parse the passed in string into a clojure type. Useful for converting strings to numbers, keywords, vectors or hashmaps. A binding of [edamame's](https://github.com/borkdude/edamame) `parse-string` is used for parsing.
+
+#### symlink
+
+`(symlink link target)`
+
+Make a symlink from `link` to `target`. Operates idempotently. If the link already exists it does nothing. If the `link` exists but points to another target, changes the link to point to the specified `target`. If the `link` exists but is not a symbolic link, throws an exception. On success returns the path of the link.
+
+#### mkdir
+
+`(mkdir path)`
+
+Make a directory `path`. Does not create any parent directories. Operates idempotently. If the direcotry exists, it does nothing. Otherwise it tries to create the directory. On success it returns the directory path.
+
+#### mkdirs
+
+`(mkdirs path)`
+
+Make a directory `path` including all the parent directories. Operates idempotently. If the direcotry exists, it does nothing. Otherwise it tries to create the directories. On success it returns the final directory path.
 
 ### Markup Processing Functions
 
@@ -281,12 +326,12 @@ Load a mustache template from the file specified in `source` and render it subst
 
 Options can be used to alter the behaviour of the function. Options are a list of keywords and can be specified in any order after the source parameter. Options can be:
 
- * `:data` Interpret the `source` argument as markdown data, not a file to load
- * `:hiccup` Return the rendered markdown as hiccup
- * `:hiccup-seq` Return the rendered markdown as a hiccup sequence data structure
- * `:hickory` Return the rendered markdown as hickory
- * `:hickory-seq` Return the rendered markdown as a hickory sequence data structure
- * `:html` Return the rendered markdown as an html string
+ * `:data` Interpret the `source` argument as mustache data, not a file to load
+ * `:hiccup` Return the rendered mustache as hiccup
+ * `:hiccup-seq` Return the rendered mustache as a hiccup sequence data structure
+ * `:hickory` Return the rendered mustache as hickory
+ * `:hickory-seq` Return the rendered mustache as a hickory sequence data structure
+ * `:html` Return the rendered mustache as an html string
 
 eg.
 
@@ -299,6 +344,45 @@ $ bootleg -e '(mustache "<p>{{var1}}</p><div>{{&var2}}</div>" {:var1 "value 1" :
 $ bootleg -d -e '(mustache "<p>{{var1}}</p>" {:var1 "value 1"} :data :hiccup-seq)'
 ([:p {} "value 1"])
 ```
+
+#### selmer
+
+`(selmer source vars & options)`
+
+Load a selmer template from the file specified in `source` and render it substituting the vars from `vars`. `source` can be a local file path (relative to the executing hiccup file location) or a URL to gather the markdown from.
+
+Options can be used to alter the behaviour of the function. Options are a list of keywords and can be specified in any order after the source parameter. Options can be:
+
+ * `:data` Interpret the `source` argument as selmer data, not a file to load
+ * `:hiccup` Return the rendered selmer as hiccup
+ * `:hiccup-seq` Return the rendered selmer as a hiccup sequence data structure
+ * `:hickory` Return the rendered selmer as hickory
+ * `:hickory-seq` Return the rendered selmer as a hickory sequence data structure
+ * `:html` Return the rendered selmer as an html string
+
+eg.
+
+```clojure
+$ bootleg -e '(selmer "<p>Hello {{name|capitalize}}!</p>" {:name "world"} :data)'
+<p>Hello World!</p>
+```
+
+```clojure
+$ bootleg -d -e '(selmer "<p>Hello {{name|capitalize}}!</p>" {:name "world"} :data :hiccup-seq)'
+([:p {} "Hello World!"])
+```
+
+The `selmer` namespaces are also provided at their usual namespace locations.
+
+ * selmer.filter-parser
+ * selmer.filters
+ * selmer.middleware
+ * selmer.node
+ * selmer.parser
+ * selmer.tags
+ * selmer.template-parser
+ * selmer.util
+ * selmer.validator
 
 #### slurp
 
@@ -338,6 +422,22 @@ $ bootleg -d -e '(html "<div><h1>heading</h1><p>body</p></div>" :data :hiccup)'
 `(hiccup source)`
 
 Loads and evaluates the clojure source from another file.
+
+### Filesystem Functions
+
+#### glob
+
+`(glob pattern)`
+
+Returns a sequence of files that match the globbing pattern `pattern`. Supports `*`, `**`, `?`, `[abc]`, `[a-z]`, `[!a]` and relative file paths `.` and `..`. File paths are returned relative to the directory of the executing file.
+
+```shell
+$ bootleg -d -e '(glob "**/*.y?l")'
+(".github/workflows/deploy.yml"
+ ".circleci/config.yml"
+ "examples/quickstart/fields.yml"
+ "test/files/simple.yml")
+```
 
 ### Var Loading Functions
 
@@ -435,11 +535,11 @@ Convert any supported input format passed into `data` to html output. Same as `(
 
 ### Enlive Processing
 
-Enlive html functions are to be found in the `enlive` namespace. The enlive macros are not supported (`deftemplate`, `defsnippet`, `clone-for`). A reimplementation of `at` is supplied that provides automatic type coercion for the inputs and outputs.
+Enlive html functions are to be found in the `enlive` namespace. A new version of `at` is supplied that provides automatic type coercion for the inputs and outputs.
 
 In addition to this the standard enlive namespaces are available in their usual locations:
 
- * net.cgrand.enlive-html (but does not include macros)
+ * net.cgrand.enlive-html
  * net.cgrand.jsoup
  * net.cgrand.tagsoup
  * net.cgrand.xml
@@ -450,13 +550,31 @@ In addition to this the standard enlive namespaces are available in their usual 
 
 Take the markup `data` and process every element matching `selector` through the transform `transform`
 
+#### deftemplate
+
+`(deftemplate name source args & forms)`
+
+Defines a template as a function that returns a *hiccup-seq*.
+
+** Note ** the original deftemplate returned a sequence of strings
+
+#### defsnippet
+
+`(defsnippet name source selector args & forms)`
+
+Define a named snippet -- equivalent to (def name (snippet source selector args ...)).
+
+Returns a hickory-seq on nodes.
+
 ### Enlive Transforms
 
 #### content
 
 `(content & values)`
 
-Replaces the content of the element. Values can be hickory nodes, collection of hikory nodes, or plain text strings.
+Replaces the content of the element. Values can be any supported formats: hickory, hickory-seq, hiccup, hiccup-seq or html.
+
+** note: ** This is different to the standard enlive `content` function. The standard function is present as `content*`. Passing html to `content` will embed that markup in the output. In contrast, passing html to `content*` will insert that html in an escaped form.
 
 #### html-snippet
 
@@ -468,7 +586,7 @@ Concatenate values as a string and then parse it with tagsoup. html-snippet does
 
 `(html-content & values)`
 
-Replaces the content of the element. Values are strings containing html code.
+Replaces the content of the element. Values are strings containing html code. This is present for backwards compatibility. The new `content` function can take and embed html code and should be used instead.
 
 #### wrap
 
@@ -518,11 +636,15 @@ Chains (composes) several transformations. Applies functions from left to right.
 
 Appends the values to the content of the selected element. eg. `(append "xyz" a-node "abc")`
 
+Values can be any supported formats: hickory, hickory-seq, hiccup, hiccup-seq or html.
+
 #### prepend
 
 `(prepend & values)`
 
 Prepends the values to the content of the selected element. eg. `(prepend "xyz" a-node "abc")`
+
+Values can be any supported formats: hickory, hickory-seq, hiccup, hiccup-seq or html.
 
 #### after
 
@@ -530,11 +652,15 @@ Prepends the values to the content of the selected element. eg. `(prepend "xyz" 
 
 Inserts the values after the current selection (node or fragment). eg. `(after "xyz" a-node "abc")`
 
+Values can be any supported formats: hickory, hickory-seq, hiccup, hiccup-seq or html.
+
 #### before
 
 `(before & values)`
 
 Inserts the values before the current selection (node or fragment). eg. `(before "xyz" a-node "abc")`
+
+Values can be any supported formats: hickory, hickory-seq, hiccup, hiccup-seq or html.
 
 #### substitute
 
@@ -542,12 +668,51 @@ Inserts the values before the current selection (node or fragment). eg. `(before
 
 Replaces the current selection (node or fragment). eg. `(substitute "xyz" a-node "abc")`
 
+Values can be any supported formats: hickory, hickory-seq, hiccup, hiccup-seq or html.
+
 #### move
 
 `(move src-selector dest-selector)`
 `(src-selector dest-selector combiner)`
 
 Takes all nodes (under the current element) matched by src-selector, removes them and combines them with the elements matched by dest-selector. eg. `(move [:.footnote] [:#footnotes] content)`
+
+
+#### content*
+
+`(content* & values)`
+
+The original enlive content transformer. Replaces the content of the element. Values can be hickory nodes, collection of hikory nodes, or plain text strings.
+
+#### append*
+
+`(append* & values)`
+
+The original enlive append transformer. Appends the values to the content of the selected element. eg. `(append "xyz" a-node "abc")`
+
+#### prepend*
+
+`(prepend* & values)`
+
+The original enlive prepend transformer. Prepends the values to the content of the selected element. eg. `(prepend "xyz" a-node "abc")`
+
+#### after*
+
+`(after* & values)`
+
+The original enlive after transformer. Inserts the values after the current selection (node or fragment). eg. `(after "xyz" a-node "abc")`
+
+#### before*
+
+`(before* & values)`
+
+The original enlive before transformer. Inserts the values before the current selection (node or fragment). eg. `(before "xyz" a-node "abc")`
+
+#### substitute*
+
+`(substitute* & values)`
+
+The original enlive substitute transformer. Replaces the current selection (node or fragment). eg. `(substitute "xyz" a-node "abc")`
 
 ### Hickory
 
@@ -560,14 +725,54 @@ The `hickory` namespaces are provided at their usual namespace locations.
  * hickory.utils
  * hickory.zip
 
+### Examples
+
+#### Blog post with reading time
+
+This file is in a directory `blog/1/index.clj` with a global page mustache template in `blog/template.html`. Post overview vars are in `blog/1/vars.yml`. Post content is in markdown format in `blog/1/body.md` with some style post processing with enlive.
+
+```clojure
+(require '[clojure.string :as string])
+
+(def words-per-minute 150)
+
+(defn word-count [data]
+  (-> data
+      (convert-to :html)
+      (string/replace #"<[^>]+>" " ")
+      string/trim
+      (string/split #"\s+")
+      count))
+
+(defn read-time-minutes [data]
+  (let [words (word-count data)]
+    (-> (/ words words-per-minute)
+        Math/ceil
+        int)))
+
+(let [body (markdown "body.md")
+      read-time (read-time-minutes body)]
+  (-> (mustache
+       "../template.html"
+       (assoc (yaml "vars.yml")
+              :read-time read-time
+              :body (-> body
+                        (enlive/at [:img] (enlive/add-class "image" "fit")
+                                   [:pre] (enlive/set-attr "style" "border-radius:8px;margin-bottom:32px;")
+                                   [:code] (enlive/set-attr "style" "adding:0px;"))
+                        (convert-to :html))))
+      (enlive/at [:img.blog-splash] (enlive/add-class "image" "fit"))))
+```
+
 ## Thanks
 
 `bootleg` leverages other people's amazing work. The following projects and people enable this to exist at all.
 
+ * [Michiel Borkent](https://www.michielborkent.nl/) built [Sci](https://github.com/borkdude/sci)
  * [James Reeves](https://www.booleanknot.com/) built [Hiccup](https://github.com/weavejester/hiccup)
  * [Christophe Grand](http://clj-me.cgrand.net/) built [Enlive](https://github.com/cgrand/enlive)
  * [David Santiago](https://github.com/davidsantiago) built [Hickory](https://github.com/davidsantiago/hickory)
- * [Michiel Borkent](https://www.michielborkent.nl/) built [Sci](https://github.com/borkdude/sci)
+ * [Dmitri Sotnikov](https://yogthos.net/) built [Selmer](https://github.com/yogthos/Selmer)
 
 ## License
 
