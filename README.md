@@ -249,38 +249,6 @@ html (or any type of xml) is represented internally as a string. This is a flexi
 
 The following functions are inbuilt into the clojure interpreter:
 
-### General
-
-#### pprint
-
-`(pprint form)`
-
-Pretty print to stdout the passed in form. If `--colour` is passed on command line then print with colour highlighting.
-
-#### parse-string
-
-`(parse-string string)`
-
-Parse the passed in string into a clojure type. Useful for converting strings to numbers, keywords, vectors or hashmaps. A binding of [edamame's](https://github.com/borkdude/edamame) `parse-string` is used for parsing.
-
-#### symlink
-
-`(symlink link target)`
-
-Make a symlink from `link` to `target`. Operates idempotently. If the link already exists it does nothing. If the `link` exists but points to another target, changes the link to point to the specified `target`. If the `link` exists but is not a symbolic link, throws an exception. On success returns the path of the link.
-
-#### mkdir
-
-`(mkdir path)`
-
-Make a directory `path`. Does not create any parent directories. Operates idempotently. If the direcotry exists, it does nothing. Otherwise it tries to create the directory. On success it returns the directory path.
-
-#### mkdirs
-
-`(mkdirs path)`
-
-Make a directory `path` including all the parent directories. Operates idempotently. If the direcotry exists, it does nothing. Otherwise it tries to create the directories. On success it returns the final directory path.
-
 ### Markup Processing Functions
 
 #### markdown
@@ -438,6 +406,24 @@ $ bootleg -d -e '(glob "**/*.y?l")'
  "examples/quickstart/fields.yml"
  "test/files/simple.yml")
 ```
+
+#### symlink
+
+`(symlink link target)`
+
+Make a symlink from `link` to `target`. Operates idempotently. If the link already exists it does nothing. If the `link` exists but points to another target, changes the link to point to the specified `target`. If the `link` exists but is not a symbolic link, throws an exception. On success returns the path of the link.
+
+#### mkdir
+
+`(mkdir path)`
+
+Make a directory `path`. Does not create any parent directories. Operates idempotently. If the direcotry exists, it does nothing. Otherwise it tries to create the directory. On success it returns the directory path.
+
+#### mkdirs
+
+`(mkdirs path)`
+
+Make a directory `path` including all the parent directories. Operates idempotently. If the direcotry exists, it does nothing. Otherwise it tries to create the directories. On success it returns the final directory path.
 
 ### Var Loading Functions
 
@@ -724,6 +710,20 @@ The `hickory` namespaces are provided at their usual namespace locations.
  * hickory.select
  * hickory.utils
  * hickory.zip
+
+### Other Functions
+
+#### pprint
+
+`(pprint form)`
+
+Pretty print to stdout the passed in form. If `--colour` is passed on command line then print with colour highlighting.
+
+#### parse-string
+
+`(parse-string string)`
+
+Parse the passed in string into a clojure type. Useful for converting strings to numbers, keywords, vectors or hashmaps. A binding of [edamame's](https://github.com/borkdude/edamame) `parse-string` is used for parsing.
 
 ### Examples
 
