@@ -47,7 +47,7 @@ package-linux:
 	cp target/uberjar/bootleg-$(VERSION)-standalone.jar bootleg-$(VERSION).jar
 
 package-macos:
-	cd build && zip bootleg-$(VERSION)-darwin-amd64.zip bootleg
+	cd build && zip bootleg-$(VERSION)-macos-amd64.zip bootleg
 	cp build/*.zip .
 
 	rm -rf /tmp/release
