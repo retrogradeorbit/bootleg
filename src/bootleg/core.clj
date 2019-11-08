@@ -9,7 +9,7 @@
             [clojure.java.io :as io])
   (:gen-class))
 
-(def version "0.1.5-SNAPSHOT")
+(def version "0.1.5")
 
 (def cli-options
   [
