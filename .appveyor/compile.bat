@@ -2,7 +2,7 @@
 
 Rem set GRAALVM_HOME=C:\Users\IEUser\Downloads\graalvm\graalvm-ce-19.2.1
 Rem set PATH=%PATH%;C:\Users\IEUser\bin
-Rem set BOOTLEG_VERSION: 0.1.5-SNAPSHOT
+Rem set BOOTLEG_VERSION: 0.1.5
 
 if "%GRAALVM_HOME%"=="" (
     echo Please set GRAALVM_HOME
