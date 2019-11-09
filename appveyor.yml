@@ -8,7 +8,7 @@ clone_folder: C:\projects\bootleg
 
 environment:
   GRAALVM_HOME: C:\projects\bootleg\graalvm\graalvm-ce-19.2.1
-  BOOTLEG_VERSION: 0.1.5-SNAPSHOT
+  BOOTLEG_VERSION: 0.1.5
 
 branches:
   only:
