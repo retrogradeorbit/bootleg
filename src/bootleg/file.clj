@@ -43,7 +43,10 @@
 (defmethod input-stream "https" [_ url] (url-input-stream url))
 
 (defn path-relative [filename]
-  (path-join context/*path* filename))
+  (if (or (string/starts-with? filename "http://")
+          (string/starts-with? filename "https://"))
+    filename
+    (path-join context/*path* filename)))
 
 (defn relativise
   "return the relative path that gets you from a working directory
