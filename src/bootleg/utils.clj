@@ -30,12 +30,12 @@
 
 (defn- munge-html-tags [markup]
   (-> markup
-      (string/replace #"<html" "<html-bootleg-munged")
-      (string/replace #"</html" "</html-bootleg-munged")
-      (string/replace #"<head" "<head-bootleg-munged")
-      (string/replace #"</head" "</head-bootleg-munged")
-      (string/replace #"<body" "<body-bootleg-munged")
-      (string/replace #"</body" "</body-bootleg-munged")))
+      (string/replace #"<html([> ])" "<html-bootleg-munged$1")
+      (string/replace #"</html([> ])" "</html-bootleg-munged$1")
+      (string/replace #"<head([> ])" "<head-bootleg-munged$1")
+      (string/replace #"</head([> ])" "</head-bootleg-munged$1")
+      (string/replace #"<body([> ])" "<body-bootleg-munged$1")
+      (string/replace #"</body([> ])" "</body-bootleg-munged$1")))
 
 (def munge-map {:html :html-bootleg-munged
                 :body :body-bootleg-munged

@@ -467,8 +467,13 @@
     (is (= (convert-to ["text" "string"] :hiccup-seq)
            ["text" "string"]))
     (is (= (convert-to ["text" "string"] :hickory-seq)
-           ["text" "string"]))
+           ["text" "string"])))
 
-    )
-
-  )
+  (testing "issue #31 - header tag munged"
+    (is (= (convert-to [:header [:div]] :html)
+           "<header><div></div></header>"))
+    (is (= (convert-to "<header><div></div></header>" :hiccup)
+           [:header {} [:div {}]]))
+    (is (= (convert-to "<html><header><div></div></header></html>" :hiccup)
+           [:html {} [:header {} [:div {}]]]))
+    ))
