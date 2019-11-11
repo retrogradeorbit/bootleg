@@ -725,7 +725,7 @@ Pretty print to stdout the passed in form. If `--colour` is passed on command li
 
 Parse the passed in string into a clojure type. Useful for converting strings to numbers, keywords, vectors or hashmaps. A binding of [edamame's](https://github.com/borkdude/edamame) `parse-string` is used for parsing.
 
-### Examples
+## Examples
 
 The following are some example sites built using bootleg for you to use as inspiration, or as a base for your own work.
 
