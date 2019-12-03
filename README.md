@@ -9,16 +9,16 @@ Bootleg is a command line tool that rapidly renders clojure based templates. Wit
 Install for Linux:
 
 ```shell
-$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.5/bootleg-0.1.5-linux-amd64.tgz
-$ tar xvf bootleg-0.1.5-linux-amd64.tgz
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.6/bootleg-0.1.6-linux-amd64.tgz
+$ tar xvf bootleg-0.1.6-linux-amd64.tgz
 $ mv bootleg ~/bin
 ```
 
 Install for MacOS:
 
 ```shell
-$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.5/bootleg-0.1.5-macos-amd64.zip
-$ unzip bootleg-0.1.5-macos-amd64.zip
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.6/bootleg-0.1.6-macos-amd64.zip
+$ unzip bootleg-0.1.6-macos-amd64.zip
 $ mv bootleg /usr/local/bin
 ```
 
@@ -173,19 +173,19 @@ $ bootleg example-data.clj          # <- no -d flag means output will be html
 Bootleg is distributed for linux as a single executable file. Download the latest tarball from https://github.com/retrogradeorbit/bootleg/releases and then extract it. Once extracted, move the binary to your path. For system wide installation try `/usr/local/bin` or for personal use `~/bin`
 
 ```shell
-$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.5/bootleg-0.1.5-linux-amd64.tgz
-$ tar xvf bootleg-0.1.5-linux-amd64.tgz
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.6/bootleg-0.1.6-linux-amd64.tgz
+$ tar xvf bootleg-0.1.6-linux-amd64.tgz
 $ mv bootleg /usr/local/bin
 ```
 
 ### Other Platforms
 
-Windows support is experimental. Download (https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.5/bootleg-0.1.5-windows-amd64.zip) and unzip the archive. Copy the bootleg.exe binary to somewhere on your path.
+Windows support is experimental. Download (https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.6/bootleg-0.1.6-windows-amd64.zip) and unzip the archive. Copy the bootleg.exe binary to somewhere on your path.
 
 The jar release file is also an option if you have java installed. You can run it as follows:
 
 ```shell
-$ java -jar bootleg-0.1.5.jar
+$ java -jar bootleg-0.1.6.jar
 ```
 
 ## Usage
@@ -219,7 +219,7 @@ Options:
 
 Hiccup is a standard clojure DSL syntax for representing markup as nested sequences of vectors, and is represented in option flags by the keyword `:hiccup`. An example of some hiccup: the html `<div><p>This is an example</p></div>` is represented in hiccup as `[:div [:p "This is an example"]]`.
 
-Hiccup is limited in that it can only represent a single root element and its children. This means there are template fragments that *cannot* be represented in hiccup. For example, the html snippet `<p>one</p><p>two</p>` cannot be represented as hiccup. It is comprised of two hiccup forms. `[:p "one"]` and `[:p "two"]`
+Hiccup, as the term is used in bootleg, is refering to this vector form. It represents a single root element and its children. This means there are template fragments that *cannot* be represented like this. For example, the html snippet `<p>one</p><p>two</p>` cannot be represented as hiccup. It is comprised of two hiccup forms. `[:p "one"]` and `[:p "two"]`. See `hiccup-seq` below for information about this form.
 
 ### hickory
 
@@ -227,17 +227,17 @@ Hickory is a format used to internally represent document trees in clojure for p
 
 Both the hickory and enlive clojure projects use this format internally to represent and manipulate DOM trees.
 
-Hickory is limited in that it can only represent a single root element and its children. This means there are template fragments that *cannot* be represented in hickory. For example, the html snippet `<p>one</p><p>two</p>` cannot be represented as hickory. It is comprised of two hickory forms. `{:type :element, :attrs nil, :tag :p, :content ["one"]}` and `{:type :element, :attrs nil, :tag :p, :content ["two"]}`
+Hickory, as the term is used in bootleg, is refering to this hashmap form. It represents a single root element and its children. This means there are template fragments that *cannot* be represented in hickory. For example, the html snippet `<p>one</p><p>two</p>` cannot be represented as hickory. It is comprised of two hickory forms. `{:type :element, :attrs nil, :tag :p, :content ["one"]}` and `{:type :element, :attrs nil, :tag :p, :content ["two"]}`. See `hickory-seq` below for information about this form.
 
 ### hiccup-seq
 
-Hiccup-seq is simply a clojure sequence (or vector) of hiccup forms. In option flags it is referenced by the keyword `:hiccup-seq`. By wrapping multiple hiccup forms in a sequence, hiccup-seq can now represent any single root element (and it's children) *and* any template fragment composed of sibling elements.
+Hiccup-seq is simply a clojure sequence (or vector) of hiccup forms. In option flags it is referenced by the keyword `:hiccup-seq`. By wrapping multiple hiccup forms in a sequence, hiccup-seq can represent any single root element (and it's children) *and* any template fragment composed of sibling elements.
 
 For example: the html snippet `<p>one</p><p>two</p>` is represented in hiccup-seq as: `([:p "one"] [:p "two"])`
 
 ### hickory-seq
 
-Hickory-seq is simply a clojure sequence (or vector) of hickory forms. In option flags it is referenced by the keyword `:hickory-seq`. By wrapping multiple hickory forms in a sequence, hickory-seq can now represent any single root element (and it's children) *and* any template fragment composed of sibling elements.
+Hickory-seq is simply a clojure sequence (or vector) of hickory forms. In option flags it is referenced by the keyword `:hickory-seq`. By wrapping multiple hickory forms in a sequence, hickory-seq can represent any single root element (and it's children) *and* any template fragment composed of sibling elements.
 
 For example: the html snippet `<p>one</p><p>two</p>` is represented in hickory-seq as: `({:type :element, :attrs nil, :tag :p, :content ["one"]} {:type :element, :attrs nil, :tag :p, :content ["two"]})`
 
@@ -424,6 +424,12 @@ Make a directory `path`. Does not create any parent directories. Operates idempo
 `(mkdirs path)`
 
 Make a directory `path` including all the parent directories. Operates idempotently. If the direcotry exists, it does nothing. Otherwise it tries to create the directories. On success it returns the final directory path.
+
+#### spit
+
+`(spit filename data)`
+
+Write `data` into the specified `filename`. The filename is interpereted relative to the path of the current script.
 
 ### Var Loading Functions
 
@@ -724,6 +730,19 @@ Pretty print to stdout the passed in form. If `--colour` is passed on command li
 `(parse-string string)`
 
 Parse the passed in string into a clojure type. Useful for converting strings to numbers, keywords, vectors or hashmaps. A binding of [edamame's](https://github.com/borkdude/edamame) `parse-string` is used for parsing.
+
+## Building the executable
+
+Ensure graalvm community edition 19.3.0 is installed in your home directory and the native image extension is also installed.
+
+  $ make clean
+  $ make all
+
+The compiled file will be at `build/bootleg`
+
+To use a different version of graal or one installed in a different path, add the GRAALVM suffix like:
+
+  $ make all GRAALVM_HOME=/path/to/graal-vm
 
 ## Examples
 

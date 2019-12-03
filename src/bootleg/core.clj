@@ -9,7 +9,7 @@
             [clojure.java.io :as io])
   (:gen-class))
 
-(def version "0.1.5")
+(def version (utils/embed ".meta/VERSION"))
 
 (def cli-options
   [
@@ -86,18 +86,20 @@
           (if (:traceback options)
             (throw e)
             (let [{:keys [type] :as data} (ex-data e)]
-              (if (= type :sci/error)
+              (if (#{:sci/error :edamame/error} type)
                 (let [{:keys [row col]} (ex-data e)
+                      message (.getMessage e)
                       cause (.getCause e)
-                      message (.getMessage cause)
+                      cause-message (when cause (.getMessage cause))
                       nice-name (utils/exception-nice-name cause)]
                   (binding [*out* *err*]
                     (println
                      (str
                       (utils/colour :red)
                       "bootleg: script error at line " row ", column " col ": "
-                      nice-name ": "
-                      message
+                      (if cause
+                        (str nice-name ": " cause-message)
+                        message)
                       (utils/colour)))))
                 (throw e))))
           (System/exit 2))))))

@@ -1,8 +1,7 @@
 @echo off
 
-Rem set GRAALVM_HOME=C:\Users\IEUser\Downloads\graalvm\graalvm-ce-19.2.1
+Rem set GRAALVM_HOME=C:\Users\IEUser\Downloads\graalvm\graalvm-ce-java8-19.3.0
 Rem set PATH=%PATH%;C:\Users\IEUser\bin
-Rem set BOOTLEG_VERSION: 0.1.5
 
 if "%GRAALVM_HOME%"=="" (
     echo Please set GRAALVM_HOME
@@ -10,6 +9,7 @@ if "%GRAALVM_HOME%"=="" (
 )
 set JAVA_HOME=%GRAALVM_HOME%\bin
 set PATH=%PATH%;%GRAALVM_HOME%\bin
+set /P BOOTLEG_VERSION=< .meta\VERSION
 
 echo Building bootleg %BOOTLEG_VERSION%
 
@@ -34,6 +34,7 @@ call %GRAALVM_HOME%\bin\native-image.cmd ^
   --no-fallback ^
   "-J-Xmx4g" ^
   -H:+TraceClassInitialization -H:+PrintClassInitialization
+
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo Creating zip archive

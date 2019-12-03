@@ -3,6 +3,24 @@ All notable changes to this project will be documented in this file. This change
 
 ## [Unreleased]
 
+## [0.1.6] - 2019-12-04
+### Fixed
+- nice print edamame exceptions - #30
+- <header> tags in loaded markup munged - #31
+- fix slurp to return string not input stream - #34
+- fix hiccup-seq containing nil causes NPE on conversion - #37
+
+### Changed
+- clojure.core namespace integration for borkdude/sci#130 - #23
+- path capture to use thread local - #24 #28
+- improve documentation around hiccup and hiccup-seq - #35 #36
+- upgraded to latest sci and edamame to fix some reader issues
+
+### Added
+- more enlive documentation in readme - #25
+- support for reagent :style hashmaps - #32
+- docs on building binary - #33
+
 ## [0.1.5] - 2019-11-8
 ### Fixed
 - File Not Found error when yaml file missing - #17
@@ -43,7 +61,8 @@ All notable changes to this project will be documented in this file. This change
 ## [0.1.1] - 2019-10-23
 Initial release
 
-[Unreleased]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.5...HEAD
+[Unreleased]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.6...HEAD
+[0.1.6]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.2...v0.1.3

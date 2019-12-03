@@ -1,10 +1,12 @@
 (ns bootleg.utils
   (:require [bootleg.context :as context]
+            [bootleg.file :as file]
             [clojure.string :as string]
             [hickory.core :as hickory]
             [hickory.render :as render]
             [hickory.convert :as convert]
             [clojure.walk :as walk]
+            [clojure.java.io :as io]
             [fipp.edn :as fipp]
             [puget.printer :as puget]))
 
@@ -30,12 +32,12 @@
 
 (defn- munge-html-tags [markup]
   (-> markup
-      (string/replace #"<html" "<html-bootleg-munged")
-      (string/replace #"</html" "</html-bootleg-munged")
-      (string/replace #"<head" "<head-bootleg-munged")
-      (string/replace #"</head" "</head-bootleg-munged")
-      (string/replace #"<body" "<body-bootleg-munged")
-      (string/replace #"</body" "</body-bootleg-munged")))
+      (string/replace #"<html([> ])" "<html-bootleg-munged$1")
+      (string/replace #"</html([> ])" "</html-bootleg-munged$1")
+      (string/replace #"<head([> ])" "<head-bootleg-munged$1")
+      (string/replace #"</head([> ])" "</head-bootleg-munged$1")
+      (string/replace #"<body([> ])" "<body-bootleg-munged$1")
+      (string/replace #"</body([> ])" "</body-bootleg-munged$1")))
 
 (def munge-map {:html :html-bootleg-munged
                 :body :body-bootleg-munged
@@ -59,6 +61,59 @@
   (walk/postwalk #(if (:tag %)
                     (update % :tag munge-map (:tag %))
                     %) hickory))
+
+(defn- stringify-style-map [style-map]
+  (->> style-map
+       (map (fn [[k v]] (str (name k) ":" (name v) ";")))
+       (apply str)))
+
+(defn- stringify-all-style-maps [hiccup]
+  (->> hiccup
+       (walk/postwalk
+        (fn [form]
+          (if (and (vector? form)
+                   (keyword (first form))
+                   (map? (second form))
+                   (map? (:style (second form))))
+            (update-in form [1 :style] stringify-style-map)
+            form)))))
+
+(defn- strip-nils [hiccup]
+  (->> hiccup
+       (walk/postwalk
+        (fn [form]
+          (cond
+            (vector? form) (filterv identity form)
+            (seq? form) (filter identity form)
+            :else form)))))
+
+(defn- strip-empty-forms [hiccup]
+  (->> hiccup
+       (walk/postwalk
+        (fn [form]
+          (if (and (seqable? form) (empty? form))
+            nil
+            form)))))
+
+(defn- collapse-nils-and-empty-forms [hiccup]
+  (loop [forms hiccup]
+    (let [new-forms (->> forms
+                         strip-empty-forms
+                         strip-nils)]
+      (if (= new-forms forms)
+        forms
+        (recur new-forms)))))
+
+(defn- preprocess-hiccup [hiccup]
+  (->> hiccup
+       stringify-all-style-maps
+       collapse-nils-and-empty-forms))
+
+#_ (preprocess-hiccup [:div [:p {:style {:color "red" :margin-top "20px"}} "one"]])
+#_ (preprocess-hiccup [[nil nil] [[] nil] []])
+#_ (preprocess-hiccup [nil])
+#_ (convert-to (preprocess-hiccup [[]]) :html)
+#_ (markup-type [[]])
 
 (defn hickory-seq-add-missing-types [hickory]
   (walk/postwalk
@@ -95,10 +150,12 @@
   (last (html->hiccup-seq markup)))
 
 (defn hiccup-seq->html [hiccup-seq]
-  (->> hiccup-seq
-       ;; hiccup-to-html cant handle numbers
-       (walk/postwalk #(if (number? %) (str %) %))
-       render/hiccup-to-html))
+  (str
+   (some->> hiccup-seq
+            preprocess-hiccup
+            ;; hiccup-to-html cant handle numbers
+            (walk/postwalk #(if (number? %) (str %) %))
+            render/hiccup-to-html)))
 
 (defn hiccup->html [hiccup]
   (hiccup-seq->html [hiccup]))
@@ -205,7 +262,7 @@
     (is-hickory-seq? data) :hickory-seq
     (string? data) :html
     (every? string? data) :hiccup-seq
-    :else nil))
+    :else :hiccup-seq))
 
 (defn- escape-code [n]
   (str "\033[" (or n 0) "m"))
@@ -317,3 +374,17 @@
       split-camel-case
       (->> (string/join " ")
            (string/capitalize))))
+
+(defn slurp-relative [src]
+  (-> src
+      file/path-relative
+      io/input-stream
+      slurp))
+
+#_ (slurp-relative "test/files/simple.md")
+
+(defn spit-relative [f data & opts]
+  (apply spit (file/path-relative spit) data opts))
+
+(defmacro embed [filename]
+  (slurp filename))

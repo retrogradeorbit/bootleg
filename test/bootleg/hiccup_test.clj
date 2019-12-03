@@ -56,29 +56,45 @@
 ")))
   (testing "enlive"
     (is (= (process-hiccup-data "test/files"
-                                  "(-> [:div [:p] [:p#id]]
+                                "(-> [:div [:p] [:p#id]]
                                      (convert-to :hickory-seq)
                                      (net.cgrand.enlive-html/at
                                        [:p#id] (net.cgrand.enlive-html/content \"new content\"))
                                      (convert-to :hiccup))")
-             [:div {} [:p {}] [:p {:id "id"} "new content"]]))
+           [:div {} [:p {}] [:p {:id "id"} "new content"]]))
     (is (= (process-hiccup-data "test/files"
-                                  "(-> [:div [:p] [:p#id]]
+                                "(-> [:div [:p] [:p#id]]
                                      (net.cgrand.enlive-html/at
                                        [:p#id] (net.cgrand.enlive-html/content \"new content\")))")
-             [:div {} [:p {}] [:p {:id "id"} "new content"]]))
+           [:div {} [:p {}] [:p {:id "id"} "new content"]]))
     (is (= (process-hiccup-data "test/files"
-                                  "(-> [:div [:p] [:p#id]]
+                                "(-> [:div [:p] [:p#id]]
                                      (convert-to :html)
                                      (net.cgrand.enlive-html/at
                                        [:p#id] (net.cgrand.enlive-html/content \"new content\")))")
-             "<div><p></p><p id=\"id\">new content</p></div>"))
+           "<div><p></p><p id=\"id\">new content</p></div>"))
     (is (= (process-hiccup-data "test/files"
-                                  "(-> [:div [:p] [:p#id]]
+                                "(-> [:div [:p] [:p#id]]
                                      (convert-to :hickory)
                                      (net.cgrand.enlive-html/at
                                        [:p#id] (net.cgrand.enlive-html/content \"new content\")))")
-             {:type :element
+           {:type :element
+            :attrs nil
+            :tag :div
+            :content [{:type :element
+                       :attrs nil
+                       :tag :p
+                       :content []}
+                      {:type :element
+                       :attrs {:id "id"}
+                       :tag :p
+                       :content ["new content"]}]}))
+    (is (= (process-hiccup-data "test/files"
+                                "(-> [:div [:p] [:p#id]]
+                                     (convert-to :hickory-seq)
+                                     (net.cgrand.enlive-html/at
+                                       [:p#id] (net.cgrand.enlive-html/content \"new content\")))")
+           '({:type :element
               :attrs nil
               :tag :div
               :content [{:type :element
@@ -88,26 +104,10 @@
                         {:type :element
                          :attrs {:id "id"}
                          :tag :p
-                         :content ["new content"]}]}))
-    (is (= (process-hiccup-data "test/files"
-                                  "(-> [:div [:p] [:p#id]]
-                                     (convert-to :hickory-seq)
-                                     (net.cgrand.enlive-html/at
-                                       [:p#id] (net.cgrand.enlive-html/content \"new content\")))")
-             '({:type :element
-                :attrs nil
-                :tag :div
-                :content [{:type :element
-                           :attrs nil
-                           :tag :p
-                           :content []}
-                          {:type :element
-                           :attrs {:id "id"}
-                           :tag :p
-                           :content ["new content"]}]})))
+                         :content ["new content"]}]})))
     (is (= (process-hiccup-data
-              "test/files"
-              "
+            "test/files"
+            "
 (require '[net.cgrand.enlive-html :as html])
 
 (html/defsnippet main-snippet \"header.html\" [:header] [heading navigation-elements]
@@ -119,35 +119,35 @@
 (main-snippet \"heading\" [[\"caption 1\" \"url 1\"] [\"caption 2\" \"url 2\"]])
 
 ")
-             '({:type :element
-                :tag :header
-                :attrs nil
-                :content ["\n      "
-                          {:type :element
-                           :tag :h1
-                           :attrs nil
-                           :content ["heading"]}
-                          "\n      "
-                          {:type :element
-                           :tag :ul
-                           :attrs {:id "navigation"}
-                           :content ["\n        "
-                                     {:type :element
-                                      :tag :li
-                                      :attrs nil
-                                      :content [{:type :element
-                                                 :tag :a
-                                                 :attrs {:href "url 1"}
-                                                 :content ["caption 1"]}]}
-                                     {:type :element
-                                      :tag :li
-                                      :attrs nil
-                                      :content [{:type :element
-                                                 :tag :a
-                                                 :attrs {:href "url 2"}
-                                                 :content ["caption 2"]}]}
-                                     "\n      "]}
-                          "\n    "]})))
+           '({:type :element
+              :tag :header
+              :attrs nil
+              :content ["\n      "
+                        {:type :element
+                         :tag :h1
+                         :attrs nil
+                         :content ["heading"]}
+                        "\n      "
+                        {:type :element
+                         :tag :ul
+                         :attrs {:id "navigation"}
+                         :content ["\n        "
+                                   {:type :element
+                                    :tag :li
+                                    :attrs nil
+                                    :content [{:type :element
+                                               :tag :a
+                                               :attrs {:href "url 1"}
+                                               :content ["caption 1"]}]}
+                                   {:type :element
+                                    :tag :li
+                                    :attrs nil
+                                    :content [{:type :element
+                                               :tag :a
+                                               :attrs {:href "url 2"}
+                                               :content ["caption 2"]}]}
+                                   "\n      "]}
+                        "\n    "]})))
 
     (is (= (process-hiccup-data
             "test/files"
@@ -283,6 +283,37 @@
 
 </html>"))
 
+    (testing "issue #31 - header tag munged"
+      (is (= (process-hiccup-data
+              "test/files"
+              "(mustache \"header.html\" {})")
+             '("<!DOCTYPE html>\n"
+               [:html {:lang "en"} "\n  "
+                [:body {} "\n    "
+                 [:header {} "\n      "
+                  [:h1 {} "Header placeholder"] "\n      "
+                  [:ul {:id "navigation"} "\n        "
+                   [:li {}
+                    [:a {:href "#"} "Placeholder for navigation"]]
+                   "\n      "]
+                  "\n    "]
+                 "\n  "]
+                "\n"]
+               "\n"))))))
 
-
-    ))
+(deftest hiccup-test
+  (testing "hiccup style map"
+    (is (= (process-hiccup-data "." "(convert-to [:div [:p {:style {:color \"red\" :margin-top \"20px\"}} \"one\"]] :html)")
+           "<div><p style=\"color:red;margin-top:20px;\">one</p></div>")))
+  (testing "hiccup nil forms"
+    (is (= (process-hiccup-data "." "(convert-to [:div nil [:p \"one\"] nil [:p nil \"two\" nil] nil] :html)")
+           "<div><p>one</p><p>two</p></div>")))
+  (testing "empty forms"
+    (is (= (process-hiccup-data "." "(convert-to [:div []] :html)")
+           "<div></div>")))
+  (testing "empty forms 2"
+    (is (= (process-hiccup-data "." "(convert-to [[]] :html)")
+           "")))
+  (testing "empty forms 3"
+    (is (= (process-hiccup-data "." "(convert-to [[nil nil] [[[[[[nil [nil [nil []]]]]]]] nil] []] :html)")
+           ""))))
