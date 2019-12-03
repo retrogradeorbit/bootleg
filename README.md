@@ -735,14 +735,18 @@ Parse the passed in string into a clojure type. Useful for converting strings to
 
 Ensure graalvm community edition 19.3.0 is installed in your home directory and the native image extension is also installed.
 
-  $ make clean
-  $ make all
+```shell
+$ make clean
+$ make all
+```
 
 The compiled file will be at `build/bootleg`
 
 To use a different version of graal or one installed in a different path, add the GRAALVM suffix like:
 
-  $ make all GRAALVM_HOME=/path/to/graal-vm
+```shell
+$ make all GRAALVM_HOME=/path/to/graal-vm
+```
 
 ## Examples
 
