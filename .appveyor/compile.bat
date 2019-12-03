@@ -20,20 +20,21 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 
 Rem the --no-server option is not supported in GraalVM Windows.
 call %GRAALVM_HOME%\bin\native-image.cmd ^
-  -jar target/uberjar/bootleg-%BOOTLEG_VERSION%-standalone.jar ^
-  -H:Name=bootleg ^
-  -H:+ReportExceptionStackTraces ^
-  -J-Dclojure.spec.skip-macros=true ^
-  -J-Dclojure.compiler.direct-linking=true ^
-  -H:ConfigurationFileDirectories=graal-configs/ ^
-  --initialize-at-build-time ^
-  -H:Log=registerResource: ^
-  -H:EnableURLProtocols=http ^
-  --verbose ^
-  --allow-incomplete-classpath ^
-  --no-fallback ^
+  "-jar" "target/uberjar/bootleg-%BOOTLEG_VERSION%-standalone.jar" ^
+  "-H:Name=bootleg" ^
+  "-H:+ReportExceptionStackTraces" ^
+  "-J-Dclojure.spec.skip-macros=true" ^
+  "-J-Dclojure.compiler.direct-linking=true" ^
+  "-H:ConfigurationFileDirectories=graal-configs/" ^
+  "--initialize-at-build-time" ^
+  "-H:Log=registerResource:" ^
+  "-H:EnableURLProtocols=http" ^
+  "--verbose" ^
+  "--allow-incomplete-classpath" ^
+  "--no-fallback" ^
   "-J-Xmx4g" ^
-  -H:+TraceClassInitialization -H:+PrintClassInitialization
+  "-H:+TraceClassInitialization" ^
+  "-H:+PrintClassInitialization"
 
 if %errorlevel% neq 0 exit /b %errorlevel%
 
