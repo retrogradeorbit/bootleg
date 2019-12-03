@@ -300,3 +300,20 @@
                  "\n  "]
                 "\n"]
                "\n"))))))
+
+(deftest hiccup-test
+  (testing "hiccup style map"
+    (is (= (process-hiccup-data "." "(convert-to [:div [:p {:style {:color \"red\" :margin-top \"20px\"}} \"one\"]] :html)")
+           "<div><p style=\"color:red;margin-top:20px;\">one</p></div>")))
+  (testing "hiccup nil forms"
+    (is (= (process-hiccup-data "." "(convert-to [:div nil [:p \"one\"] nil [:p nil \"two\" nil] nil] :html)")
+           "<div><p>one</p><p>two</p></div>")))
+  (testing "empty forms"
+    (is (= (process-hiccup-data "." "(convert-to [:div []] :html)")
+           "<div></div>")))
+  (testing "empty forms 2"
+    (is (= (process-hiccup-data "." "(convert-to [[]] :html)")
+           "")))
+  (testing "empty forms 3"
+    (is (= (process-hiccup-data "." "(convert-to [[nil nil] [[[[[[nil [nil [nil []]]]]]]] nil] []] :html)")
+           ""))))
