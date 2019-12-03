@@ -9,7 +9,7 @@
             [clojure.java.io :as io])
   (:gen-class))
 
-(def version "0.1.5")
+(def version (utils/embed ".meta/VERSION"))
 
 (def cli-options
   [

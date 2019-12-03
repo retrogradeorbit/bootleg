@@ -385,3 +385,6 @@
 
 (defn spit-relative [f data & opts]
   (apply spit (file/path-relative spit) data opts))
+
+(defmacro embed [filename]
+  (slurp filename))
