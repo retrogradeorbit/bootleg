@@ -731,7 +731,7 @@ Pretty print to stdout the passed in form. If `--colour` is passed on command li
 
 Parse the passed in string into a clojure type. Useful for converting strings to numbers, keywords, vectors or hashmaps. A binding of [edamame's](https://github.com/borkdude/edamame) `parse-string` is used for parsing.
 
-### Building the executable
+## Building the executable
 
 Ensure graalvm community edition 19.3.0 is installed in your home directory and the native image extension is also installed.
 
@@ -744,44 +744,15 @@ To use a different version of graal or one installed in a different path, add th
 
   $ make all GRAALVM_HOME=/path/to/graal-vm
 
-### Examples
+## Examples
 
-#### Blog post with reading time
+The following are some example sites built using bootleg for you to use as inspiration, or as a base for your own work.
 
-This file is in a directory `blog/1/index.clj` with a global page mustache template in `blog/template.html`. Post overview vars are in `blog/1/vars.yml`. Post content is in markdown format in `blog/1/body.md` with some style post processing with enlive.
+ * [epiccastle.io](https://github.com/epiccastle/epiccastle.io)
 
-```clojure
-(require '[clojure.string :as string])
+### Submit Your Own Example
 
-(def words-per-minute 150)
-
-(defn word-count [data]
-  (-> data
-      (convert-to :html)
-      (string/replace #"<[^>]+>" " ")
-      string/trim
-      (string/split #"\s+")
-      count))
-
-(defn read-time-minutes [data]
-  (let [words (word-count data)]
-    (-> (/ words words-per-minute)
-        Math/ceil
-        int)))
-
-(let [body (markdown "body.md")
-      read-time (read-time-minutes body)]
-  (-> (mustache
-       "../template.html"
-       (assoc (yaml "vars.yml")
-              :read-time read-time
-              :body (-> body
-                        (enlive/at [:img] (enlive/add-class "image" "fit")
-                                   [:pre] (enlive/set-attr "style" "border-radius:8px;margin-bottom:32px;")
-                                   [:code] (enlive/set-attr "style" "adding:0px;"))
-                        (convert-to :html))))
-      (enlive/at [:img.blog-splash] (enlive/add-class "image" "fit"))))
-```
+Have you built a website with bootleg? Is the source of this website open source? If so [open an issue](https://github.com/retrogradeorbit/bootleg/issues/new) on the project with a link to your github project with the source tree in it and I will add it to the examples list. This way there will be more reference material for bootleg users to draw apon!
 
 ## Thanks
 
