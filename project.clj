@@ -19,7 +19,8 @@
                  [selmer "1.12.17"]
 
                  ;; for hiccup eval
-                 [borkdude/sci "0.0.11-alpha.14"]
+                 [borkdude/sci "0.0.11-alpha.14" :exclusions [[borkdude/edamame]]]
+                 [borkdude/edamame "0.0.9-alpha.2"]
 
                  ;; clojures pprint doesn't work under graal native-image
                  [fipp "0.6.21"]
