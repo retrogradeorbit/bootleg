@@ -731,6 +731,19 @@ Pretty print to stdout the passed in form. If `--colour` is passed on command li
 
 Parse the passed in string into a clojure type. Useful for converting strings to numbers, keywords, vectors or hashmaps. A binding of [edamame's](https://github.com/borkdude/edamame) `parse-string` is used for parsing.
 
+### Building the executable
+
+Ensure graalvm community edition 19.2.1 is installed in your home directory and the native image extension is also installed.
+
+  $ make clean
+  $ make all
+
+The compiled file will be at `build/bootleg`
+
+To use a different version of graal or one installed in a different path, add the GRAALVM suffix like:
+
+  $ make all GRAALVM_HOME=/path/to/graal-vm
+
 ### Examples
 
 #### Blog post with reading time
