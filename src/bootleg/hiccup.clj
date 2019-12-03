@@ -28,7 +28,6 @@
               ;; file loading
               'markdown markdown/markdown
               'mustache mustache/mustache
-              'slurp #(-> % file/path-relative io/input-stream)
               'html html/html
               'hiccup process-hiccup
               'selmer selmer/selmer

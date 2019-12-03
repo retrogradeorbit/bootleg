@@ -637,5 +637,7 @@
                   'parse-int #(Integer/parseInt %)
                   'println println
                   'pprint utils/pprint
+                  'slurp utils/slurp-relative
+                  'spit utils/spit-relative
                   }
    })

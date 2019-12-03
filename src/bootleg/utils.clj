@@ -1,10 +1,12 @@
 (ns bootleg.utils
   (:require [bootleg.context :as context]
+            [bootleg.file :as file]
             [clojure.string :as string]
             [hickory.core :as hickory]
             [hickory.render :as render]
             [hickory.convert :as convert]
             [clojure.walk :as walk]
+            [clojure.java.io :as io]
             [fipp.edn :as fipp]
             [puget.printer :as puget]))
 
@@ -317,3 +319,14 @@
       split-camel-case
       (->> (string/join " ")
            (string/capitalize))))
+
+(defn slurp-relative [src]
+  (-> src
+      file/path-relative
+      io/input-stream
+      slurp))
+
+#_ (slurp-relative "test/files/simple.md")
+
+(defn spit-relative [f data & opts]
+  (apply spit (file/path-relative spit) data opts))
