@@ -1,4 +1,4 @@
-GRAALVM = $(HOME)/graalvm-ce-19.2.1
+GRAALVM = $(HOME)/graalvm-ce-java8-19.3.0
 SRC = src/bootleg/core.clj
 VERSION = $(shell cat .meta/VERSION | xargs)
 
