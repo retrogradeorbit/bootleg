@@ -425,6 +425,12 @@ Make a directory `path`. Does not create any parent directories. Operates idempo
 
 Make a directory `path` including all the parent directories. Operates idempotently. If the direcotry exists, it does nothing. Otherwise it tries to create the directories. On success it returns the final directory path.
 
+#### spit
+
+`(spit filename data)`
+
+Write `data` into the specified `filename`. The filename is interpereted relative to the path of the current script.
+
 ### Var Loading Functions
 
 #### yaml
