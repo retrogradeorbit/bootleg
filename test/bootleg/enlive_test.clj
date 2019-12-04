@@ -130,5 +130,28 @@
 ")
            [:div {} [:p {}] [:div {} "one"] [:div {} "two"] [:div {} "three"]])))
 
+  (testing "transform reagent styles"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[net.cgrand.enlive-html :as html])
+
+(-> [:div [:p {:style {:margin-top \"10px\"}}]]
+    (html/at [:div] (html/set-attr :style \"margin-top:10px;\")))
+")
+           [:div {:style "margin-top:10px;"}
+            [:p {:style "margin-top:10px;"}]])))
+
+  (testing "transform set-attr reagent styles"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[net.cgrand.enlive-html :as html])
+
+(-> [:div [:p {:style {:margin-top \"10px\"}}]]
+    (html/at [:div] (html/set-attr :style {:margin-top \"10px\"})))
+")
+           [:div {:style "margin-top:10px;"}
+            [:p {:style "margin-top:10px;"}]])))
 
   )

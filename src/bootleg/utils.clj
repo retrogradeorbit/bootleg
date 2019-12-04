@@ -168,6 +168,7 @@
   (if (string? hiccup)
     hiccup
     (-> hiccup
+        preprocess-hiccup
         munge-hiccup-tags
         vector
         convert/hiccup-fragment-to-hickory
@@ -188,7 +189,8 @@
         munge-hickory-tags
         hickory-seq-add-missing-types
         hickory-to-hiccup-preserve-doctype
-        demunge-hiccup-tags)))
+        demunge-hiccup-tags
+        preprocess-hiccup)))
 
 (defn hiccup-seq->hickory-seq [hiccup-seq]
   (map hiccup->hickory hiccup-seq))
