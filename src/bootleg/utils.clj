@@ -389,3 +389,6 @@
 
 (defmacro embed [filename]
   (slurp filename))
+
+(defn pprint-str [form & [opts]]
+  (with-out-str (fipp/pprint form opts)))
