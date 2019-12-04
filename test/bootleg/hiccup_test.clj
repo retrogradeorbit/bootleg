@@ -316,4 +316,10 @@
            "")))
   (testing "empty forms 3"
     (is (= (process-hiccup-data "." "(convert-to [[nil nil] [[[[[[nil [nil [nil []]]]]]]] nil] []] :html)")
-           ""))))
+           "")))
+  (testing "empty forms 4"
+    (is (= (process-hiccup-data "." "(convert-to [:img {:src \"/images/logo.png\", :alt \"\"}] :html)")
+           "<img alt=\"\" src=\"/images/logo.png\">")))
+  )
+
+""

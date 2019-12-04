@@ -91,7 +91,8 @@
   (->> hiccup
        (walk/postwalk
         (fn [form]
-          (if (and (seqable? form) (empty? form))
+          (if (and (or (seq? form) (vector? form))
+                   (empty? form))
             nil
             form)))))
 
