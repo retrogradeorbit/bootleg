@@ -1,3 +1,5 @@
+<img src="doc/bootleg-logo.svg" width="100px">
+
 # bootleg
 
 Static website generation made simple. A powerful, fast, clojure html templating solution.
