@@ -2,6 +2,8 @@
 
 # bootleg
 
+[![Github Action](https://github.com/retrogradeorbit/bootleg/workflows/Clojure%20CI/badge.svg)](https://github.com/retrogradeorbit/bootleg/actions?query=workflow%3A%22Clojure+CI%22)
+
 Static website generation made simple. A powerful, fast, clojure html templating solution.
 
 Bootleg is a command line tool that rapidly renders clojure based templates. With inbuilt support for html, hiccup, hickory, selmer, mustache, markdown, enlive, json, yaml and edn, it enables you to pull together disparate elements and glue them together to generate the static website of your dreams.
