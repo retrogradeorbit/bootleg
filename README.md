@@ -4,7 +4,7 @@
 
 Static website generation made simple. A powerful, fast, clojure html templating solution.
 
-Bootleg is a command line tool that rapidly renders clojure based templates. With inbuilt support for html, hiccup, hickory, mustache, enlive, json, yaml and edn, it enables you to pull together disparate elements and glue them together to generate the static website of your dreams.
+Bootleg is a command line tool that rapidly renders clojure based templates. With inbuilt support for html, hiccup, hickory, selmer, mustache, markdown, enlive, json, yaml and edn, it enables you to pull together disparate elements and glue them together to generate the static website of your dreams.
 
 ## Quickstart
 
