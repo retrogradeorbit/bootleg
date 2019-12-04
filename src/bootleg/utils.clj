@@ -385,7 +385,7 @@
 #_ (slurp-relative "test/files/simple.md")
 
 (defn spit-relative [f data & opts]
-  (apply spit (file/path-relative spit) data opts))
+  (apply spit (file/path-relative f) data opts))
 
 (defmacro embed [filename]
   (slurp filename))
