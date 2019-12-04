@@ -7,7 +7,6 @@
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as string]
             [clojure.java.io :as io])
-  (:import [java.io BufferedWriter])
   (:gen-class))
 
 (def version (utils/embed ".meta/VERSION"))
@@ -44,11 +43,11 @@
     (try
       (if (:data options)
         (-> result (utils/pprint {:writer out}))
-        (->> result utils/as-html (.write ^BufferedWriter out)))
+        (->> result utils/as-html (.write out)))
       (finally
         (if (:output options)
-          (.close ^BufferedWriter out)
-          (.flush ^BufferedWriter out))))))
+          (.close out)
+          (.flush out))))))
 
 (defn -main
   "main entry point for site generation"
