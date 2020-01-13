@@ -624,7 +624,7 @@
                   'prewalk clojure.walk/prewalk
                   'postwalk-demo clojure.walk/postwalk-demo
                   'prewalk-demo clojure.walk/prewalk-demo
-                  'kewordize-keys clojure.walk/keywordize-keys
+                  'keywordize-keys clojure.walk/keywordize-keys
                   'stringify-keys clojure.walk/stringify-keys
                   'prewalk-replace clojure.walk/prewalk-replace
                   'postwalk-replace clojure.walk/postwalk-replace
