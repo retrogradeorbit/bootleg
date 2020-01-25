@@ -71,6 +71,10 @@
           (let [result (-> arguments first process)]
             (output-result options result))
 
+          (zero? (count arguments))
+          (let [result (->> *in* slurp (hiccup/process-hiccup-data "."))]
+            (output-result options result))
+
           :else
           (println (usage summary)))
         (catch java.io.FileNotFoundException e

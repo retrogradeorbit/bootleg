@@ -378,16 +378,27 @@
       (->> (string/join " ")
            (string/capitalize))))
 
-(defn slurp-relative [src]
+(defmulti slurp-relative type)
+
+(defmethod slurp-relative String [src]
   (-> src
       file/path-relative
       io/input-stream
       slurp))
 
-#_ (slurp-relative "test/files/simple.md")
+(defmethod slurp-relative :default [src]
+  (slurp src))
 
-(defn spit-relative [f data & opts]
+#_ (slurp-relative "test/files/simple.md")
+#_ (slurp-relative *in*)
+
+(defmulti spit-relative (fn [f data & opts] (type f)))
+
+(defmethod spit-relative String [f data & opts]
   (apply spit (file/path-relative f) data opts))
+
+(defmethod spit-relative :default [f data & opts]
+  (apply spit f data opts))
 
 (defmacro embed [filename]
   (slurp filename))

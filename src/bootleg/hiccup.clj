@@ -57,6 +57,11 @@
               ;; command line args
               '*ARGV* *command-line-args*
               '*command-line-args* *command-line-args*
+
+              ;; standard in out err
+              (with-meta '*in* {:sci.impl/deref! true}) (sci/new-dynamic-var '*in* *in*)
+              (with-meta '*out* {:sci.impl/deref! true}) (sci/new-dynamic-var '*out* *out*)
+              (with-meta '*err* {:sci.impl/deref! true}) (sci/new-dynamic-var '*err* *err*)
               }
              :imports {'System 'java.lang.System}
              :classes {'java.lang.System System}}]
