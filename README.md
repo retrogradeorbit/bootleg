@@ -489,7 +489,7 @@ Test the markup in `data`. Return `true` if the data is a sequence of hickory fo
 
 Convert one supported data type to another. Input data may be hiccup, hiccup-seq, hickory, hickory-seq or html.
 
-Type may be `:hiccup`, `:hiccup-seq`, `:hickory`, `:hickory-seq` or `html`.
+Type may be `:hiccup`, `:hiccup-seq`, `:hickory`, `:hickory-seq` or `:html`.
 
 Example:
 
