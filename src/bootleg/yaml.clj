@@ -1,11 +1,11 @@
 (ns bootleg.yaml
-  (:require [bootleg.file :as file]
-            [bootleg.context :as context]
+  (:require [bootleg.utils :as utils]
             [yaml.core :as yaml]))
 
-(defn load-yaml
-  ([file] (load-yaml context/*path* file))
-  ([path file]
-   (-> (file/path-join path file)
-       slurp
-       (yaml/parse-string :keywords true))))
+(defn yaml
+  [source & options]
+  (let [flags (into #{} options)
+        data (if (:data flags)
+               source
+               (utils/slurp-relative source))]
+    (yaml/parse-string data :keywords true)))

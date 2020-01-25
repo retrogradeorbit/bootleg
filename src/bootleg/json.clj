@@ -1,11 +1,11 @@
 (ns bootleg.json
-  (:require [bootleg.file :as file]
-            [bootleg.context :as context]
+  (:require [bootleg.utils :as utils]
             [clojure.data.json :as json]))
 
-(defn load-json
-  ([file] (load-json context/*path* file))
-  ([path file]
-   (-> (file/path-join path file)
-       slurp
-       (json/read-str :key-fn keyword))))
+(defn json
+  [source & options]
+  (let [flags (into #{} options)
+        data (if (:data flags)
+               source
+               (utils/slurp-relative source))]
+    (json/read-str data :key-fn keyword)))

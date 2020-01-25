@@ -33,8 +33,8 @@
               'selmer selmer/selmer
 
               ;; vars files
-              'yaml yaml/load-yaml
-              'json json/load-json
+              'yaml yaml/yaml
+              'json json/json
               'edn edn/load-edn
 
               ;; directories and filenames
