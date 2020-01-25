@@ -53,7 +53,13 @@
               'convert-to utils/convert-to
               'markup-type utils/markup-type
               'as-html utils/as-html
-              }}]
+
+              ;; command line args
+              '*ARGV* *command-line-args*
+              '*command-line-args* *command-line-args*
+              }
+             :imports {'System 'java.lang.System}
+             :classes {'java.lang.System System}}]
     (context/with-path path
       (-> data
           (sci/eval-string

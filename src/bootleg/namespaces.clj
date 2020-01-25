@@ -23,7 +23,9 @@
             [selmer.util]
             [selmer.validator]
             [edamame.core :refer [parse-string]]
-            [clojure.walk]))
+            [clojure.walk]
+            [clojure.tools.cli]
+            ))
 
 (def namespaces
   {'Math {
@@ -629,6 +631,15 @@
                   'prewalk-replace clojure.walk/prewalk-replace
                   'postwalk-replace clojure.walk/postwalk-replace
                   }
+
+   'clojure.tools.cli {
+                       'cli clojure.tools.cli/cli
+                       'make-summary-part clojure.tools.cli/make-summary-part
+                       'format-lines clojure.tools.cli/format-lines
+                       'summarize clojure.tools.cli/summarize
+                       'get-default-options clojure.tools.cli/get-default-options
+                       'parse-opts clojure.tools.cli/parse-opts
+                       }
 
    ;; https://github.com/borkdude/sci/issues/124
    'clojure.core {
