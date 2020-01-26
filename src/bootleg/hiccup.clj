@@ -11,8 +11,7 @@
             [bootleg.namespaces :as namespaces]
             [bootleg.context :as context]
             [bootleg.glob :as glob]
-            [sci.core :as sci]
-            [clojure.java.io :as io]))
+            [sci.core :as sci]))
 
 (defn load-file* [ctx file]
   (let [s (slurp file)]

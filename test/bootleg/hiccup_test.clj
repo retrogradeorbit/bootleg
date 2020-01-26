@@ -9,8 +9,8 @@
            [:a {:href "url"} "mylink"])))
   (testing "markdown"
     (is (= (process-hiccup-data "test/files" "(markdown \"simple.md\")")
-           '([:h1 {} "Markdown support"]
-             [:p {} "This is some simple markdown"])))
+           '([:h1 "Markdown support"]
+             [:p "This is some simple markdown"])))
     (is (= (process-hiccup-data "test/files" "(markdown \"simple.md\" :hickory-seq)")
            '({:type :element
               :attrs nil
@@ -23,8 +23,8 @@
     (is (= (process-hiccup-data "test/files" "(markdown \"simple.md\" :html)")
            "<h1>Markdown support</h1><p>This is some simple markdown</p>"))
     (is (= (process-hiccup-data "." "(markdown \"# Markdown support\nThis is some simple markdown\n\" :data)")
-           '([:h1 {} "Markdown support"]
-             [:p {} "This is some simple markdown"]))))
+           '([:h1 "Markdown support"]
+             [:p "This is some simple markdown"]))))
   (testing "yaml"
     (is (= (process-hiccup-data "test/files" "(yaml \"simple.yml\")")
            (ordered-map :foo "bar"
@@ -61,12 +61,12 @@
                                      (net.cgrand.enlive-html/at
                                        [:p#id] (net.cgrand.enlive-html/content \"new content\"))
                                      (convert-to :hiccup))")
-           [:div {} [:p {}] [:p {:id "id"} "new content"]]))
+           [:div [:p] [:p {:id "id"} "new content"]]))
     (is (= (process-hiccup-data "test/files"
                                 "(-> [:div [:p] [:p#id]]
                                      (net.cgrand.enlive-html/at
                                        [:p#id] (net.cgrand.enlive-html/content \"new content\")))")
-           [:div {} [:p {}] [:p {:id "id"} "new content"]]))
+           [:div [:p] [:p {:id "id"} "new content"]]))
     (is (= (process-hiccup-data "test/files"
                                 "(-> [:div [:p] [:p#id]]
                                      (convert-to :html)
@@ -239,15 +239,15 @@
 
            '("<!DOCTYPE html>"
              [:html {:lang "en"} "\n  "
-              [:head {} "\n    "
-               [:title {} "new title"] "\n  "] "\n  "
-              [:body {}
-               [:header {} "\n      "
-                [:h1 {} "heading"] "\n      "
+              [:head "\n    "
+               [:title "new title"] "\n  "] "\n  "
+              [:body
+               [:header "\n      "
+                [:h1 "heading"] "\n      "
                 [:ul {:id "navigation"} "\n        "
-                 [:li {}
+                 [:li
                   [:a {:href "url 1"} "caption 1"]]
-                 [:li {}
+                 [:li
                   [:a {:href "url 2"} "caption 2"]] "\n      "] "\n    "]] "\n\n"])))
 
     (is (= (process-hiccup-data
@@ -289,11 +289,11 @@
               "(mustache \"header.html\" {})")
              '("<!DOCTYPE html>\n"
                [:html {:lang "en"} "\n  "
-                [:body {} "\n    "
-                 [:header {} "\n      "
-                  [:h1 {} "Header placeholder"] "\n      "
+                [:body "\n    "
+                 [:header "\n      "
+                  [:h1 "Header placeholder"] "\n      "
                   [:ul {:id "navigation"} "\n        "
-                   [:li {}
+                   [:li
                     [:a {:href "#"} "Placeholder for navigation"]]
                    "\n      "]
                   "\n    "]

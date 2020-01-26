@@ -24,7 +24,7 @@
     (is (= (process-hiccup-data
             "test/files"
             "(selmer \"test.selmer\" {:nums [1 2 3]})")
-           '([:div {} "\n" [:p {} "1"] [:p {} "2"] [:p {} "3"] "\n"])))
+           '([:div "\n" [:p "1"] [:p "2"] [:p "3"] "\n"])))
     (is (= (process-hiccup-data
             "test/files"
             "(selmer \"test.selmer\" {:nums [1 2 3]} :html)")
@@ -54,14 +54,12 @@
             "."
             "(selmer \"test/files/selmer/child-a.html\" {})")
            '([:html
-              {}
               "\n"
               [:body
-               {}
                "\n\n"
-               [:h1 {} "child-a header"]
+               [:h1 "child-a header"]
                "\n\n\n\n\n\n\n"
-               [:p {} "footer"]
+               [:p "footer"]
                "\n\n"]
               "\n"]
              "\n")))
@@ -70,16 +68,14 @@
             "."
             "(selmer \"test/files/selmer/child-b.html\" {})")
            '([:html
-              {}
               "\n"
               [:body
-               {}
                "\n\n\n"
-               [:h1 {} "child-a header"]
+               [:h1 "child-a header"]
                "\n\n"
-               [:h1 {} "child-b header"]
+               [:h1 "child-b header"]
                "\n\n\n\nSome content\n\n\n\n"
-               [:p {} "footer"]
+               [:p "footer"]
                "\n\n"]
               "\n"]
              "\n")))
@@ -88,16 +84,14 @@
             "test/files"
             "(selmer \"selmer/child-b.html\" {})")
            '([:html
-              {}
               "\n"
               [:body
-               {}
                "\n\n\n"
-               [:h1 {} "child-a header"]
+               [:h1 "child-a header"]
                "\n\n"
-               [:h1 {} "child-b header"]
+               [:h1 "child-b header"]
                "\n\n\n\nSome content\n\n\n\n"
-               [:p {} "footer"]
+               [:p "footer"]
                "\n\n"]
               "\n"]
              "\n")))))

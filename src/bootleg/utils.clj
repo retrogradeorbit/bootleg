@@ -62,6 +62,17 @@
                     (update % :tag munge-map (:tag %))
                     %) hickory))
 
+(defn- strip-empty-hiccup-attr-hashmaps [hiccup]
+  (->> hiccup
+       (walk/postwalk
+        (fn [form]
+          (if (and
+               (vector? form)
+               (keyword? (first form))
+               (= {} (second form)))
+            (into [(first form)] (subvec form 2))
+            form)))))
+
 (defn- stringify-style-map [style-map]
   (->> style-map
        (map (fn [[k v]] (str (name k) ":" (name v) ";")))
@@ -142,10 +153,13 @@
       (let [[doctype markup] (split-doctype markup)]
         (-> (map hickory/as-hiccup (hickory/parse-fragment (munge-html-tags markup)))
             demunge-hiccup-tags
+            strip-empty-hiccup-attr-hashmaps
             (conj doctype)))
       (-> (map hickory/as-hiccup (hickory/parse-fragment (munge-html-tags markup)))
-          demunge-hiccup-tags))
-    (map hickory/as-hiccup (hickory/parse-fragment markup))))
+          demunge-hiccup-tags
+          strip-empty-hiccup-attr-hashmaps))
+    (strip-empty-hiccup-attr-hashmaps
+     (map hickory/as-hiccup (hickory/parse-fragment markup)))))
 
 (defn html->hiccup [markup]
   (last (html->hiccup-seq markup)))
@@ -190,6 +204,7 @@
         hickory-seq-add-missing-types
         hickory-to-hiccup-preserve-doctype
         demunge-hiccup-tags
+        strip-empty-hiccup-attr-hashmaps
         preprocess-hiccup)))
 
 (defn hiccup-seq->hickory-seq [hiccup-seq]

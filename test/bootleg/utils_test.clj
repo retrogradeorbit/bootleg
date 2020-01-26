@@ -7,9 +7,9 @@
 (def html-snippet-multi-2 "<p>2</p>")
 (def html-doc "<html><head></head><body><p>1</p><p>2</p></body></html>")
 
-(def hiccup-seq-snippet '([:p {} "1"]))
-(def hiccup-seq-snippet-multi '([:p {} "1"] [:p {} "2"]))
-(def hiccup-seq-doc '([:html {} [:head {}] [:body {} [:p {} "1"] [:p {} "2"]]]))
+(def hiccup-seq-snippet '([:p "1"]))
+(def hiccup-seq-snippet-multi '([:p "1"] [:p "2"]))
+(def hiccup-seq-doc '([:html [:head] [:body [:p "1"] [:p "2"]]]))
 
 (def hiccup-snippet (last hiccup-seq-snippet))
 (def hiccup-snippet-multi (last hiccup-seq-snippet-multi))
@@ -155,7 +155,7 @@
 (deftest test-issues
   (testing "issue #7"
     (let [html "<h1>heading</h1>\n"
-          hiccup-seq '([:h1 {} "heading"] "\n")
+          hiccup-seq '([:h1 "heading"] "\n")
           hickory-seq '({:type :element, :attrs nil, :tag :h1, :content ["heading"]}
                         "\n")
           hiccup (last hiccup-seq)
@@ -212,15 +212,15 @@
   </body>
 </html>"
           hiccup-seq '("<!DOCTYPE html>\n"
-                       [:html {} "\n  "
-                        [:head {} "\n    "
+                       [:html "\n  "
+                        [:head "\n    "
                          [:meta {:charset "utf-8"}] "\n    "
                          [:meta {:content "width=device-width, initial-scale=1"}] "\n    "
-                         [:title {} "ABC"] "\n  "
+                         [:title "ABC"] "\n  "
                          ] "\n  "
-                        [:body {} "\n    "
-                         [:main {} "\n      "
-                          [:h1 {} "ABC"] "\n      "
+                        [:body "\n    "
+                         [:main "\n      "
+                          [:h1 "ABC"] "\n      "
                           [:section {:id "content"}] "\n    "
                           ] "\n  "
                          ] "\n"])
@@ -296,15 +296,15 @@
   </body>
 </html>"
           hiccup-seq '("\n"
-                       [:html {} "\n  "
-                        [:head {} "\n    "
+                       [:html "\n  "
+                        [:head "\n    "
                          [:meta {:charset "utf-8"}] "\n    "
                          [:meta {:content "width=device-width, initial-scale=1"}] "\n    "
-                         [:title {} "ABC"] "\n  "
+                         [:title "ABC"] "\n  "
                          ] "\n  "
-                        [:body {} "\n    "
-                         [:main {} "\n      "
-                          [:h1 {} "ABC"] "\n      "
+                        [:body "\n    "
+                         [:main "\n      "
+                          [:h1 "ABC"] "\n      "
                           [:section {:id "content"}] "\n    "
                           ] "\n  "
                          ] "\n"])
@@ -377,15 +377,15 @@
     </main>
   </body>
 </html>"
-          hiccup-seq '([:html {} "\n  "
-                        [:head {} "\n    "
+          hiccup-seq '([:html "\n  "
+                        [:head "\n    "
                          [:meta {:charset "utf-8"}] "\n    "
                          [:meta {:content "width=device-width, initial-scale=1"}] "\n    "
-                         [:title {} "ABC"] "\n  "
+                         [:title "ABC"] "\n  "
                          ] "\n  "
-                        [:body {} "\n    "
-                         [:main {} "\n      "
-                          [:h1 {} "ABC"] "\n      "
+                        [:body "\n    "
+                         [:main "\n      "
+                          [:h1 "ABC"] "\n      "
                           [:section {:id "content"}] "\n    "
                           ] "\n  "
                          ] "\n"])
@@ -473,7 +473,7 @@
     (is (= (convert-to [:header [:div]] :html)
            "<header><div></div></header>"))
     (is (= (convert-to "<header><div></div></header>" :hiccup)
-           [:header {} [:div {}]]))
+           [:header [:div]]))
     (is (= (convert-to "<html><header><div></div></header></html>" :hiccup)
-           [:html {} [:header {} [:div {}]]]))
+           [:html [:header [:div]]]))
     ))
