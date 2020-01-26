@@ -50,6 +50,54 @@
                          :content ["3"]}
                         "\n"
                         ]})))
+    (is (= (process-hiccup-data
+            "."
+            "(selmer \"test/files/selmer/child-a.html\" {})")
+           '([:html
+              {}
+              "\n"
+              [:body
+               {}
+               "\n\n"
+               [:h1 {} "child-a header"]
+               "\n\n\n\n\n\n\n"
+               [:p {} "footer"]
+               "\n\n"]
+              "\n"]
+             "\n")))
 
-    )
-  )
+    (is (= (process-hiccup-data
+            "."
+            "(selmer \"test/files/selmer/child-b.html\" {})")
+           '([:html
+              {}
+              "\n"
+              [:body
+               {}
+               "\n\n\n"
+               [:h1 {} "child-a header"]
+               "\n\n"
+               [:h1 {} "child-b header"]
+               "\n\n\n\nSome content\n\n\n\n"
+               [:p {} "footer"]
+               "\n\n"]
+              "\n"]
+             "\n")))
+
+    (is (= (process-hiccup-data
+            "test/files"
+            "(selmer \"selmer/child-b.html\" {})")
+           '([:html
+              {}
+              "\n"
+              [:body
+               {}
+               "\n\n\n"
+               [:h1 {} "child-a header"]
+               "\n\n"
+               [:h1 {} "child-b header"]
+               "\n\n\n\nSome content\n\n\n\n"
+               [:p {} "footer"]
+               "\n\n"]
+              "\n"]
+             "\n")))))
