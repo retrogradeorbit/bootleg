@@ -145,6 +145,32 @@
    hickory))
 
 ;;
+;; conversion warning
+;;
+(defn- escape-code [n]
+  (str "\033[" (or n 0) "m"))
+
+(def colour-map
+  {:red 31
+   :yellow 33})
+
+(defn colour [& [colour-name]]
+  (if context/*colour*
+    (escape-code (colour-map colour-name))
+    ""))
+
+(defn warn-last [from to data]
+  (when (< 1 (count data))
+    (let [n (dec (count data))]
+      (binding [*out* *err*]
+        (println
+         (str
+          (colour :yellow)
+          "Warning: converting markup from " from " to " to " lost " n " form" (when (< 1 n) "s")
+          (colour))))))
+  (last data))
+
+;;
 ;; hiccup / html
 ;;
 (defn html->hiccup-seq [markup]
@@ -162,7 +188,9 @@
      (map hickory/as-hiccup (hickory/parse-fragment markup)))))
 
 (defn html->hiccup [markup]
-  (last (html->hiccup-seq markup)))
+  (->> markup
+       html->hiccup-seq
+       (warn-last :html :hiccup)))
 
 (defn hiccup-seq->html [hiccup-seq]
   (str
@@ -229,9 +257,9 @@
     (map hickory/as-hickory (hickory/parse-fragment markup))))
 
 (defn html->hickory [markup]
-  (-> markup
-      html->hickory-seq
-      last))
+  (->> markup
+       html->hickory-seq
+       (warn-last :html :hickory)))
 
 (defn- hickory-to-html-preserve-doctype [hickory]
   (if (and (string? hickory)
@@ -281,29 +309,6 @@
     (string? data) :html
     (every? string? data) :hiccup-seq
     :else :hiccup-seq))
-
-(defn- escape-code [n]
-  (str "\033[" (or n 0) "m"))
-
-(def colour-map
-  {:red 31
-   :yellow 33})
-
-(defn colour [& [colour-name]]
-  (if context/*colour*
-    (escape-code (colour-map colour-name))
-    ""))
-
-(defn warn-last [from to data]
-  (when (< 1 (count data))
-    (let [n (dec (count data))]
-      (binding [*out* *err*]
-        (println
-         (str
-          (colour :yellow)
-          "Warning: converting markup from " from " to " to " lost " n " form" (when (< 1 n) "s")
-          (colour))))))
-  (last data))
 
 (def conversion-fns
   ;; keys: [from-type to-type]
