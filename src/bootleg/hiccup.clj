@@ -62,7 +62,27 @@
               (with-meta '*err* {:sci.impl/deref! true}) (sci/new-dynamic-var '*err* *err*)
               }
              :imports {'System 'java.lang.System}
-             :classes {'java.lang.System System}}]
+             :classes {'java.lang.System System
+                       'java.time.Clock java.time.Clock
+                       'java.time.DateTimeException java.time.DateTimeException
+                       'java.time.DayOfWeek java.time.DayOfWeek
+                       'java.time.Duration java.time.Duration
+                       'java.time.Instant java.time.Instant
+                       'java.time.LocalDate java.time.LocalDate
+                       'java.time.LocalDateTime java.time.LocalDateTime
+                       'java.time.LocalTime java.time.LocalTime
+                       'java.time.Month java.time.Month
+                       'java.time.MonthDay java.time.MonthDay
+                       'java.time.OffsetDateTime java.time.OffsetDateTime
+                       'java.time.OffsetTime java.time.OffsetTime
+                       'java.time.Period java.time.Period
+                       'java.time.Year java.time.Year
+                       'java.time.YearMonth java.time.YearMonth
+                       'java.time.ZonedDateTime java.time.ZonedDateTime
+                       'java.time.ZoneId java.time.ZoneId
+                       'java.time.ZoneOffset java.time.ZoneOffset
+                       'java.time.temporal.TemporalAccessor java.time.temporal.TemporalAccessor
+                       }}]
     (context/with-path path
       (-> data
           (sci/eval-string
