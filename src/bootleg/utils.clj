@@ -8,7 +8,9 @@
             [clojure.walk :as walk]
             [clojure.java.io :as io]
             [fipp.edn :as fipp]
-            [puget.printer :as puget]))
+            [puget.printer :as puget]
+            [clojure.data.xml :as xml]
+            ))
 
 (defn- i-starts-with?
   "efficient case insensitive string start-with?"
@@ -282,6 +284,48 @@
       hickory-seq-convert-dtd
       hickory-seq-add-missing-types
       hickory-to-html-preserve-doctype))
+
+;;
+;; xml / hickory
+;;
+(defn- xmltree-to-hickory [xmltree]
+  (walk/postwalk
+   (fn [el]
+     (if (= clojure.data.xml.Element (class el))
+       (into {} el)
+       el))
+   xmltree))
+
+(defn- hickory-to-xmltree [hickory]
+  (walk/postwalk
+   (fn [el]
+     (if (and (map? el)
+              (:tag el)
+              (:attrs el)
+              (:content el))
+       (apply xml/element (:tag el) (:attrs el) (:content el))
+       el))
+   hickory))
+
+(defn xml->hickory [markup]
+  (let [input-xml (java.io.StringReader. markup)]
+    (xmltree-to-hickory
+     (xml/parse input-xml))))
+
+(defn xml->hiccup [markup]
+  (-> markup
+      xml->hickory
+      hickory->hiccup))
+
+(defn hickory->xml [hickory]
+  (-> hickory
+      hickory-to-xmltree
+      xml/emit-str))
+
+(defn hiccup->xml [hiccup]
+  (-> hiccup
+      hiccup->hickory
+      hickory->xml))
 
 ;;
 ;; testing
