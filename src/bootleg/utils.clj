@@ -118,8 +118,20 @@
         forms
         (recur new-forms)))))
 
+(defn- keywordize-all-attrs [hiccup]
+  (->> hiccup
+       (walk/postwalk
+        (fn [form]
+          (if (and (vector? form)
+                   (keyword (first form))
+                   (map? (second form)))
+            (update form 1 walk/keywordize-keys)
+            form))))
+  )
+
 (defn- preprocess-hiccup [hiccup]
   (->> hiccup
+       keywordize-all-attrs
        stringify-all-style-maps
        collapse-nils-and-empty-forms))
 
