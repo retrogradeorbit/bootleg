@@ -288,44 +288,50 @@
 ;;
 ;; xml / hickory
 ;;
-(defn- xmltree-to-hickory [xmltree]
-  (walk/postwalk
-   (fn [el]
-     (if (= clojure.data.xml.Element (class el))
-       (into {} el)
-       el))
-   xmltree))
+(defn xmlparsed->xmlhiccup [tree]
+  (if (string? tree)
+    tree
+    (let [tag (:tag tree)
+          attrs (:attrs tree)
+          content (:content tree)
+          metadata (meta tree)]
+      (-> [tag attrs]
+          (concat (map xmlparsed->xmlhiccup content))
+          (->> (into []))
+          (with-meta metadata)))))
 
-(defn- hickory-to-xmltree [hickory]
-  (walk/postwalk
-   (fn [el]
-     (if (and (map? el)
-              (:tag el)
-              (:attrs el)
-              (:content el))
-       (apply xml/element (:tag el) (:attrs el) (:content el))
-       el))
-   hickory))
+(defn xmlhiccup->xmlparsed [tree]
+  (if (string? tree)
+    tree
+    (let [metadata (meta tree)
+          [tag maybe-attrs & remain] tree
+          attrs? (map? maybe-attrs)
+          attrs (if attrs? maybe-attrs {})
+          content (if attrs? remain (concat [maybe-attrs] remain))]
+      (-> {:tag tag
+           :attrs attrs
+           :content (map xmlhiccup->hickory content)}
+          (with-meta metadata)))))
 
 (defn xml->hickory [markup]
-  (let [input-xml (java.io.StringReader. markup)]
-    (xmltree-to-hickory
-     (xml/parse input-xml))))
+  (-> markup
+      java.io.StringReader.
+      xml/parse))
 
 (defn xml->hiccup [markup]
   (-> markup
-      xml->hickory
-      hickory->hiccup))
+      java.io.StringReader.
+      xml/parse
+      xmlparsed->xmlhiccup))
 
 (defn hickory->xml [hickory]
   (-> hickory
-      hickory-to-xmltree
       xml/emit-str))
 
 (defn hiccup->xml [hiccup]
   (-> hiccup
-      hiccup->hickory
-      hickory->xml))
+      xmlhiccup->xmlparsed
+      xml/emit-str))
 
 ;;
 ;; testing
