@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file. This change
 ### Fixed
 - fixed broken selmer page inheritance tags - #49
 - cull empty {} from hiccup conversions - #50
+- missing warning on lost form when html is converted to hiccup - #53
 
 ### Added
 - added environment variables and command line argument support - #42
