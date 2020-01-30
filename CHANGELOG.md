@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file. This change
 ## [Unreleased]
 ### Fixed
 - added environment variables and command line argument support - #42
+- added support for reading from standard in - #44
 
 ## [0.1.6-1] - 2019-12-04
 ### Fixed
