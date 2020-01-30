@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file. This change
 
 ## [Unreleased]
 ### Fixed
+- fixed broken selmer page inheritance tags - #49
+
+### Added
 - added environment variables and command line argument support - #42
 - added support for reading from standard in - #44
 - added missing :data flag to yaml, json and edn functions - #45
