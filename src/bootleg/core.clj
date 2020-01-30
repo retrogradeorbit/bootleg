@@ -49,6 +49,11 @@
           (.close out)
           (.flush out))))))
 
+(defn remove-shebang [script]
+  (if (string/starts-with? script "#!")
+    (second (string/split script #"\n" 2))
+    script))
+
 (defn -main
   "main entry point for site generation"
   [& args]
@@ -68,11 +73,11 @@
             (output-result options result))
 
           (= 1 (count arguments))
-          (let [result (-> arguments first process)]
+          (let [result (-> arguments first remove-shebang process)]
             (output-result options result))
 
           (zero? (count arguments))
-          (let [result (->> *in* slurp (hiccup/process-hiccup-data "."))]
+          (let [result (->> *in* slurp remove-shebang (hiccup/process-hiccup-data "."))]
             (output-result options result))
 
           :else
