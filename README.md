@@ -764,6 +764,19 @@ Pretty print to stdout the passed in form. If `--colour` is passed on command li
 
 Parse the passed in string into a clojure type. Useful for converting strings to numbers, keywords, vectors or hashmaps. A binding of [edamame's](https://github.com/borkdude/edamame) `parse-string` is used for parsing.
 
+### Java Packages
+
+The following java classes are included and can be imported and used:
+
+ * java.time.* (https://docs.oracle.com/javase/8/docs/api/java/time/package-summary.html)
+
+#### java.time
+
+```shell
+$ bootleg -d -e '(import [java.time LocalDate]) (LocalDate/now)'
+#object[java.time.LocalDate "0x7d108063" "2020-01-28"]
+```
+
 ## Passing in Context
 
 ### Environment Variables
