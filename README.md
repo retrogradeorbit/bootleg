@@ -532,10 +532,16 @@ $ bootleg -d -e '(convert-to {:type :element :tag :p :content ["one"]} :html)'
 "<p>one</p>"
 ```
 
+```clojure
+$ bootleg -d -e '(convert-to [:link "foo"] :xml)'
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?><link>foo</link>"
+```
+
 **Note:** Some conversions are lossy. Converting from html or any *-seq data type to hickory or hiccup may lose forms. Only the last form will be returned.
 
 ```clojure
 $ bootleg -d -e '(convert-to "<p>one</p><p>two</p>" :hiccup)'
+Warning: converting markup from :html to :hiccup lost 1 form
 [:p {} "two"]
 ```
 
