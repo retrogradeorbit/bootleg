@@ -757,6 +757,44 @@ Pretty print to stdout the passed in form. If `--colour` is passed on command li
 
 Parse the passed in string into a clojure type. Useful for converting strings to numbers, keywords, vectors or hashmaps. A binding of [edamame's](https://github.com/borkdude/edamame) `parse-string` is used for parsing.
 
+## Passing in Context
+
+### Environment Variables
+
+You can access environment variables through the `System` [namespace](https://docs.oracle.com/javase/8/docs/api/java/lang/System.html). This namespace has the `getenv` function:
+
+```shell
+$ FOO=bar bootleg -d -e '(System/getenv "FOO")'
+"bar"
+```
+
+### Command Line Arguments
+
+Command line arguments are available in the `*command-line-args*` var:
+
+```shell
+$ bootleg -d -e '*command-line-args*'
+("-d" "-e" "*command-line-args*")
+```
+
+Also included is the `clojure.tools.cli` namespace that you can `require` as needed to process command line args, or reference its namespace directly:
+
+```shell
+$ bootleg -d -e '(clojure.tools.cli/parse-opts *command-line-args* [["-e" "--evaluate CODE" ""] ["-d" "--data" ""]])'
+{:options {:data true,
+           :evaluate "(clojure.tools.cli/parse-opts *command-line-args* [[\"-e\" \"--evaluate CODE\" \"\"] [\"-d\" \"--data\" \"\"]])"},
+ :arguments [],
+ :summary "  -e, --evaluate CODE\n  -d, --data",
+ :errors nil}
+```
+
+If you want to pass in edn in a env var or command line you can use edamame's reader that is already available under `parse-string`:
+
+```shell
+$ FOO='{:a 1 :b 2}' bootleg -d -e '(-> "FOO" System/getenv parse-string :b)'
+2
+```
+
 ## Building the executable
 
 Ensure graalvm community edition 19.3.0 is installed in your home directory and the native image extension is also installed.
