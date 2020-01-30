@@ -795,6 +795,32 @@ $ FOO='{:a 1 :b 2}' bootleg -d -e '(-> "FOO" System/getenv parse-string :b)'
 2
 ```
 
+### Standard Input
+
+When no `-e` argument is passed on the command line and no filename is supplied then bootleg will read its clojure script from standard in:
+
+```shell
+$ bootleg <<< '[:p 1]'
+<p>1</p>
+```
+
+`*in*` is bound to `clojure.lang.LineNumberingPushbackReader` on standard in as it is in clojure. So you can slurp in to process standard in:
+
+```shell
+echo -n "<html></html>" | bootleg -d -e '(-> *in* slurp (convert-to :hiccup))'
+[:html {}]
+```
+
+Remember to be careful of trailing newlines when using bash's `<<<` pipe form.
+
+```
+$ bootleg -d -e '(-> *in* slurp (convert-to :hiccup))' <<< '<html></html>'
+Warning: converting markup from :html to :hiccup lost 1 form
+"\n"
+$ bootleg  -d -e '(-> *in* slurp (convert-to :hiccup-seq))' <<< '<html></html>'
+([:html {}] "\n")
+```
+
 ## Building the executable
 
 Ensure graalvm community edition 19.3.0 is installed in your home directory and the native image extension is also installed.
