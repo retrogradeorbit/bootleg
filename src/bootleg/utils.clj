@@ -310,7 +310,7 @@
           content (if attrs? remain (concat [maybe-attrs] remain))]
       (-> {:tag tag
            :attrs attrs
-           :content (map xmlhiccup->hickory content)}
+           :content (map xmlhiccup->xmlparsed content)}
           (with-meta metadata)))))
 
 (defn xml->hickory [markup]
