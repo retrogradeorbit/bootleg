@@ -13,16 +13,16 @@ Bootleg is a command line tool that rapidly renders clojure based templates. Wit
 Install for Linux:
 
 ```shell
-$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.6-1/bootleg-0.1.6-1-linux-amd64.tgz
-$ tar xvf bootleg-0.1.6-1-linux-amd64.tgz
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.7/bootleg-0.1.7-linux-amd64.tgz
+$ tar xvf bootleg-0.1.7-linux-amd64.tgz
 $ mv bootleg ~/bin
 ```
 
 Install for MacOS:
 
 ```shell
-$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.6-1/bootleg-0.1.6-1-macos-amd64.zip
-$ unzip bootleg-0.1.6-1-macos-amd64.zip
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.7/bootleg-0.1.7-macos-amd64.zip
+$ unzip bootleg-0.1.7-macos-amd64.zip
 $ mv bootleg /usr/local/bin
 ```
 
@@ -177,19 +177,19 @@ $ bootleg example-data.clj          # <- no -d flag means output will be html
 Bootleg is distributed for linux as a single executable file. Download the latest tarball from https://github.com/retrogradeorbit/bootleg/releases and then extract it. Once extracted, move the binary to your path. For system wide installation try `/usr/local/bin` or for personal use `~/bin`
 
 ```shell
-$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.6-1/bootleg-0.1.6-1-linux-amd64.tgz
-$ tar xvf bootleg-0.1.6-1-linux-amd64.tgz
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.7/bootleg-0.1.7-linux-amd64.tgz
+$ tar xvf bootleg-0.1.7-linux-amd64.tgz
 $ mv bootleg /usr/local/bin
 ```
 
 ### Other Platforms
 
-Windows support is experimental. Download (https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.6-1/bootleg-0.1.6-1-windows-amd64.zip) and unzip the archive. Copy the bootleg.exe binary to somewhere on your path.
+Windows support is experimental. Download (https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.7/bootleg-0.1.7-windows-amd64.zip) and unzip the archive. Copy the bootleg.exe binary to somewhere on your path.
 
 The jar release file is also an option if you have java installed. You can run it as follows:
 
 ```shell
-$ java -jar bootleg-0.1.6-1.jar
+$ java -jar bootleg-0.1.7.jar
 ```
 
 ## Usage
@@ -247,7 +247,11 @@ For example: the html snippet `<p>one</p><p>two</p>` is represented in hickory-s
 
 ### html
 
-html (or any type of xml) is represented internally as a string. This is a flexible type and can hold a root element and children, or a number of sibling elements sequentially.
+html is represented internally as a string. This is a flexible type and can hold a root element and children, or a number of sibling elements sequentially.
+
+### xml
+
+xml is represented internally as a string. This type always starts with an XML header `<?xml version="..."?>`
 
 ## Inbuilt functions
 
@@ -439,21 +443,33 @@ Write `data` into the specified `filename`. The filename is interpereted relativ
 
 #### yaml
 
-`(yaml source)`
+`(yaml source & options)`
 
 Load yaml data from `source` and process it. Returns the parsed data structure.
 
+Options can be:
+
+ * `:data` Interpret the `source` argument as yaml data, not a file to load
+
 #### json
 
-`(json source)`
+`(json source & options)`
 
 Load json data from `source` and process it. Returns the parsed data structure.
 
+Options can be:
+
+ * `:data` Interpret the `source` argument as json data, not a file to load
+
 #### edn
 
-`(edn source)`
+`(edn source & options)`
 
 Load edn data from `source` and process it. Returns the parsed data structure.
+
+Options can be:
+
+ * `:data` Interpret the `source` argument as edn data, not a file to load
 
 ### Data Testing
 
