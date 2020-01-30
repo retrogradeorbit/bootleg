@@ -21,9 +21,13 @@
     (= uneedle uhaystack-start)))
 
 (defn- html? [markup]
-  ;; todo: trim start
-  (or (i-starts-with? (string/triml markup) "<!DOCTYPE HTML")
-      (i-starts-with? (string/triml markup) "<html")))
+  (let [trimmed (string/triml markup)]
+    (or (i-starts-with? trimmed "<!DOCTYPE HTML")
+        (i-starts-with? trimmed "<html"))))
+
+(defn- xml? [markup]
+  (let [trimmed (string/triml markup)]
+    (i-starts-with? trimmed "<?xml")))
 
 (defn- doctype? [markup]
   (i-starts-with? markup "<!DOCTYPE HTML"))
@@ -298,7 +302,7 @@
       hickory-to-html-preserve-doctype))
 
 ;;
-;; xml / hickory
+;; xml / hiccup / hickory
 ;;
 (defn xmlparsed->xmlhiccup [tree]
   (if (string? tree)
@@ -368,6 +372,7 @@
     (is-hiccup-seq? data) :hiccup-seq
     (is-hickory? data) :hickory
     (is-hickory-seq? data) :hickory-seq
+    (and (string? data) (xml? data)) :xml
     (string? data) :html
     (every? string? data) :hiccup-seq
     :else :hiccup-seq))
@@ -383,6 +388,7 @@
    [:hiccup :hickory-seq] (comp list hiccup->hickory)
    [:hiccup :hiccup-seq] list
    [:hiccup :html] hiccup->html
+   [:hiccup :xml] hiccup->xml
 
    [:hiccup-seq :hiccup] (partial warn-last :hiccup-seq :hiccup)
    [:hiccup-seq :hickory] (comp (partial warn-last :hiccup-seq :hickory)
@@ -396,6 +402,7 @@
    [:hickory :hickory-seq] list
    [:hickory :hiccup-seq] (comp list hickory->hiccup)
    [:hickory :html] hickory->html
+   [:hickory :xml] hickory->xml
 
    [:hickory-seq :hiccup] (comp (partial warn-last :hickory-seq :hiccup)
                                 hickory-seq->hiccup-seq)
@@ -408,7 +415,12 @@
    [:html :hickory] html->hickory
    [:html :hickory-seq] html->hickory-seq
    [:html :hiccup-seq] html->hiccup-seq
-   [:html :html] identity})
+   [:html :html] identity
+
+   [:xml :xml] identity
+   [:xml :hickory] xml->hickory
+   [:xml :hiccup] xml->hiccup
+   })
 
 (defn convert-to [data to-type]
   (let [from-type (markup-type data)
