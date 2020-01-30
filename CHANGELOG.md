@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file. This change
 - added support for reading from standard in - #44
 - added missing :data flag to yaml, json and edn functions - #45
 - introducing xml support - #50
+- added java.time classes to those available - #51
 
 ## [0.1.6-1] - 2019-12-04
 ### Fixed
