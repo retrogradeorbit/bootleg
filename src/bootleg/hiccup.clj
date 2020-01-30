@@ -34,7 +34,7 @@
               ;; vars files
               'yaml yaml/yaml
               'json json/json
-              'edn edn/load-edn
+              'edn edn/edn
 
               ;; directories and filenames
               'glob glob/glob
