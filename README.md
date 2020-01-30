@@ -293,7 +293,7 @@ $ bootleg -d -e '(markdown "# heading\nparagraph" :data :hickory-seq)'
 
 ```clojure
 $ bootleg -d -e '(markdown "# heading\nparagraph" :data :hiccup-seq)'
-([:h1 {} "heading"] [:p {} "paragraph"])
+([:h1 "heading"] [:p "paragraph"])
 ```
 
 ```clojure
@@ -325,7 +325,7 @@ $ bootleg -e '(mustache "<p>{{var1}}</p><div>{{&var2}}</div>" {:var1 "value 1" :
 
 ```clojure
 $ bootleg -d -e '(mustache "<p>{{var1}}</p>" {:var1 "value 1"} :data :hiccup-seq)'
-([:p {} "value 1"])
+([:p "value 1"])
 ```
 
 #### selmer
@@ -352,7 +352,7 @@ $ bootleg -e '(selmer "<p>Hello {{name|capitalize}}!</p>" {:name "world"} :data)
 
 ```clojure
 $ bootleg -d -e '(selmer "<p>Hello {{name|capitalize}}!</p>" {:name "world"} :data :hiccup-seq)'
-([:p {} "Hello World!"])
+([:p "Hello World!"])
 ```
 
 The `selmer` namespaces are also provided at their usual namespace locations.
@@ -392,12 +392,12 @@ eg.
 
 ```clojure
 $ bootleg -d -e '(html "<h1>heading</h1><p>body</p>" :data :hiccup-seq)'
-([:h1 {} "heading"] [:p {} "body"])
+([:h1 "heading"] [:p "body"])
 ```
 
 ```clojure
 $ bootleg -d -e '(html "<div><h1>heading</h1><p>body</p></div>" :data :hiccup)'
-[:div {} [:h1 {} "heading"] [:p {} "body"]]
+[:div [:h1 "heading"] [:p "body"]]
 ```
 
 #### hiccup
@@ -531,7 +531,7 @@ $ bootleg -d -e '(convert-to "<p class=\"class\" id=\"id\">one</p>" :hiccup)'
 
 ```clojure
 $ bootleg -d -e '(convert-to "<p>one</p><p>two</p>" :hiccup-seq)'
-([:p {} "one"] [:p {} "two"])
+([:p "one"] [:p "two"])
 ```
 
 ```clojure
@@ -549,7 +549,7 @@ $ bootleg -d -e '(convert-to [:link "foo"] :xml)'
 ```clojure
 $ bootleg -d -e '(convert-to "<p>one</p><p>two</p>" :hiccup)'
 Warning: converting markup from :html to :hiccup lost 1 form
-[:p {} "two"]
+[:p "two"]
 ```
 
 #### as-html
@@ -815,7 +815,7 @@ $ bootleg <<< '[:p 1]'
 
 ```shell
 echo -n "<html></html>" | bootleg -d -e '(-> *in* slurp (convert-to :hiccup))'
-[:html {}]
+[:html]
 ```
 
 Remember to be careful of trailing newlines when using bash's `<<<` pipe form.
@@ -825,7 +825,7 @@ $ bootleg -d -e '(-> *in* slurp (convert-to :hiccup))' <<< '<html></html>'
 Warning: converting markup from :html to :hiccup lost 1 form
 "\n"
 $ bootleg  -d -e '(-> *in* slurp (convert-to :hiccup-seq))' <<< '<html></html>'
-([:html {}] "\n")
+([:html] "\n")
 ```
 
 ## Building the executable
