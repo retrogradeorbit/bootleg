@@ -163,6 +163,17 @@
     (html/at [:div] (html/set-attr \"style\" {:margin-top \"10px\"})))
 ")
            [:div {:style "margin-top:10px;"}
+            [:p {:style "margin-top:10px;"}]]))
+
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[net.cgrand.enlive-html :as html])
+
+(-> [:div {:style {:foo \"bar\"}} [:p {:style {:margin-top \"10px\"}}]]
+    (html/at [:div] (html/set-attr \"style\" {:margin-top \"10px\"})))
+")
+           [:div {:style "margin-top:10px;"}
             [:p {:style "margin-top:10px;"}]])))
 
 
