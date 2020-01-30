@@ -253,6 +253,13 @@ html is represented internally as a string. This is a flexible type and can hold
 
 xml is represented internally as a string. This type always starts with an XML header `<?xml version="..."?>`
 
+You can output xml with bootleg by converting to type `:xml` first:
+
+```clojure
+$ bootleg -e '(convert-to [:link "foo"] :xml)'
+<?xml version="1.0" encoding="UTF-8"?><link>foo</link>
+```
+
 ## Inbuilt functions
 
 The following functions are inbuilt into the clojure interpreter:

@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file. This change
 - added environment variables and command line argument support - #42
 - added support for reading from standard in - #44
 - added missing :data flag to yaml, json and edn functions - #45
+- introducing xml support - #50
 
 ## [0.1.6-1] - 2019-12-04
 ### Fixed

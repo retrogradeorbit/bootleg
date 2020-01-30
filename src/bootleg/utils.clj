@@ -420,6 +420,7 @@
    [:xml :xml] identity
    [:xml :hickory] xml->hickory
    [:xml :hiccup] xml->hiccup
+   [:xml :html] identity    ;; to support outputing xml to terminal without `-d` flag
    })
 
 (defn convert-to [data to-type]
