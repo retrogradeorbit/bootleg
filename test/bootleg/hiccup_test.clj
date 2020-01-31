@@ -319,7 +319,9 @@
            "")))
   (testing "empty forms 4"
     (is (= (process-hiccup-data "." "(convert-to [:img {:src \"/images/logo.png\", :alt \"\"}] :html)")
-           "<img alt=\"\" src=\"/images/logo.png\">")))
-  )
+           "<img alt=\"\" src=\"/images/logo.png\">"))))
 
-""
+(deftest hiccup-to-xml-test
+  (testing "hiccup to xml"
+    (is (= (process-hiccup-data "." "(convert-to [:link (for [n (range 5)] [:div n])] :xml)")
+           "<?xml version=\"1.0\" encoding=\"UTF-8\"?><link><div>0</div><div>1</div><div>2</div><div>3</div><div>4</div></link>"))))

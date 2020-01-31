@@ -316,18 +316,35 @@
           (->> (into []))
           (with-meta metadata)))))
 
+(defn- collapse-nested-lists [form]
+  (cond
+    (string? form)
+    form
+
+    (and (vector? form) (keyword? (first form)))
+    (->> form
+         (mapv #(if (seq? %) % [%]))
+         (apply concat)
+         (into []))
+
+    :else
+    form))
+
 (defn xmlhiccup->xmlparsed [tree]
-  (if (string? tree)
-    tree
-    (let [metadata (meta tree)
-          [tag maybe-attrs & remain] tree
-          attrs? (map? maybe-attrs)
-          attrs (if attrs? maybe-attrs {})
-          content (if attrs? remain (concat [maybe-attrs] remain))]
-      (-> {:tag tag
-           :attrs attrs
-           :content (map xmlhiccup->xmlparsed content)}
-          (with-meta metadata)))))
+  (cond
+    (string? tree) tree
+    (number? tree) (str tree)
+    (keyword? tree) (str tree)
+    :else (let [metadata (meta tree)
+                tree (collapse-nested-lists tree)
+                [tag maybe-attrs & remain] tree
+                attrs? (map? maybe-attrs)
+                attrs (if attrs? maybe-attrs {})
+                content (if attrs? remain (concat [maybe-attrs] remain))]
+            (-> {:tag tag
+                 :attrs attrs
+                 :content (map xmlhiccup->xmlparsed content)}
+                (with-meta metadata)))))
 
 (defn xml->hickory [markup]
   (-> markup
