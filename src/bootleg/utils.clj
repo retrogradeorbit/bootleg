@@ -8,7 +8,9 @@
             [clojure.walk :as walk]
             [clojure.java.io :as io]
             [fipp.edn :as fipp]
-            [puget.printer :as puget]))
+            [puget.printer :as puget]
+            [clojure.data.xml :as xml]
+            ))
 
 (defn- i-starts-with?
   "efficient case insensitive string start-with?"
@@ -19,9 +21,13 @@
     (= uneedle uhaystack-start)))
 
 (defn- html? [markup]
-  ;; todo: trim start
-  (or (i-starts-with? (string/triml markup) "<!DOCTYPE HTML")
-      (i-starts-with? (string/triml markup) "<html")))
+  (let [trimmed (string/triml markup)]
+    (or (i-starts-with? trimmed "<!DOCTYPE HTML")
+        (i-starts-with? trimmed "<html"))))
+
+(defn- xml? [markup]
+  (let [trimmed (string/triml markup)]
+    (i-starts-with? trimmed "<?xml")))
 
 (defn- doctype? [markup]
   (i-starts-with? markup "<!DOCTYPE HTML"))
@@ -61,6 +67,17 @@
   (walk/postwalk #(if (:tag %)
                     (update % :tag munge-map (:tag %))
                     %) hickory))
+
+(defn- strip-empty-hiccup-attr-hashmaps [hiccup]
+  (->> hiccup
+       (walk/postwalk
+        (fn [form]
+          (if (and
+               (vector? form)
+               (keyword? (first form))
+               (= {} (second form)))
+            (into [(first form)] (subvec form 2))
+            form)))))
 
 (defn- stringify-style-map [style-map]
   (->> style-map
@@ -105,8 +122,20 @@
         forms
         (recur new-forms)))))
 
+(defn- keywordize-all-attrs [hiccup]
+  (->> hiccup
+       (walk/postwalk
+        (fn [form]
+          (if (and (vector? form)
+                   (keyword (first form))
+                   (map? (second form)))
+            (update form 1 walk/keywordize-keys)
+            form))))
+  )
+
 (defn- preprocess-hiccup [hiccup]
   (->> hiccup
+       keywordize-all-attrs
        stringify-all-style-maps
        collapse-nils-and-empty-forms))
 
@@ -134,6 +163,32 @@
    hickory))
 
 ;;
+;; conversion warning
+;;
+(defn- escape-code [n]
+  (str "\033[" (or n 0) "m"))
+
+(def colour-map
+  {:red 31
+   :yellow 33})
+
+(defn colour [& [colour-name]]
+  (if context/*colour*
+    (escape-code (colour-map colour-name))
+    ""))
+
+(defn warn-last [from to data]
+  (when (< 1 (count data))
+    (let [n (dec (count data))]
+      (binding [*out* *err*]
+        (println
+         (str
+          (colour :yellow)
+          "Warning: converting markup from " from " to " to " lost " n " form" (when (< 1 n) "s")
+          (colour))))))
+  (last data))
+
+;;
 ;; hiccup / html
 ;;
 (defn html->hiccup-seq [markup]
@@ -142,13 +197,18 @@
       (let [[doctype markup] (split-doctype markup)]
         (-> (map hickory/as-hiccup (hickory/parse-fragment (munge-html-tags markup)))
             demunge-hiccup-tags
+            strip-empty-hiccup-attr-hashmaps
             (conj doctype)))
       (-> (map hickory/as-hiccup (hickory/parse-fragment (munge-html-tags markup)))
-          demunge-hiccup-tags))
-    (map hickory/as-hiccup (hickory/parse-fragment markup))))
+          demunge-hiccup-tags
+          strip-empty-hiccup-attr-hashmaps))
+    (strip-empty-hiccup-attr-hashmaps
+     (map hickory/as-hiccup (hickory/parse-fragment markup)))))
 
 (defn html->hiccup [markup]
-  (last (html->hiccup-seq markup)))
+  (->> markup
+       html->hiccup-seq
+       (warn-last :html :hiccup)))
 
 (defn hiccup-seq->html [hiccup-seq]
   (str
@@ -168,6 +228,7 @@
   (if (string? hiccup)
     hiccup
     (-> hiccup
+        preprocess-hiccup
         munge-hiccup-tags
         vector
         convert/hiccup-fragment-to-hickory
@@ -188,7 +249,9 @@
         munge-hickory-tags
         hickory-seq-add-missing-types
         hickory-to-hiccup-preserve-doctype
-        demunge-hiccup-tags)))
+        demunge-hiccup-tags
+        strip-empty-hiccup-attr-hashmaps
+        preprocess-hiccup)))
 
 (defn hiccup-seq->hickory-seq [hiccup-seq]
   (map hiccup->hickory hiccup-seq))
@@ -212,9 +275,9 @@
     (map hickory/as-hickory (hickory/parse-fragment markup))))
 
 (defn html->hickory [markup]
-  (-> markup
-      html->hickory-seq
-      last))
+  (->> markup
+       html->hickory-seq
+       (warn-last :html :hickory)))
 
 (defn- hickory-to-html-preserve-doctype [hickory]
   (if (and (string? hickory)
@@ -239,6 +302,54 @@
       hickory-to-html-preserve-doctype))
 
 ;;
+;; xml / hiccup / hickory
+;;
+(defn xmlparsed->xmlhiccup [tree]
+  (if (string? tree)
+    tree
+    (let [tag (:tag tree)
+          attrs (:attrs tree)
+          content (:content tree)
+          metadata (meta tree)]
+      (-> [tag attrs]
+          (concat (map xmlparsed->xmlhiccup content))
+          (->> (into []))
+          (with-meta metadata)))))
+
+(defn xmlhiccup->xmlparsed [tree]
+  (if (string? tree)
+    tree
+    (let [metadata (meta tree)
+          [tag maybe-attrs & remain] tree
+          attrs? (map? maybe-attrs)
+          attrs (if attrs? maybe-attrs {})
+          content (if attrs? remain (concat [maybe-attrs] remain))]
+      (-> {:tag tag
+           :attrs attrs
+           :content (map xmlhiccup->xmlparsed content)}
+          (with-meta metadata)))))
+
+(defn xml->hickory [markup]
+  (-> markup
+      java.io.StringReader.
+      xml/parse))
+
+(defn xml->hiccup [markup]
+  (-> markup
+      java.io.StringReader.
+      xml/parse
+      xmlparsed->xmlhiccup))
+
+(defn hickory->xml [hickory]
+  (-> hickory
+      xml/emit-str))
+
+(defn hiccup->xml [hiccup]
+  (-> hiccup
+      xmlhiccup->xmlparsed
+      xml/emit-str))
+
+;;
 ;; testing
 ;;
 (defn is-hiccup? [data]
@@ -261,32 +372,10 @@
     (is-hiccup-seq? data) :hiccup-seq
     (is-hickory? data) :hickory
     (is-hickory-seq? data) :hickory-seq
+    (and (string? data) (xml? data)) :xml
     (string? data) :html
     (every? string? data) :hiccup-seq
     :else :hiccup-seq))
-
-(defn- escape-code [n]
-  (str "\033[" (or n 0) "m"))
-
-(def colour-map
-  {:red 31
-   :yellow 33})
-
-(defn colour [& [colour-name]]
-  (if context/*colour*
-    (escape-code (colour-map colour-name))
-    ""))
-
-(defn warn-last [from to data]
-  (when (< 1 (count data))
-    (let [n (dec (count data))]
-      (binding [*out* *err*]
-        (println
-         (str
-          (colour :yellow)
-          "Warning: converting markup from " from " to " to " lost " n " form" (when (< 1 n) "s")
-          (colour))))))
-  (last data))
 
 (def conversion-fns
   ;; keys: [from-type to-type]
@@ -299,6 +388,7 @@
    [:hiccup :hickory-seq] (comp list hiccup->hickory)
    [:hiccup :hiccup-seq] list
    [:hiccup :html] hiccup->html
+   [:hiccup :xml] hiccup->xml
 
    [:hiccup-seq :hiccup] (partial warn-last :hiccup-seq :hiccup)
    [:hiccup-seq :hickory] (comp (partial warn-last :hiccup-seq :hickory)
@@ -312,6 +402,7 @@
    [:hickory :hickory-seq] list
    [:hickory :hiccup-seq] (comp list hickory->hiccup)
    [:hickory :html] hickory->html
+   [:hickory :xml] hickory->xml
 
    [:hickory-seq :hiccup] (comp (partial warn-last :hickory-seq :hiccup)
                                 hickory-seq->hiccup-seq)
@@ -324,7 +415,13 @@
    [:html :hickory] html->hickory
    [:html :hickory-seq] html->hickory-seq
    [:html :hiccup-seq] html->hiccup-seq
-   [:html :html] identity})
+   [:html :html] identity
+
+   [:xml :xml] identity
+   [:xml :hickory] xml->hickory
+   [:xml :hiccup] xml->hiccup
+   [:xml :html] identity    ;; to support outputing xml to terminal without `-d` flag
+   })
 
 (defn convert-to [data to-type]
   (let [from-type (markup-type data)
@@ -376,16 +473,30 @@
       (->> (string/join " ")
            (string/capitalize))))
 
-(defn slurp-relative [src]
+(defmulti slurp-relative type)
+
+(defmethod slurp-relative String [src]
   (-> src
       file/path-relative
       io/input-stream
       slurp))
 
-#_ (slurp-relative "test/files/simple.md")
+(defmethod slurp-relative :default [src]
+  (slurp src))
 
-(defn spit-relative [f data & opts]
+#_ (slurp-relative "test/files/simple.md")
+#_ (slurp-relative *in*)
+
+(defmulti spit-relative (fn [f data & opts] (type f)))
+
+(defmethod spit-relative String [f data & opts]
   (apply spit (file/path-relative f) data opts))
+
+(defmethod spit-relative :default [f data & opts]
+  (apply spit f data opts))
 
 (defmacro embed [filename]
   (slurp filename))
+
+(defn pprint-str [form & [opts]]
+  (with-out-str (fipp/pprint form opts)))

@@ -10,6 +10,8 @@
   [path basename]
 
   eg \"blog/posts/1/main.yml\" -> [\"blog/posts/1\" \"main.yml\"]
+
+  If filename is just a bare filename, path is returned as `nil`
   "
   [filename]
   (let [file (io/file filename)]

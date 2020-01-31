@@ -49,57 +49,67 @@
           (.close out)
           (.flush out))))))
 
+(defn remove-shebang [script]
+  (if (string/starts-with? script "#!")
+    (second (string/split script #"\n" 2))
+    script))
+
 (defn -main
   "main entry point for site generation"
   [& args]
   (config/init!)
-  (let [{:keys [options summary arguments]} (parse-opts args cli-options)]
-    (context/with-colour (or (:colour options) (:color options))
-      (try
-        (cond
-          (:help options)
-          (println (usage summary))
+  (binding [*command-line-args* args]
+    (let [{:keys [options summary arguments]} (parse-opts args cli-options)]
+      (context/with-colour (or (:colour options) (:color options))
+        (try
+          (cond
+            (:help options)
+            (println (usage summary))
 
-          (:version options)
-          (println "Version:" version)
+            (:version options)
+            (println "Version:" version)
 
-          (:evaluate options)
-          (let [result (->> options :evaluate (hiccup/process-hiccup-data "."))]
-            (output-result options result))
+            (:evaluate options)
+            (let [result (->> options :evaluate (hiccup/process-hiccup-data "."))]
+              (output-result options result))
 
-          (= 1 (count arguments))
-          (let [result (-> arguments first process)]
-            (output-result options result))
+            (<= 1 (count arguments))
+            (let [result (-> arguments first remove-shebang process)]
+              (output-result options result))
 
-          :else
-          (println (usage summary)))
-        (catch java.io.FileNotFoundException e
-          (if (:traceback options)
-            (throw e)
-            (binding [*out* *err*]
-              (println
-               (str (utils/colour :red)
-                    "bootleg: File not found: " (.getMessage e)
-                    (utils/colour)))))
-          (System/exit 1))
-        (catch clojure.lang.ExceptionInfo e
-          (if (:traceback options)
-            (throw e)
-            (let [{:keys [type] :as data} (ex-data e)]
-              (if (#{:sci/error :edamame/error} type)
-                (let [{:keys [row col]} (ex-data e)
-                      message (.getMessage e)
-                      cause (.getCause e)
-                      cause-message (when cause (.getMessage cause))
-                      nice-name (utils/exception-nice-name cause)]
-                  (binding [*out* *err*]
-                    (println
-                     (str
-                      (utils/colour :red)
-                      "bootleg: script error at line " row ", column " col ": "
-                      (if cause
-                        (str nice-name ": " cause-message)
-                        message)
+            (zero? (count arguments))
+            (let [result (->> *in* slurp remove-shebang (hiccup/process-hiccup-data "."))]
+              (output-result options result))
+
+            :else
+            (println (usage summary)))
+          (catch java.io.FileNotFoundException e
+            (if (:traceback options)
+              (throw e)
+              (binding [*out* *err*]
+                (println
+                 (str (utils/colour :red)
+                      "bootleg: File not found: " (.getMessage e)
                       (utils/colour)))))
-                (throw e))))
-          (System/exit 2))))))
+            (System/exit 1))
+          (catch clojure.lang.ExceptionInfo e
+            (if (:traceback options)
+              (throw e)
+              (let [{:keys [type] :as data} (ex-data e)]
+                (if (#{:sci/error :edamame/error} type)
+                  (let [{:keys [row col]} (ex-data e)
+                        message (.getMessage e)
+                        cause (.getCause e)
+                        cause-message (when cause (.getMessage cause))
+                        nice-name (utils/exception-nice-name cause)]
+                    (binding [*out* *err*]
+                      (println
+                       (str
+                        (utils/colour :red)
+                        "bootleg: script error at line " row ", column " col ": "
+                        (if cause
+                          (str nice-name ": " cause-message)
+                          message)
+                        (utils/colour)))))
+                  (throw e))))
+            (System/exit 2)))))))

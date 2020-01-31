@@ -13,16 +13,16 @@ Bootleg is a command line tool that rapidly renders clojure based templates. Wit
 Install for Linux:
 
 ```shell
-$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.6-1/bootleg-0.1.6-1-linux-amd64.tgz
-$ tar xvf bootleg-0.1.6-1-linux-amd64.tgz
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.7/bootleg-0.1.7-linux-amd64.tgz
+$ tar xvf bootleg-0.1.7-linux-amd64.tgz
 $ mv bootleg ~/bin
 ```
 
 Install for MacOS:
 
 ```shell
-$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.6-1/bootleg-0.1.6-1-macos-amd64.zip
-$ unzip bootleg-0.1.6-1-macos-amd64.zip
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.7/bootleg-0.1.7-macos-amd64.zip
+$ unzip bootleg-0.1.7-macos-amd64.zip
 $ mv bootleg /usr/local/bin
 ```
 
@@ -177,19 +177,19 @@ $ bootleg example-data.clj          # <- no -d flag means output will be html
 Bootleg is distributed for linux as a single executable file. Download the latest tarball from https://github.com/retrogradeorbit/bootleg/releases and then extract it. Once extracted, move the binary to your path. For system wide installation try `/usr/local/bin` or for personal use `~/bin`
 
 ```shell
-$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.6-1/bootleg-0.1.6-1-linux-amd64.tgz
-$ tar xvf bootleg-0.1.6-1-linux-amd64.tgz
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.7/bootleg-0.1.7-linux-amd64.tgz
+$ tar xvf bootleg-0.1.7-linux-amd64.tgz
 $ mv bootleg /usr/local/bin
 ```
 
 ### Other Platforms
 
-Windows support is experimental. Download (https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.6-1/bootleg-0.1.6-1-windows-amd64.zip) and unzip the archive. Copy the bootleg.exe binary to somewhere on your path.
+Windows support is experimental. Download (https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.7/bootleg-0.1.7-windows-amd64.zip) and unzip the archive. Copy the bootleg.exe binary to somewhere on your path.
 
 The jar release file is also an option if you have java installed. You can run it as follows:
 
 ```shell
-$ java -jar bootleg-0.1.6-1.jar
+$ java -jar bootleg-0.1.7.jar
 ```
 
 ## Usage
@@ -247,7 +247,18 @@ For example: the html snippet `<p>one</p><p>two</p>` is represented in hickory-s
 
 ### html
 
-html (or any type of xml) is represented internally as a string. This is a flexible type and can hold a root element and children, or a number of sibling elements sequentially.
+html is represented internally as a string. This is a flexible type and can hold a root element and children, or a number of sibling elements sequentially.
+
+### xml
+
+xml is represented internally as a string. This type always starts with an XML header `<?xml version="..."?>`
+
+You can output xml with bootleg by converting to type `:xml` first:
+
+```clojure
+$ bootleg -e '(convert-to [:link "foo"] :xml)'
+<?xml version="1.0" encoding="UTF-8"?><link>foo</link>
+```
 
 ## Inbuilt functions
 
@@ -282,7 +293,7 @@ $ bootleg -d -e '(markdown "# heading\nparagraph" :data :hickory-seq)'
 
 ```clojure
 $ bootleg -d -e '(markdown "# heading\nparagraph" :data :hiccup-seq)'
-([:h1 {} "heading"] [:p {} "paragraph"])
+([:h1 "heading"] [:p "paragraph"])
 ```
 
 ```clojure
@@ -314,7 +325,7 @@ $ bootleg -e '(mustache "<p>{{var1}}</p><div>{{&var2}}</div>" {:var1 "value 1" :
 
 ```clojure
 $ bootleg -d -e '(mustache "<p>{{var1}}</p>" {:var1 "value 1"} :data :hiccup-seq)'
-([:p {} "value 1"])
+([:p "value 1"])
 ```
 
 #### selmer
@@ -341,7 +352,7 @@ $ bootleg -e '(selmer "<p>Hello {{name|capitalize}}!</p>" {:name "world"} :data)
 
 ```clojure
 $ bootleg -d -e '(selmer "<p>Hello {{name|capitalize}}!</p>" {:name "world"} :data :hiccup-seq)'
-([:p {} "Hello World!"])
+([:p "Hello World!"])
 ```
 
 The `selmer` namespaces are also provided at their usual namespace locations.
@@ -381,12 +392,12 @@ eg.
 
 ```clojure
 $ bootleg -d -e '(html "<h1>heading</h1><p>body</p>" :data :hiccup-seq)'
-([:h1 {} "heading"] [:p {} "body"])
+([:h1 "heading"] [:p "body"])
 ```
 
 ```clojure
 $ bootleg -d -e '(html "<div><h1>heading</h1><p>body</p></div>" :data :hiccup)'
-[:div {} [:h1 {} "heading"] [:p {} "body"]]
+[:div [:h1 "heading"] [:p "body"]]
 ```
 
 #### hiccup
@@ -439,21 +450,33 @@ Write `data` into the specified `filename`. The filename is interpereted relativ
 
 #### yaml
 
-`(yaml source)`
+`(yaml source & options)`
 
 Load yaml data from `source` and process it. Returns the parsed data structure.
 
+Options can be:
+
+ * `:data` Interpret the `source` argument as yaml data, not a file to load
+
 #### json
 
-`(json source)`
+`(json source & options)`
 
 Load json data from `source` and process it. Returns the parsed data structure.
 
+Options can be:
+
+ * `:data` Interpret the `source` argument as json data, not a file to load
+
 #### edn
 
-`(edn source)`
+`(edn source & options)`
 
 Load edn data from `source` and process it. Returns the parsed data structure.
+
+Options can be:
+
+ * `:data` Interpret the `source` argument as edn data, not a file to load
 
 ### Data Testing
 
@@ -508,7 +531,7 @@ $ bootleg -d -e '(convert-to "<p class=\"class\" id=\"id\">one</p>" :hiccup)'
 
 ```clojure
 $ bootleg -d -e '(convert-to "<p>one</p><p>two</p>" :hiccup-seq)'
-([:p {} "one"] [:p {} "two"])
+([:p "one"] [:p "two"])
 ```
 
 ```clojure
@@ -516,11 +539,17 @@ $ bootleg -d -e '(convert-to {:type :element :tag :p :content ["one"]} :html)'
 "<p>one</p>"
 ```
 
+```clojure
+$ bootleg -d -e '(convert-to [:link "foo"] :xml)'
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?><link>foo</link>"
+```
+
 **Note:** Some conversions are lossy. Converting from html or any *-seq data type to hickory or hiccup may lose forms. Only the last form will be returned.
 
 ```clojure
 $ bootleg -d -e '(convert-to "<p>one</p><p>two</p>" :hiccup)'
-[:p {} "two"]
+Warning: converting markup from :html to :hiccup lost 1 form
+[:p "two"]
 ```
 
 #### as-html
@@ -734,6 +763,111 @@ Pretty print to stdout the passed in form. If `--colour` is passed on command li
 `(parse-string string)`
 
 Parse the passed in string into a clojure type. Useful for converting strings to numbers, keywords, vectors or hashmaps. A binding of [edamame's](https://github.com/borkdude/edamame) `parse-string` is used for parsing.
+
+### Java Packages
+
+The following java classes are included and can be imported and used:
+
+ * java.time.* (https://docs.oracle.com/javase/8/docs/api/java/time/package-summary.html)
+
+#### java.time
+
+```shell
+$ bootleg -d -e '(import [java.time LocalDate]) (LocalDate/now)'
+#object[java.time.LocalDate "0x7d108063" "2020-01-28"]
+```
+
+## Passing in Context
+
+### Environment Variables
+
+You can access environment variables through the `System` [namespace](https://docs.oracle.com/javase/8/docs/api/java/lang/System.html). This namespace has the `getenv` function:
+
+```shell
+$ FOO=bar bootleg -d -e '(System/getenv "FOO")'
+"bar"
+```
+
+### Command Line Arguments
+
+Command line arguments are available in the `*command-line-args*` var:
+
+```shell
+$ bootleg -d -e '*command-line-args*'
+("-d" "-e" "*command-line-args*")
+```
+
+Also included is the `clojure.tools.cli` namespace that you can `require` as needed to process command line args, or reference its namespace directly:
+
+```shell
+$ bootleg -d -e '(clojure.tools.cli/parse-opts *command-line-args* [["-e" "--evaluate CODE" ""] ["-d" "--data" ""]])'
+{:options {:data true,
+           :evaluate "(clojure.tools.cli/parse-opts *command-line-args* [[\"-e\" \"--evaluate CODE\" \"\"] [\"-d\" \"--data\" \"\"]])"},
+ :arguments [],
+ :summary "  -e, --evaluate CODE\n  -d, --data",
+ :errors nil}
+```
+
+If you want to pass in edn in a env var or command line you can use edamame's reader that is already available under `parse-string`:
+
+```shell
+$ FOO='{:a 1 :b 2}' bootleg -d -e '(-> "FOO" System/getenv parse-string :b)'
+2
+```
+
+### Standard Input
+
+When no `-e` argument is passed on the command line and no filename is supplied then bootleg will read its clojure script from standard in:
+
+```shell
+$ bootleg <<< '[:p 1]'
+<p>1</p>
+```
+
+`*in*` is bound to `clojure.lang.LineNumberingPushbackReader` on standard in as it is in clojure. So you can slurp in to process standard in:
+
+```shell
+echo -n "<html></html>" | bootleg -d -e '(-> *in* slurp (convert-to :hiccup))'
+[:html]
+```
+
+Remember to be careful of trailing newlines when using bash's `<<<` pipe form.
+
+```
+$ bootleg -d -e '(-> *in* slurp (convert-to :hiccup))' <<< '<html></html>'
+Warning: converting markup from :html to :hiccup lost 1 form
+"\n"
+$ bootleg  -d -e '(-> *in* slurp (convert-to :hiccup-seq))' <<< '<html></html>'
+([:html] "\n")
+```
+
+### Shebang
+
+Bootleg scripts can contain a shebang line. Then if the executable bit is set, they can be run like programmes. Examine the shebang example in `examples/quickstart/shebang.clj`.
+
+```shell
+$ cat shebang.clj
+#!/usr/bin/env bootleg
+
+[:div
+ [:h1 "Command Line Args"]
+ [:ul
+  (for [arg *command-line-args*]
+    [:li arg])]]
+```
+
+Make it executable:
+
+```shell
+$ chmod a+x shebang.clj
+```
+
+Run it on the command line:
+
+```shell
+$ ./shebang.clj arg1 arg2 "This is argument 3"
+<div><h1>Command Line Args</h1><ul><li>./shebang.clj</li><li>arg1</li><li>arg2</li><li>This is argument 3</li></ul></div>
+```
 
 ## Building the executable
 

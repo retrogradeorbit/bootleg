@@ -2,6 +2,7 @@
   (:require [bootleg.utils :as utils]
             [bootleg.file :as file]
             [selmer.parser]
+            [selmer.util]
             [clojure.java.io :as io]))
 
 ;; add-tag! is a hella nifty macro. Example use:
@@ -32,9 +33,13 @@
      (.toString ~buf)))
 
 (defn selmer [source vars & options]
-  (let [flags (into #{} options)
-        pre-markup (if (:data flags)
-                     source
-                     (slurp (io/input-stream (file/path-relative source))))
-        markup (selmer.parser/render pre-markup vars)]
-    (utils/html-output-to flags markup)))
+  (let [flags (into #{} options)]
+    (utils/html-output-to
+     flags
+     (if (:data flags)
+       (selmer.parser/render source vars)
+       (let [[path basename] (file/path-split source)
+             basepath (file/path-relative (or path "."))]
+         (with-redefs [selmer.util/resource-path (fn [template]
+                                                   (.toURL (io/file basepath template)))]
+           (selmer.parser/render-file basename vars)))))))

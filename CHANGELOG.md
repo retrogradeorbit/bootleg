@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- fixed broken selmer page inheritance tags - #49
+- cull empty {} from hiccup conversions - #50
+- missing warning on lost form when html is converted to hiccup - #53
+
+### Added
+- added environment variables and command line argument support - #42
+- added support for reading from standard in - #44
+- added missing :data flag to yaml, json and edn functions - #45
+- introducing xml support - #50
+- added java.time classes to those available - #51
 
 ## [0.1.6-1] - 2019-12-04
 ### Fixed
