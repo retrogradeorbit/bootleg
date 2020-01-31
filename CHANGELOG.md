@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.1.7] - 2020-01-31
 ### Fixed
 - fixed broken selmer page inheritance tags - #49
 - cull empty {} from hiccup conversions - #50
