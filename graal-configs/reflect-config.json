@@ -45,5 +45,153 @@
         "name":"java.io.OutputStreamWriter",
         "allDeclaredMethods": true,
         "allPublicMethods": true
+    },
+    {
+        "name": "java.lang.System",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.Clock",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.DateTimeException",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.DayOfWeek",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.Duration",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.Duration",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.Instant",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.LocalDate",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.LocalDateTime",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.LocalTime",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.Month",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.MonthDay",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.OffsetDateTime",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.OffsetTime",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.Period",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.Year",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.YearMonth",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.ZonedDateTime",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.ZoneId",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.ZoneOffset",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.temporal.TemporalAccessor",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
     }
+
 ]
