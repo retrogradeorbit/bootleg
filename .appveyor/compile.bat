@@ -32,7 +32,7 @@ call %GRAALVM_HOME%\bin\native-image.cmd ^
   "--verbose" ^
   "--allow-incomplete-classpath" ^
   "--no-fallback" ^
-  "-J-Xmx4g" ^
+  "-J-Xmx5g" ^
   "-H:+TraceClassInitialization" ^
   "-H:+PrintClassInitialization"
 
