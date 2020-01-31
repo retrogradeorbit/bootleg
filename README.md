@@ -841,6 +841,34 @@ $ bootleg  -d -e '(-> *in* slurp (convert-to :hiccup-seq))' <<< '<html></html>'
 ([:html] "\n")
 ```
 
+### Shebang
+
+Bootleg scripts can contain a shebang line. Then if the executable bit is set, they can be run like programmes. Examine the shebang example in `examples/quickstart/shebang.clj`.
+
+```shell
+$ cat shebang.clj
+#!/usr/bin/env bootleg
+
+[:div
+ [:h1 "Command Line Args"]
+ [:ul
+  (for [arg *command-line-args*]
+    [:li arg])]]
+```
+
+Make it executable:
+
+```shell
+$ chmod a+x shebang.clj
+```
+
+Run it on the command line:
+
+```shell
+$ ./shebang.clj arg1 arg2 "This is argument 3"
+<div><h1>Command Line Args</h1><ul><li>./shebang.clj</li><li>arg1</li><li>arg2</li><li>This is argument 3</li></ul></div>
+```
+
 ## Building the executable
 
 Ensure graalvm community edition 19.3.0 is installed in your home directory and the native image extension is also installed.
