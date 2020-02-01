@@ -82,6 +82,8 @@
                        'java.time.ZoneId java.time.ZoneId
                        'java.time.ZoneOffset java.time.ZoneOffset
                        'java.time.temporal.TemporalAccessor java.time.temporal.TemporalAccessor
+                       'java.time.format.DateTimeFormatter java.time.format.DateTimeFormatter
+                       'java.time.format.DateTimeFormatterBuilder java.time.format.DateTimeFormatterBuilder
                        }}]
     (context/with-path path
       (-> data

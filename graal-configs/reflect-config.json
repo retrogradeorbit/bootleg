@@ -177,6 +177,18 @@
         "allPublicConstructors": true,
         "allPublicFields": true,
         "allPublicMethods": true
+    },
+    {
+        "name": "java.time.format.DateTimeFormatter",
+        "allPublicConstructors": true,
+        "allPublicFields": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.time.format.DateTimeFormatterBuilder",
+        "allPublicConstructors": true,
+        "allPublicFields": true,
+        "allPublicMethods": true
     }
 
 ]
