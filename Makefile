@@ -32,8 +32,7 @@ build/bootleg: target/uberjar/bootleg-$(VERSION)-standalone.jar
 		--allow-incomplete-classpath \
 		--no-fallback \
 		--no-server \
-		"-J-Xmx6g" \
-		-H:+TraceClassInitialization -H:+PrintClassInitialization
+		"-J-Xmx4g"
 
 copy-libs-to-resource:
 	-cp $(GRAALVM)/jre/lib/sunec.lib resources
