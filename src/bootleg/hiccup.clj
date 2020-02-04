@@ -11,13 +11,22 @@
             [bootleg.namespaces :as namespaces]
             [bootleg.context :as context]
             [bootleg.glob :as glob]
-            [sci.core :as sci]))
+            [sci.core :as sci]
+            [clojure.walk :as walk]))
 
 (defn load-file* [ctx file]
   (let [s (slurp file)]
     (sci/eval-string s ctx)))
 
 (declare process-hiccup)
+
+(defn realize-all-seqs [form]
+  (walk/postwalk
+   (fn [f]
+     (if (and (seq? f) (not (realized? f)))
+       (doall f)
+       f))
+   form))
 
 (defn process-hiccup-data [path data]
   (let [ctx {
@@ -92,7 +101,8 @@
                    :bindings assoc 'load-file
                    #(load-file*
                      ctx
-                     (file/path-join path %))))))))
+                     (file/path-join path %))))
+          realize-all-seqs))))
 
 (defn process-hiccup
   ([file]
