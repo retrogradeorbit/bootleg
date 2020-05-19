@@ -1,4 +1,6 @@
 GRAALVM = $(HOME)/graalvm-ce-java11-19.3.1
+JAVA_HOME = $(GRAALVM)
+PATH = $(GRAALVM)/bin:$(shell echo $$PATH)
 SRC = src/bootleg/core.clj
 VERSION = $(shell cat .meta/VERSION | xargs)
 
