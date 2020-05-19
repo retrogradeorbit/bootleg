@@ -17,10 +17,10 @@
                  [selmer "1.12.17"]
 
                  ;; for clojure eval
-                 [borkdude/sci "0.0.13-alpha.1"]
+                 [borkdude/sci "0.0.13-alpha.23"]
 
                  ;; clojures pprint doesn't work under graal native-image
-                 [fipp "0.6.21"]
+                 [fipp "0.6.23"]
                  [mvxcvi/puget "1.2.0"]
                  ]
   :main ^:skip-aot bootleg.core
