@@ -34,7 +34,7 @@
 
 (defn process [filename]
   (let [[path file] (file/path-split filename)]
-    (hiccup/process-hiccup path file)))
+    (hiccup/process-hiccup (or path ".") file)))
 
 (defn output-result [options result]
   (let [out (if (:output options)
@@ -68,7 +68,7 @@
             (let [result (->> options :evaluate (hiccup/process-hiccup-data "."))]
               (output-result options result))
 
-            (<= 1 (count arguments))
+            (= 1 (count arguments))
             (let [result (-> arguments first process)]
               (output-result options result))
 
