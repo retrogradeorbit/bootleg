@@ -883,7 +883,7 @@ The compiled file will be at `build/bootleg`
 To use a different version of graal or one installed in a different path, add the GRAALVM suffix like:
 
 ```shell
-$ make all GRAALVM_HOME=/path/to/graal-vm
+$ make all GRAALVM=/path/to/graal-vm
 ```
 
 ## Examples
