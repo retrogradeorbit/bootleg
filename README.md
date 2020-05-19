@@ -892,6 +892,11 @@ The following are some example sites built using bootleg for you to use as inspi
 
  * [epiccastle.io](https://github.com/epiccastle/epiccastle.io)
 
+## Blog Posts
+
+ * https://epiccastle.io/blog/generating-xml-with-bootleg/
+ * https://nextjournal.com/plexus/advent-2019-part-18-exploring-bootleg
+
 ### Submit Your Own Example
 
 Have you built a website with bootleg? Is the source of this website open source? If so [open an issue](https://github.com/retrogradeorbit/bootleg/issues/new) on the project with a link to your github project with the source tree in it and I will add it to the examples list. This way there will be more reference material for bootleg users to draw apon!
