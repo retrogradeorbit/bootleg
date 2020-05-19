@@ -2,11 +2,14 @@ GRAALVM = $(HOME)/graalvm-ce-java8-19.3.0
 SRC = src/bootleg/core.clj
 VERSION = $(shell cat .meta/VERSION | xargs)
 
-all: build/bootleg
+all: sci-reflector-install build/bootleg
 
 clean:
 	-rm -rf build target
 	lein clean
+
+sci-reflector-install:
+	cd sci-reflector && lein install
 
 target/uberjar/bootleg-$(VERSION)-standalone.jar: $(SRC)
 	GRAALVM_HOME=$(GRAALVM) lein uberjar

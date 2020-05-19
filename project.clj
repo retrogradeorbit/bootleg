@@ -23,6 +23,8 @@
                  [fipp "0.6.23"]
                  [mvxcvi/puget "1.2.0"]
                  ]
+  :java-source-paths ["src/java"]
+
   :main ^:skip-aot bootleg.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
