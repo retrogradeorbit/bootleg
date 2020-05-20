@@ -3,7 +3,7 @@
   :url "https://github.com/retrogradeorbit/bootleg"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url "https://www.eclipse.org/legal/epl-2.0/"}
-  :dependencies [[org.clojure/clojure "1.10.0"]
+  :dependencies [[org.clojure/clojure "1.10.2-alpha1"]
                  [org.clojure/tools.cli "0.4.2"]
                  [org.clojure/data.json "0.2.6"]
                  [org.clojure/data.xml "0.2.0-alpha6"]
@@ -17,7 +17,7 @@
                  [selmer "1.12.17"]
 
                  ;; for clojure eval
-                 [borkdude/sci "0.0.13-alpha.23"]
+                 [borkdude/sci "0.0.13-alpha.24"]
 
                  ;; clojures pprint doesn't work under graal native-image
                  [fipp "0.6.23"]
