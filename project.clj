@@ -22,6 +22,9 @@
                  ;; clojures pprint doesn't work under graal native-image
                  [fipp "0.6.23"]
                  [mvxcvi/puget "1.2.0"]
+
+                 ;; pod support
+                 [nrepl/bencode "1.1.0"]
                  ]
   :java-source-paths ["src/java"]
 
