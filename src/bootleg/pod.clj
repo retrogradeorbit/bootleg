@@ -71,9 +71,34 @@
 
 #_ (macroexpand-1 '(make-namespace-def bootleg.glob))
 
-(def translate-ns
-  {"bootleg.utils" "pod.retrogradeorbit.bootleg.utils"
-   "net.cgrand.enlive-html" "pod.retrogradeorbit.net.cgrand.enlive-html"})
+;; when these namespaces appear in macros, they will be transformed into
+;; the pod prefixed namespace
+(def translate-ns?
+  #{"bootleg.utils"
+    "bootleg.selmer"
+
+    "hickory.convert"
+    "hickory.hiccup-utils"
+    "hickory.render"
+    "hickory.select"
+    "hickory.utils"
+    "hickory.zip"
+
+    "selmer.filter-parser"
+    "selmer.filters"
+    "selmer.middleware"
+    "selmer.node"
+    "selmer.parser"
+    "selmer.tags"
+    "selmer.template-parser"
+    "selmer.util"
+    "selmer.validator"
+
+    "net.cgrand.enlive-html"
+    "net.cgrand.jsoup"
+    "net.cgrand.tagsoup"
+    "net.cgrand.xml"
+    })
 
 (defmacro process-macro-source [sym]
   (->
@@ -84,8 +109,8 @@
            (if (symbol? form)
              (let [ns (namespace form)
                    sym-name (name form)]
-               (if-let [translated-ns (translate-ns ns)]
-                 (symbol translated-ns sym-name)
+               (if (translate-ns? ns)
+                 (symbol (str "pod.retrogradeorbit." ns) sym-name)
                  (symbol ns sym-name)))
              form))))
    prn-str))
