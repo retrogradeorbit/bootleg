@@ -264,20 +264,20 @@
             'html net.cgrand.enlive-html/html
 
             ;; macros
-            'at (with-meta enlive/at {:sci/macro true})
-            'transformation (with-meta enlive/transformation {:sci/macro true})
-            'lockstep-transformation (with-meta enlive/lockstep-transformation {:sci/macro true})
-            'snippet* (with-meta enlive/snippet* {:sci/macro true})
-            'snippet (with-meta enlive/snippet {:sci/macro true})
-            'template (with-meta enlive/template {:sci/macro true})
-            'defsnippet (with-meta enlive/defsnippet {:sci/macro true})
-            'deftemplate (with-meta enlive/deftemplate {:sci/macro true})
-            'defsnippets (with-meta enlive/defsnippets {:sci/macro true})
-            'transform-content (with-meta enlive/transform-content {:sci/macro true})
-            'clone-for (with-meta enlive/clone-for {:sci/macro true})
-            'strict-mode (with-meta enlive/strict-mode {:sci/macro true})
-            'let-select (with-meta enlive/let-select {:sci/macro true})
-            'sniptest (with-meta enlive/sniptest {:sci/macro true})
+            'at (with-meta @#'enlive/at {:sci/macro true})
+            'transformation (with-meta @#'enlive/transformation {:sci/macro true})
+            'lockstep-transformation (with-meta @#'enlive/lockstep-transformation {:sci/macro true})
+            'snippet* (with-meta @#'enlive/snippet* {:sci/macro true})
+            'snippet (with-meta @#'enlive/snippet {:sci/macro true})
+            'template (with-meta @#'enlive/template {:sci/macro true})
+            'defsnippet (with-meta @#'enlive/defsnippet {:sci/macro true})
+            'deftemplate (with-meta @#'enlive/deftemplate {:sci/macro true})
+            'defsnippets (with-meta @#'enlive/defsnippets {:sci/macro true})
+            'transform-content (with-meta @#'enlive/transform-content {:sci/macro true})
+            'clone-for (with-meta @#'enlive/clone-for {:sci/macro true})
+            'strict-mode (with-meta @#'enlive/strict-mode {:sci/macro true})
+            'let-select (with-meta @#'enlive/let-select {:sci/macro true})
+            'sniptest (with-meta @#'enlive/sniptest {:sci/macro true})
             }
 
    'net.cgrand.enlive-html {
@@ -381,20 +381,20 @@
                             'html net.cgrand.enlive-html/html
 
                             ;; macros
-                            'at (with-meta enlive/at {:sci/macro true})
-                            'transformation (with-meta enlive/transformation {:sci/macro true})
-                            'lockstep-transformation (with-meta enlive/lockstep-transformation {:sci/macro true})
-                            'snippet* (with-meta enlive/snippet* {:sci/macro true})
-                            'snippet (with-meta enlive/snippet {:sci/macro true})
-                            'template (with-meta enlive/template {:sci/macro true})
-                            'defsnippet (with-meta enlive/defsnippet {:sci/macro true})
-                            'deftemplate (with-meta enlive/deftemplate {:sci/macro true})
-                            'defsnippets (with-meta enlive/defsnippets {:sci/macro true})
-                            'transform-content (with-meta enlive/transform-content {:sci/macro true})
-                            'clone-for (with-meta enlive/clone-for {:sci/macro true})
-                            'strict-mode (with-meta enlive/strict-mode {:sci/macro true})
-                            'let-select (with-meta enlive/let-select {:sci/macro true})
-                            'sniptest (with-meta enlive/sniptest {:sci/macro true})
+                            'at (with-meta @#'enlive/at {:sci/macro true})
+                            'transformation (with-meta @#'enlive/transformation {:sci/macro true})
+                            'lockstep-transformation (with-meta @#'enlive/lockstep-transformation {:sci/macro true})
+                            'snippet* (with-meta @#'enlive/snippet* {:sci/macro true})
+                            'snippet (with-meta @#'enlive/snippet {:sci/macro true})
+                            'template (with-meta @#'enlive/template {:sci/macro true})
+                            'defsnippet (with-meta @#'enlive/defsnippet {:sci/macro true})
+                            'deftemplate (with-meta @#'enlive/deftemplate {:sci/macro true})
+                            'defsnippets (with-meta @#'enlive/defsnippets {:sci/macro true})
+                            'transform-content (with-meta @#'enlive/transform-content {:sci/macro true})
+                            'clone-for (with-meta @#'enlive/clone-for {:sci/macro true})
+                            'strict-mode (with-meta @#'enlive/strict-mode {:sci/macro true})
+                            'let-select (with-meta @#'enlive/let-select {:sci/macro true})
+                            'sniptest (with-meta @#'enlive/sniptest {:sci/macro true})
 
                             'content enlive/content
                             'append enlive/append
@@ -484,7 +484,7 @@
                    'known-variables selmer.parser/known-variables
 
                    ;; macros
-                   'add-tag! (with-meta selmer/add-tag! {:sci/macro true})
+                   'add-tag! (with-meta @#'selmer/add-tag! {:sci/macro true})
                    }
 
    'selmer.tags {
@@ -598,10 +598,10 @@
                  'parse-accessor selmer.util/parse-accessor
 
                  ;; macro
-                 'exception (with-meta selmer/exception {:sci/macro true})
-                 'with-escaping (with-meta selmer/with-escaping {:sci/macro true})
-                 'without-escaping (with-meta selmer/without-escaping {:sci/macro true})
-                 '->buf (with-meta selmer/->buf {:sci/macro true})
+                 'exception (with-meta @#'selmer/exception {:sci/macro true})
+                 'with-escaping (with-meta @#'selmer/with-escaping {:sci/macro true})
+                 'without-escaping (with-meta @#'selmer/without-escaping {:sci/macro true})
+                 '->buf (with-meta @#'selmer/->buf {:sci/macro true})
                  }
 
    'selmer.validator {
