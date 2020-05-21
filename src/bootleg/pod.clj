@@ -47,30 +47,6 @@
   (write-bencode System/out v)
   (.flush System/out))
 
-(defmacro make-lookup [ns]
-  (->>
-   (for [[k v] (ns-publics ns)]
-     (let [{:keys [ns name macro]} (meta v)]
-       (when-not macro
-         [(list 'quote (symbol (str "pod.retrogradeorbit." (str ns)) (str k)))
-          (symbol v)
-          ])))
-   (filter identity)
-   (into {})))
-
-(defmacro make-namespace-def [ns]
-  {"name" (str "pod.retrogradeorbit." (str ns))
-   "vars" (->>
-           (for [[k v] (ns-publics ns)]
-             (let [{:keys [ns name macro]} (meta v)]
-               (when-not macro
-                 {"name" (str name)})))
-           (filter identity)
-           (into []))}
-  )
-
-#_ (macroexpand-1 '(make-namespace-def bootleg.glob))
-
 ;; when these namespaces appear in macros, they will be transformed into
 ;; the pod prefixed namespace
 (def translate-ns?
@@ -116,6 +92,30 @@
    prn-str))
 
 (bootleg.utils/pprint (process-macro-source bootleg.enlive/deftemplate))
+
+(defmacro make-lookup [ns]
+  (->>
+   (for [[k v] (ns-publics ns)]
+     (let [{:keys [ns name macro]} (meta v)]
+       (when-not macro
+         [(list 'quote (symbol (str "pod.retrogradeorbit." (str ns)) (str k)))
+          (symbol v)
+          ])))
+   (filter identity)
+   (into {})))
+
+(defmacro make-namespace-def [ns]
+  {"name" (str "pod.retrogradeorbit." (str ns))
+   "vars" (->>
+           (for [[k v] (ns-publics ns)]
+             (let [{:keys [ns name macro]} (meta v)]
+               (when-not macro
+                 {"name" (str name)})))
+           (filter identity)
+           (into []))}
+  )
+
+#_ (macroexpand-1 '(make-namespace-def bootleg.glob))
 
 (def lookup (merge
              (make-lookup bootleg.glob)
