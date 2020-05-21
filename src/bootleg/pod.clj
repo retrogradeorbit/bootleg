@@ -164,80 +164,85 @@
              (.write wrtr (prn-str (String. op))))
 
         (case (String. op)
-          "describe" (do (write {"format" "edn"
-                                 "namespaces" [(make-namespace-def bootleg.glob)
-                                               (make-namespace-def bootleg.utils)
-                                               (make-namespace-def bootleg.markdown)
-                                               (make-namespace-def bootleg.mustache)
-                                               (make-namespace-def bootleg.html)
-                                               (make-namespace-def bootleg.hiccup)
-                                               (make-namespace-def bootleg.selmer)
-                                               (make-namespace-def bootleg.yaml)
-                                               (make-namespace-def bootleg.json)
-                                               (make-namespace-def bootleg.edn)
-                                               (make-namespace-def bootleg.file)
-                                               (make-namespace-def bootleg.enlive)
-                                               (make-namespace-def hickory.convert)
-                                               (make-namespace-def hickory.hiccup-utils)
-                                               (make-namespace-def hickory.render)
-                                               (make-namespace-def hickory.select)
-                                               (make-namespace-def hickory.utils)
-                                               (make-namespace-def hickory.zip)
+          "describe"
+          (do
+            (write {"format" "edn"
+                    "namespaces"
+                    [(make-namespace-def bootleg.glob)
+                     (make-namespace-def bootleg.utils)
+                     (make-namespace-def bootleg.markdown)
+                     (make-namespace-def bootleg.mustache)
+                     (make-namespace-def bootleg.html)
+                     (make-namespace-def bootleg.hiccup)
+                     (make-namespace-def bootleg.selmer)
+                     (make-namespace-def bootleg.yaml)
+                     (make-namespace-def bootleg.json)
+                     (make-namespace-def bootleg.edn)
+                     (make-namespace-def bootleg.file)
+                     (make-namespace-def bootleg.enlive)
+                     (make-namespace-def hickory.convert)
+                     (make-namespace-def hickory.hiccup-utils)
+                     (make-namespace-def hickory.render)
+                     (make-namespace-def hickory.select)
+                     (make-namespace-def hickory.utils)
+                     (make-namespace-def hickory.zip)
 
-                                               (make-namespace-def hickory.convert)
-                                               (make-namespace-def hickory.hiccup-utils)
-                                               (make-namespace-def hickory.render)
-                                               (make-namespace-def hickory.select)
-                                               (make-namespace-def hickory.utils)
-                                               (make-namespace-def hickory.zip)
+                     (make-namespace-def hickory.convert)
+                     (make-namespace-def hickory.hiccup-utils)
+                     (make-namespace-def hickory.render)
+                     (make-namespace-def hickory.select)
+                     (make-namespace-def hickory.utils)
+                     (make-namespace-def hickory.zip)
 
-                                               (make-namespace-def net.cgrand.enlive-html)
-                                               (make-namespace-def net.cgrand.jsoup)
-                                               (make-namespace-def net.cgrand.tagsoup)
-                                               (make-namespace-def net.cgrand.xml)
+                     (make-namespace-def net.cgrand.enlive-html)
+                     (make-namespace-def net.cgrand.jsoup)
+                     (make-namespace-def net.cgrand.tagsoup)
+                     (make-namespace-def net.cgrand.xml)
 
-                                               (make-namespace-def selmer.filter-parser)
-                                               (make-namespace-def selmer.filters)
-                                               (make-namespace-def selmer.middleware)
-                                               (make-namespace-def selmer.node)
-                                               (make-namespace-def selmer.parser)
-                                               (make-namespace-def selmer.tags)
-                                               (make-namespace-def selmer.template-parser)
-                                               (make-namespace-def selmer.util)
-                                               (make-namespace-def selmer.validator)
+                     (make-namespace-def selmer.filter-parser)
+                     (make-namespace-def selmer.filters)
+                     (make-namespace-def selmer.middleware)
+                     (make-namespace-def selmer.node)
+                     (make-namespace-def selmer.parser)
+                     (make-namespace-def selmer.tags)
+                     (make-namespace-def selmer.template-parser)
+                     (make-namespace-def selmer.util)
+                     (make-namespace-def selmer.validator)
 
-                                               ]
-                                 "id" (String. id)})
-                         (recur))
+                     ]
+                    "id" (String. id)})
+            (recur))
 
-          "invoke" (do (try
-                         (let [var (-> var
-                                       String.
-                                       symbol)
-                               args (String. args)
-                               args (edn/read-string args)]
-                           #_(with-open [wrtr (io/writer "./pod-in.txt" :append true)]
-                               (.write wrtr (prn-str var args)))
+          "invoke"
+          (do
+            (try
+              (let [var (-> var
+                            String.
+                            symbol)
+                    args (String. args)
+                    args (edn/read-string args)]
+                #_(with-open [wrtr (io/writer "./pod-in.txt" :append true)]
+                    (.write wrtr (prn-str var args)))
 
-                           (if-let [f (lookup var)]
-                             (let [value (pr-str (apply f args))
-                                   reply {"value" value
-                                          "id" id
-                                          "status" ["done"]}]
-                               (write reply))
-                             (throw (ex-info (str "Var not found: " var) {})))
-                           )
-                         (catch Throwable e
-                           (binding [*out* *err*]
-                             (println e))
-                           (let [reply {"ex-message" (.getMessage e)
-                                        "ex-data" (pr-str
-                                                   (assoc (ex-data e)
-                                                          :type (class e)))
-                                        "id" id
-                                        "status" ["done" "error"]}]
-                             (write reply))))
-                       (recur))
+                (if-let [f (lookup var)]
+                  (let [value (pr-str (apply f args))
+                        reply {"value" value
+                               "id" id
+                               "status" ["done"]}]
+                    (write reply))
+                  (throw (ex-info (str "Var not found: " var) {})))
+                )
+              (catch Throwable e
+                (binding [*out* *err*]
+                  (println e))
+                (let [reply {"ex-message" (.getMessage e)
+                             "ex-data" (pr-str
+                                        (assoc (ex-data e)
+                                               :type (class e)))
+                             "id" id
+                             "status" ["done" "error"]}]
+                  (write reply))))
+            (recur))
           (do
             (write {"err" (str "unknown op:" (name op))})
             (recur)))))
