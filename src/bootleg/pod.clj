@@ -52,6 +52,7 @@
 (def translate-ns?
   #{"bootleg.utils"
     "bootleg.selmer"
+    "bootleg.enlive"
 
     "hickory.convert"
     "hickory.hiccup-utils"
@@ -76,10 +77,13 @@
     "net.cgrand.xml"
     })
 
-(defmacro process-macro-source [sym]
+(namespace 'foo/bar)
+
+(defmacro process-source [sym]
   (->
    (clojure.repl/source-fn sym)
-   (edamame.core/parse-string  {:all true})
+   (edamame.core/parse-string  {:all true
+                                :auto-resolve {:current (namespace sym)}})
    (->> (clojure.walk/postwalk
          (fn [form]
            (if (symbol? form)
@@ -91,31 +95,149 @@
              form))))
    prn-str))
 
-(bootleg.utils/pprint (process-macro-source bootleg.enlive/deftemplate))
+#_ (bootleg.utils/pprint (process-macro-source
+                          net.cgrand.enlive-html/bodies
+                          ;;bootleg.enlive/deftemplate
+                          )
+                         )
+
+#_ (clojure.repl/source-fn 'net.cgrand.enlive-html/bodies)
+#_ (clojure.repl/source-fn 'bootleg.enlive/deftemplate)
 
 (defmacro make-lookup [ns]
   (->>
-   (for [[k v] (ns-publics ns)]
-     (let [{:keys [ns name macro]} (meta v)]
+   (for [[k v] (ns-interns ns)]
+     (let [{:keys [ns name macro private]} (meta v)]
        (when-not macro
-         [(list 'quote (symbol (str "pod.retrogradeorbit." (str ns)) (str k)))
-          (symbol v)
-          ])))
+         (if private
+           ;; allow invoking private funcs if needed
+           [(list 'quote (symbol (str "pod.retrogradeorbit." (str ns)) (str k)))
+            `(fn [& args#] (apply (var ~(symbol v)) args#))
+            ]
+           ;; public func
+           [(list 'quote (symbol (str "pod.retrogradeorbit." (str ns)) (str k)))
+            (symbol v)
+            ]))))
    (filter identity)
    (into {})))
 
-(defmacro make-namespace-def [ns]
-  {"name" (str "pod.retrogradeorbit." (str ns))
+#_ (meta ((ns-interns 'net.cgrand.enlive-html) 'bodies))
+#_ (((make-lookup net.cgrand.enlive-html) 'pod.retrogradeorbit.net.cgrand.enlive-html/bodies) [[:a] :b])
+#_ (meta ((ns-interns 'net.cgrand.enlive-html) 'pad-unless))
+
+(defmacro make-namespace-def [namespace & [{:keys [predefs only]
+                                            :or {predefs #{}
+                                                 only (constantly true)}}]]
+  (prn predefs)
+  {"name" (str "pod.retrogradeorbit." (str namespace))
    "vars" (->>
-           (for [[k v] (ns-publics ns)]
-             (let [{:keys [ns name macro]} (meta v)]
-               (when-not macro
-                 {"name" (str name)})))
-           (filter identity)
-           (into []))}
+           (let [interns (ns-interns namespace)
+                 ;;privates (filter #(:private (meta (second %))) interns)
+                 ;;publics (filter #(not (:private (meta (second %)))) interns)
+                 first-set (filter #(let [name (:name (meta (second %)))]
+                                      (prn name (predefs name))
+                                      false ;;(#{'bodies} name)
+                                      )
+                                   interns)
+                 only-set (filter #(and (only (:name (meta (second %))))
+                                        (not (predefs (:name (meta (second %))))))
+                                  interns)
+                 ]
+             [first-set only-set]
+             #_ (for [[k v] (concat first-set only-set)]
+               (let [{:keys [ns name macro private]} (meta v)]
+                 {"name" (str name)
+                  "code" nil #_`(process-macro-source ~(symbol v))}
+                 )))
+           #_(filter identity)
+           #_(into []))})
+
+
+(defmacro make-inlined-code-set [namespace syms]
+  (let [interns (ns-interns namespace)]
+    (into []
+          (for [sym syms]
+            {"name" (str sym)
+             "code" `(process-source ~(symbol (interns sym)))}))))
+
+
+
+#_
+(macroexpand-1 '(make-inlined-set net.cgrand.enlive-html [bodies annotations]))
+
+#_
+(make-inlined-code-set net.cgrand.enlive-html [bodies pad-unless])
+#_
+(make-inlined-code-set net.cgrand.enlive-html [snippet*])
+
+(defmacro make-inlined-namespace [namespace & body]
+  `{"name" (str "pod.retrogradeorbit." ~(str namespace))
+    "vars" (vec (apply concat (vector ~@body)))}
   )
 
+#_
+(macroexpand-1
+ '(make-inlined-namespace
+   net.cgrand.enlive-html
+   (make-inlined-code-set net.cgrand.enlive-html [bodies pad-unless])
+   (make-inlined-code-set net.cgrand.enlive-html [snippet*])))
+
+#_
+(make-inlined-namespace
+   net.cgrand.enlive-html
+   (make-inlined-code-set net.cgrand.enlive-html [bodies pad-unless])
+   (make-inlined-code-set net.cgrand.enlive-html [snippet*]))
+
+
+(defmacro make-inlined-code-set-macros [namespace]
+  (let [interns (ns-interns namespace)]
+    (into []
+          (filter identity
+                  (for [sym (keys interns)]
+                    (when (:macro (meta (interns sym)))
+                      {"name" (str sym)
+                       "code" `(process-source ~(symbol (interns sym)))}))))))
+
+#_ (make-inlined-code-set-macros bootleg.utils)
+
+
+(defmacro make-inlined-public-fns [namespace]
+  (let [interns (ns-publics namespace)]
+    (into []
+          (filter identity
+                  (for [sym (keys interns)]
+                    (when (not (:macro (meta (interns sym))))
+                      {"name" (str sym)})))))
+  )
+
+#_ (make-inlined-public-stubs bootleg.utils)
+
+(defmacro make-inlined-namespace-basic [namespace]
+  `(make-inlined-namespace
+    ~namespace
+    (make-inlined-public-fns ~namespace)
+    (make-inlined-code-set-macros ~namespace)))
+
+
+#_ "#'net.cgrand.enlive-html/bodies"
+
+#_ (process-macro-source net.cgrand.enlive-html/bodies)
+
+#_ (#{'foo} 'foo)
+
+#_ (macroexpand-1 '(make-namespace-def net.cgrand.enlive-html {:predefs #{'bodies 'annotations} :only #{}}))
+
+#_ (
+    (make-namespace-def net.cgrand.enlive-html {:predefs #{'bodies} :only #{}})
+    "vars")
+#_ (make-namespace-def hickory.hiccup-utils)
+#_ (macroexpand-1 '(make-namespace-def bootleg.utils))
 #_ (macroexpand-1 '(make-namespace-def bootleg.glob))
+#_ (macroexpand-1 '(make-namespace-def bootleg.selmer))
+#_ (process-macro-source bootleg.selmer/with-escaping)
+#_ (make-namespace-def bootleg.selmer)
+#_ (bootleg.pod/process-macro-source (clojure.core/symbol #'bootleg.selmer/exception))
+#_ (bootleg.pod/process-macro-source bootleg.selmer/exception)
 
 (def lookup (merge
              (make-lookup bootleg.glob)
@@ -155,6 +277,13 @@
 
              ))
 
+
+
+
+
+(def lookup
+  {'pod.retrogradeorbit.bootleg.test/func (fn [] 10)})
+
 (defn main []
   (try
     (loop []
@@ -168,46 +297,82 @@
           (do
             (write {"format" "edn"
                     "namespaces"
-                    [(make-namespace-def bootleg.glob)
-                     (make-namespace-def bootleg.utils)
-                     (make-namespace-def bootleg.markdown)
-                     (make-namespace-def bootleg.mustache)
-                     (make-namespace-def bootleg.html)
-                     (make-namespace-def bootleg.hiccup)
-                     (make-namespace-def bootleg.selmer)
-                     (make-namespace-def bootleg.yaml)
-                     (make-namespace-def bootleg.json)
-                     (make-namespace-def bootleg.edn)
-                     (make-namespace-def bootleg.file)
-                     (make-namespace-def bootleg.enlive)
-                     (make-namespace-def hickory.convert)
-                     (make-namespace-def hickory.hiccup-utils)
-                     (make-namespace-def hickory.render)
-                     (make-namespace-def hickory.select)
-                     (make-namespace-def hickory.utils)
-                     (make-namespace-def hickory.zip)
+                    [
+                     (make-inlined-namespace-basic bootleg.glob)
+                     (make-inlined-namespace-basic bootleg.utils)
+                     (make-inlined-namespace-basic bootleg.markdown)
+                     (make-inlined-namespace-basic bootleg.mustache)
+                     (make-inlined-namespace-basic bootleg.html)
+                     (make-inlined-namespace-basic bootleg.hiccup)
+                     (make-inlined-namespace-basic bootleg.selmer)
+                     (make-inlined-namespace-basic bootleg.yaml)
+                     (make-inlined-namespace-basic bootleg.json)
+                     (make-inlined-namespace-basic bootleg.edn)
+                     (make-inlined-namespace-basic bootleg.file)
 
-                     (make-namespace-def hickory.convert)
-                     (make-namespace-def hickory.hiccup-utils)
-                     (make-namespace-def hickory.render)
-                     (make-namespace-def hickory.select)
-                     (make-namespace-def hickory.utils)
-                     (make-namespace-def hickory.zip)
+                     (make-inlined-namespace
+                      net.cgrand.enlive-html
+                      (make-inlined-code-set
+                       net.cgrand.enlive-html
+                       ;; the following are used in net.cgrand.enlive-html
+                       ;; and also bootleg.enlive, so they have to come first
+                       [pad-unless
+                        static-selector?
+                        cacheable
+                        bodies])
+                      (make-inlined-public-fns net.cgrand.enlive-html))
 
-                     (make-namespace-def net.cgrand.enlive-html)
-                     (make-namespace-def net.cgrand.jsoup)
-                     (make-namespace-def net.cgrand.tagsoup)
-                     (make-namespace-def net.cgrand.xml)
+                     (make-inlined-namespace
+                      bootleg.enlive
+                      (make-inlined-public-fns bootleg.enlive)
+                      (make-inlined-code-set-macros bootleg.enlive))
 
-                     (make-namespace-def selmer.filter-parser)
-                     (make-namespace-def selmer.filters)
-                     (make-namespace-def selmer.middleware)
-                     (make-namespace-def selmer.node)
-                     (make-namespace-def selmer.parser)
-                     (make-namespace-def selmer.tags)
-                     (make-namespace-def selmer.template-parser)
-                     (make-namespace-def selmer.util)
-                     (make-namespace-def selmer.validator)
+                     ;; {"name" "pod.retrogradeorbit.a"
+                     ;;  "vars" [{"name" "a"
+                     ;;           "code" "(defn a [] :a)"}]}
+                     ;; {"name" "pod.retrogradeorbit.b"
+                     ;;  "vars" [{"name" "b"
+                     ;;           "code" "(defn b [] (pod.retrogradeorbit.a/a))"}]}
+
+
+                     #_(make-inlined-namespace
+                      net.cgrand.enlive-html
+                      (make-inlined-code-set net.cgrand.enlive-html [bodies pad-unless])
+                      (make-inlined-code-set net.cgrand.enlive-html [snippet*]))
+
+                     ;;(make-namespace-def bootleg.enlive)
+
+                     ;; (make-namespace-def net.cgrand.enlive-html)
+                     ;; (make-namespace-def net.cgrand.jsoup)
+                     ;; (make-namespace-def net.cgrand.tagsoup)
+                     ;; (make-namespace-def net.cgrand.xml)
+
+
+                     ;; (make-namespace-def hickory.convert)
+                     ;; (make-namespace-def hickory.hiccup-utils)
+                     ;; (make-namespace-def hickory.render)
+                     ;; (make-namespace-def hickory.select)
+                     ;; (make-namespace-def hickory.utils)
+                     ;; (make-namespace-def hickory.zip)
+
+                     ;; (make-namespace-def hickory.convert)
+                     ;; (make-namespace-def hickory.hiccup-utils)
+                     ;; (make-namespace-def hickory.render)
+                     ;; (make-namespace-def hickory.select)
+                     ;; (make-namespace-def hickory.utils)
+                     ;; (make-namespace-def hickory.zip)
+
+
+
+                     ;; (make-namespace-def selmer.filter-parser)
+                     ;; (make-namespace-def selmer.filters)
+                     ;; (make-namespace-def selmer.middleware)
+                     ;; (make-namespace-def selmer.node)
+                     ;; (make-namespace-def selmer.parser)
+                     ;; (make-namespace-def selmer.tags)
+                     ;; (make-namespace-def selmer.template-parser)
+                     ;; (make-namespace-def selmer.util)
+                     ;; (make-namespace-def selmer.validator)
 
                      ]
                     "id" (String. id)})
