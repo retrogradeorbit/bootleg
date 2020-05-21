@@ -14,8 +14,8 @@
      (selmer.parser/set-closing-tags! ~k ~@tags)
      (swap! selmer.tags/expr-tags assoc ~k (selmer.parser/tag-handler ~handler ~k ~@tags))))
 
-(defmacro exception [& [param & more :as params]]
-  (if (class? param)
+#_ (defmacro exception [& [param & more :as params]]
+  (if (clojure.core/class? param)
     `(throw (new ~param (str ~@more)))
     `(throw (Exception. (str ~@params)))))
 
