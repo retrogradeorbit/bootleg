@@ -598,7 +598,7 @@
                  'parse-accessor selmer.util/parse-accessor
 
                  ;; macro
-                 ;;'exception (with-meta @#'selmer/exception {:sci/macro true})
+                 ;; 'exception (with-meta @#'selmer/exception {:sci/macro true})
                  'with-escaping (with-meta @#'selmer/with-escaping {:sci/macro true})
                  'without-escaping (with-meta @#'selmer/without-escaping {:sci/macro true})
                  '->buf (with-meta @#'selmer/->buf {:sci/macro true})
