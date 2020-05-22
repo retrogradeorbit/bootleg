@@ -355,7 +355,8 @@
   (-> markup
       java.io.StringReader.
       xml/parse
-      xmlparsed->xmlhiccup))
+      xmlparsed->xmlhiccup
+      strip-empty-hiccup-attr-hashmaps))
 
 (defn hickory->xml [hickory]
   (-> hickory
@@ -413,6 +414,9 @@
    [:hiccup-seq :hickory-seq] hiccup-seq->hickory-seq
    [:hiccup-seq :hiccup-seq] identity
    [:hiccup-seq :html] hiccup-seq->html
+   [:hiccup-seq :xml] #(->> %
+                            (warn-last :hiccup-seq :xml)
+                            hiccup->xml)
 
    [:hickory :hiccup] hickory->hiccup
    [:hickory :hickory] identity
@@ -427,6 +431,9 @@
    [:hickory-seq :hickory-seq] identity
    [:hickory-seq :hiccup-seq] hickory-seq->hiccup-seq
    [:hickory-seq :html] hickory-seq->html
+   [:hickory-seq :xml] #(->> %
+                             (warn-last :hickory-seq :xml)
+                             hickory->xml)
 
    [:html :hiccup] html->hiccup
    [:html :hickory] html->hickory
@@ -436,8 +443,10 @@
 
    [:xml :xml] identity
    [:xml :hickory] xml->hickory
+   [:xml :hickory-seq] (comp list xml->hickory)
    [:xml :hiccup] xml->hiccup
-   [:xml :html] identity    ;; to support outputing xml to terminal without `-d` flag
+   [:xml :hiccup-seq] (comp list xml->hiccup)
+   [:xml :html] identity ;; to support outputing xml to terminal without `-d` flag
    })
 
 (defn convert-to [data to-type]
@@ -447,12 +456,13 @@
 
 (defn html-output-to [flags html]
   (cond
-    (:hiccup flags) (html->hiccup html)
-    (:hiccup-seq flags) (html->hiccup-seq html)
-    (:hickory flags) (html->hickory html)
-    (:hickory-seq flags) (html->hickory-seq html)
+    (:hiccup flags) (convert-to html :hiccup)
+    (:hiccup-seq flags) (convert-to html :hiccup-seq)
+    (:hickory flags) (convert-to html :hickory)
+    (:hickory-seq flags) (convert-to html :hickory-seq)
     (:html flags) html
-    :else (html->hiccup-seq html)))
+    (:xml flags) html
+    :else (convert-to html :hiccup-seq)))
 
 (defn as-html
   "Intelligently coerce input to html
