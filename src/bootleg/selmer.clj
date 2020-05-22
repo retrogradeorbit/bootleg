@@ -40,6 +40,7 @@
        (selmer.parser/render source vars)
        (let [[path basename] (file/path-split source)
              basepath (file/path-relative (or path "."))]
-         (with-redefs [selmer.util/resource-path (fn [template]
-                                                   (.toURL (io/file basepath template)))]
+         (with-redefs [selmer.util/resource-path
+                       (fn [template]
+                         (.toURL (io/file basepath template)))]
            (selmer.parser/render-file basename vars)))))))
