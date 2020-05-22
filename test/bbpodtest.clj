@@ -1,4 +1,4 @@
-(ns test-bootleg-pod
+(ns testbootlegpod
   (:require [babashka.pods :as pods]))
 
 (pods/load-pod ["lein" "run"])
