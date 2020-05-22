@@ -11,6 +11,7 @@
          '[pod.retrogradeorbit.bootleg.selmer :as selmer]
          '[pod.retrogradeorbit.bootleg.glob :as glob]
          '[pod.retrogradeorbit.bootleg.json :as json]
+         '[pod.retrogradeorbit.bootleg.html :as html]
          )
 
 (assert
@@ -86,3 +87,24 @@
  (=
   (json/json "{\"a\": 1, \"b\": [\"a\",\"b\"]}" :data)
   {:a 1, :b ["a" "b"]}))
+
+(assert
+ (=
+  (html/html "
+<div>
+ <h1 id=\"head\" class=\"heading foo\">Heading</h1>
+ <p>paragraph</p>
+</div>
+<div>
+ <a href=\"url\">
+  <img src=\"url\"/>
+ </a>
+</div>" :data)
+  '("\n"
+    [:div "\n "
+     [:h1 {:id "head", :class "heading foo"} "Heading"] "\n "
+     [:p "paragraph"] "\n"] "\n"
+    [:div "\n "
+     [:a {:href "url"} "\n  "
+      [:img {:src "url"}] "\n "]
+     "\n"])))
