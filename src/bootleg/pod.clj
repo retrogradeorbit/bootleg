@@ -280,13 +280,6 @@
 
              ))
 
-
-
-
-
-(def lookup
-  {'pod.retrogradeorbit.bootleg.test/func (fn [] 10)})
-
 (defn main []
   (try
     (loop []
