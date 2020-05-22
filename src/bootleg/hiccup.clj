@@ -23,7 +23,7 @@
 (defn realize-all-seqs [form]
   (walk/postwalk
    (fn [f]
-     (if (and (seq? f) (not (realized? f)))
+     (if (seq? f)
        (doall f)
        f))
    form))
