@@ -201,16 +201,19 @@
 #_ (make-inlined-code-set-macros bootleg.utils)
 
 
-(defmacro make-inlined-public-fns [namespace]
+(defmacro make-inlined-public-fns [namespace & [{:keys [exclude]
+                                                 :or {exclude #{}}}]]
   (let [interns (ns-publics namespace)]
     (into []
           (filter identity
                   (for [sym (keys interns)]
-                    (when (not (:macro (meta (interns sym))))
+                    (when (and (not (exclude sym))
+                               (not (:macro (meta (interns sym)))))
                       {"name" (str sym)})))))
   )
 
-#_ (make-inlined-public-stubs bootleg.utils)
+#_ (macroexpand-1 (make-inlined-public-fns bootleg.utils {:exclude #{convert-to}}))
+#_ (make-inlined-public-fns bootleg.utils {:exclude #{convert-to}})
 
 (defmacro make-inlined-namespace-basic [namespace]
   `(make-inlined-namespace
