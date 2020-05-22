@@ -61,7 +61,7 @@
          ~selector)
         ~args ~@forms))))
 
-(defn defsnippet
+(defmacro defsnippet
  "Define a named snippet -- equivalent to (def name (snippet source selector args ...))."
  [name source selector args & forms]
  `(def ~name (net.cgrand.enlive-html/snippet ~source ~selector ~args ~@forms)))
