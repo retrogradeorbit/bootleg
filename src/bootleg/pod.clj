@@ -37,6 +37,8 @@
             [selmer.validator]
 
             [clojure.repl]
+
+            [clojure.java.io :as io]
             )
   (:import [java.io PushbackInputStream])
   )
@@ -79,7 +81,8 @@
 
 (namespace 'foo/bar)
 
-(defmacro process-source [sym]
+(defmacro process-source [sym & [{:keys [ns-renames]
+                                  :or {ns-renames {}}}]]
   (->
    (clojure.repl/source-fn sym)
    (edamame.core/parse-string  {:all true
@@ -89,9 +92,11 @@
            (if (symbol? form)
              (let [ns (namespace form)
                    sym-name (name form)]
-               (if (translate-ns? ns)
-                 (symbol (str "pod.retrogradeorbit." ns) sym-name)
-                 (symbol ns sym-name)))
+               (if (ns-renames ns)
+                 (symbol (ns-renames ns) sym-name)
+                 (if (translate-ns? ns)
+                   (symbol (str "pod.retrogradeorbit." ns) sym-name)
+                   (symbol ns sym-name))))
              form))))
    prn-str))
 
@@ -153,12 +158,20 @@
            #_(into []))})
 
 
-(defmacro make-inlined-code-set [namespace syms]
+(defmacro make-inlined-code-set [namespace syms & [{:keys [pre-declares]
+                                                    :or {pre-declares []}
+                                                    :as opts}]]
   (let [interns (ns-interns namespace)]
-    (into []
-          (for [sym syms]
-            {"name" (str sym)
-             "code" `(process-source ~(symbol (interns sym)))}))))
+    (into
+     (if-not (empty? pre-declares)
+       [{"name" "_pre-declares"
+         "code" (->> pre-declares
+                     (map #(format "(declare %s)" %))
+                     (clojure.string/join " "))}]
+       [])
+     (for [sym syms]
+       {"name" (str sym)
+        "code" `(process-source ~(symbol (interns sym)) ~opts)}))))
 
 
 
@@ -256,7 +269,8 @@
              (make-lookup bootleg.file)
 
              ;;enlive has HOFs
-             ;;(make-lookup bootleg.enlive)
+             (make-lookup bootleg.enlive)
+             (make-lookup net.cgrand.enlive-html)
 
              (make-lookup hickory.convert)
              (make-lookup hickory.hiccup-utils)
@@ -265,7 +279,6 @@
              (make-lookup hickory.utils)
              (make-lookup hickory.zip)
 
-             ;;(make-lookup net.cgrand.enlive-html)
              (make-lookup net.cgrand.jsoup)
              (make-lookup net.cgrand.tagsoup)
              (make-lookup net.cgrand.xml)
@@ -308,8 +321,24 @@
                      (make-inlined-namespace-basic bootleg.edn)
                      (make-inlined-namespace-basic bootleg.file)
 
+                     (make-inlined-namespace
+                      net.cgrand.xml
+                      (make-inlined-code-set
+                       net.cgrand.xml
+                       [
+
+
+
+                        document?
+                        tag?
+                        xml-zip]
+                       {:ns-renames {"z" "clojure.zip"}
+                        :pre-declares []}
+                       )
+                      )
+
                      ;; elive has HOFs
-                     #_(make-inlined-namespace
+                     (make-inlined-namespace
                       net.cgrand.enlive-html
                       (make-inlined-code-set
                        net.cgrand.enlive-html
@@ -318,19 +347,128 @@
                        [pad-unless
                         static-selector?
                         cacheable
-                        bodies])
-                      (make-inlined-public-fns net.cgrand.enlive-html {:exclude #{cacheable}})
+                        cacheable?
+                        bodies
+                        node?
+
+
+                        append!
+                        accept-key
+                        children-locs
+                        step
+                        transform-loc
+                        mapknitv
+                        union
+
+                        intersection
+                        id=
+                        tag=
+                        attr-values
+                        zip-pred
+                        pred
+                        any
+                        as-nodes
+                        attr-has
+                        has-class
+                        compile-keyword
+                        compile-step
+                        compile-chain
+                        selector-chains
+                        states
+                        predset
+                        make-state
+                        lockstep-automaton*
+                        memoized-lockstep-automaton*
+                        lockstep-automaton
+                        lockstep-transform
+transform-fragment-locs
+flatten-nodes-coll
+transform-fragment
+         automaton*
+memoized-automaton*
+automaton
+transform-node
+                        fragment-selector?
+                        node-selector?
+                        transform
+                        ]
+                       {:ns-renames {"z" "clojure.zip"
+                                     "xml" "pod.retrogradeorbit.net.cgrand.xml"
+                                     }
+                        :pre-declares ["pred"
+                                       "mapknitv"
+                                       "automaton*"
+                                       "flatten-nodes-coll"
+                                       "automaton"]}
+                       )
+                      (make-inlined-public-fns
+                       net.cgrand.enlive-html
+                       {:exclude #{cacheable
+                                   cacheable?
+                                   node?
+
+                                   append!
+                                   accept-key
+                                   children-locs
+                                   step
+                                   transform-loc
+                                   mapknitv
+                                   union
+
+                                   intersection
+                                   id=
+                                   tag=
+                                   attr-values
+                                   zip-pred
+                                   pred
+                                   any
+                                   as-nodes
+                                   attr-has
+                                   has-class
+                                   compile-keyword
+                                   compile-step
+                                   compile-chain
+                                   selector-chains
+                                   states
+                                   pred-set
+                                   make-state
+                                   lockstep-automaton*
+                                   memoized-lockstep-automaton*
+                                   lockstep-automaton
+                                   lockstep-transform
+transform-fragment-locs
+flatten-nodes-coll
+transform-fragment
+       automaton*
+memoized-automaton*
+automaton
+transform-node
+                                   fragment-selector?
+                                   node-selector?
+                                   transform
+
+                                   }})
                       (make-inlined-code-set-macros bootleg.enlive))
 
                      ;; enlive has HOFs
-                     #_(make-inlined-namespace
+                     (make-inlined-namespace
                       bootleg.enlive
-                      (make-inlined-public-fns bootleg.enlive)
+                      (make-inlined-code-set
+                       bootleg.enlive
+                       [content append prepend after before substitute]
+                       )
+                      (make-inlined-code-set
+                       net.cgrand.enlive-html
+                       [set-attr]
+                       )
+                      (make-inlined-public-fns
+                       bootleg.enlive
+                       {:exclude #{content append prepend after before substitute}})
                       (make-inlined-code-set-macros bootleg.enlive))
 
                      (make-inlined-namespace-basic net.cgrand.jsoup)
                      (make-inlined-namespace-basic net.cgrand.tagsoup)
-                     (make-inlined-namespace-basic net.cgrand.xml)
+
 
 
                      (make-inlined-namespace-basic hickory.convert)
@@ -354,7 +492,7 @@
                      (make-inlined-namespace-basic selmer.parser)
                      (make-inlined-namespace-basic selmer.tags)
                      (make-inlined-namespace-basic selmer.template-parser)
-                     ;(make-inlined-namespace-basic selmer.util)
+                                        ;(make-inlined-namespace-basic selmer.util)
                      (make-inlined-namespace-basic selmer.validator)
 
                      ]
@@ -368,15 +506,19 @@
                             String.
                             symbol)
                     args (String. args)
+                    _ (with-open [wrtr (io/writer "./pod-in.txt" :append true)]
+                        (.write wrtr (prn-str 'invoke var args
+                                              )))
                     args (edn/read-string args)]
-                #_(with-open [wrtr (io/writer "./pod-in.txt" :append true)]
-                    (.write wrtr (prn-str var args)))
 
                 (if-let [f (lookup var)]
                   (let [value (pr-str (apply f args))
                         reply {"value" value
                                "id" id
                                "status" ["done"]}]
+                    (with-open [wrtr (io/writer "./pod-in.txt" :append true)]
+                      (.write wrtr (prn-str 'reply reply
+                                            )))
                     (write reply))
                   (throw (ex-info (str "Var not found: " var) {})))
                 )
