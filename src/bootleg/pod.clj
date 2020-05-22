@@ -326,9 +326,6 @@
                       (make-inlined-code-set
                        net.cgrand.xml
                        [
-
-
-
                         document?
                         tag?
                         xml-zip]
@@ -350,8 +347,6 @@
                         cacheable?
                         bodies
                         node?
-
-
                         append!
                         accept-key
                         children-locs
@@ -359,7 +354,6 @@
                         transform-loc
                         mapknitv
                         union
-
                         intersection
                         id=
                         tag=
@@ -381,13 +375,13 @@
                         memoized-lockstep-automaton*
                         lockstep-automaton
                         lockstep-transform
-transform-fragment-locs
-flatten-nodes-coll
-transform-fragment
-         automaton*
-memoized-automaton*
-automaton
-transform-node
+                        transform-fragment-locs
+                        flatten-nodes-coll
+                        transform-fragment
+                        automaton*
+                        memoized-automaton*
+                        automaton
+                        transform-node
                         fragment-selector?
                         node-selector?
                         transform
@@ -406,7 +400,6 @@ transform-node
                        {:exclude #{cacheable
                                    cacheable?
                                    node?
-
                                    append!
                                    accept-key
                                    children-locs
@@ -414,7 +407,6 @@ transform-node
                                    transform-loc
                                    mapknitv
                                    union
-
                                    intersection
                                    id=
                                    tag=
@@ -436,13 +428,13 @@ transform-node
                                    memoized-lockstep-automaton*
                                    lockstep-automaton
                                    lockstep-transform
-transform-fragment-locs
-flatten-nodes-coll
-transform-fragment
-       automaton*
-memoized-automaton*
-automaton
-transform-node
+                                   transform-fragment-locs
+                                   flatten-nodes-coll
+                                   transform-fragment
+                                   automaton*
+                                   memoized-automaton*
+                                   automaton
+                                   transform-node
                                    fragment-selector?
                                    node-selector?
                                    transform
