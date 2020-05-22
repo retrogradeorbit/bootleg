@@ -3,7 +3,7 @@
 # bootleg
 
 [![Github Action](https://github.com/retrogradeorbit/bootleg/workflows/Github%20Actions%20Tests/badge.svg)](https://github.com/retrogradeorbit/bootleg/actions?query=workflow%3A%22Github+Actions+Tests%22)
-[![CircleCI](https://circleci.com/gh/retrogradeorbit/bootleg/tree/master.svg?style=shield)](https://circleci.com/gh/retrogradeorbit/bootleg/spire/tree/master)
+[![CircleCI](https://circleci.com/gh/retrogradeorbit/bootleg/tree/master.svg?style=shield)](https://circleci.com/gh/retrogradeorbit/bootleg/tree/master)
 
 
 Static website generation made simple. A powerful, fast, clojure html templating solution.
