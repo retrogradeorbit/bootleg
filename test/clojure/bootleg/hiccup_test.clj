@@ -325,3 +325,16 @@
   (testing "hiccup to xml"
     (is (= (process-hiccup-data "." "(convert-to [:link (for [n (range 5)] [:div n])] :xml)")
            "<?xml version=\"1.0\" encoding=\"UTF-8\"?><link><div>0</div><div>1</div><div>2</div><div>3</div><div>4</div></link>"))))
+
+(deftest selmer-to-hiccup-test
+  (testing "issue #62 - Generating XML preserving the tag name case"
+    (is (= (process-hiccup-data "." "(selmer \"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?><Foo>{{foo}}</Foo>\" {:foo \"bar\"} :data :hiccup)")
+           [:Foo "bar"]))
+    (is (= (process-hiccup-data "." "(selmer \"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?><Foo>{{foo}}</Foo>\" {:foo \"bar\"} :data :hiccup-seq)")
+           [[:Foo "bar"]]))
+
+    (is (= (process-hiccup-data "." "(-> (selmer \"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?><Foo>{{foo}}</Foo>\" {:foo \"bar\"} :data :hiccup) (convert-to :xml))")
+           "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Foo>bar</Foo>"))
+    (is (= (process-hiccup-data "." "(-> (selmer \"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?><Foo>{{foo}}</Foo>\" {:foo \"bar\"} :data :hiccup-seq) (convert-to :xml))")
+           "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Foo>bar</Foo>"))
+    ))

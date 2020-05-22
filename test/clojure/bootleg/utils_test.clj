@@ -475,5 +475,11 @@
     (is (= (convert-to "<header><div></div></header>" :hiccup)
            [:header [:div]]))
     (is (= (convert-to "<html><header><div></div></header></html>" :hiccup)
-           [:html [:header [:div]]]))
-    ))
+           [:html [:header [:div]]]))))
+
+(deftest new-test-issues
+  (testing "issue #62 - Generating XML preserving the tag name case"
+    (is (= (html-output-to #{:hiccup} "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Foo>bar</Foo>")
+           [:Foo "bar"]))
+    )
+  )
