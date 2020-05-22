@@ -26,7 +26,7 @@
                  ;; pod support
                  [nrepl/bencode "1.1.0"]
                  ]
-  :java-source-paths ["src/java"]
+  :java-source-paths ["src/java" "sci-reflector/src-java"]
   :test-paths ["test/clojure"]
 
   :main ^:skip-aot bootleg.core
