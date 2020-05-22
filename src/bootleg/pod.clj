@@ -254,7 +254,9 @@
              (make-lookup bootleg.json)
              (make-lookup bootleg.edn)
              (make-lookup bootleg.file)
-             (make-lookup bootleg.enlive)
+
+             ;;enlive has HOFs
+             ;;(make-lookup bootleg.enlive)
 
              (make-lookup hickory.convert)
              (make-lookup hickory.hiccup-utils)
@@ -263,7 +265,7 @@
              (make-lookup hickory.utils)
              (make-lookup hickory.zip)
 
-             (make-lookup net.cgrand.enlive-html)
+             ;;(make-lookup net.cgrand.enlive-html)
              (make-lookup net.cgrand.jsoup)
              (make-lookup net.cgrand.tagsoup)
              (make-lookup net.cgrand.xml)
@@ -306,7 +308,8 @@
                      (make-inlined-namespace-basic bootleg.edn)
                      (make-inlined-namespace-basic bootleg.file)
 
-                     (make-inlined-namespace
+                     ;; elive has HOFs
+                     #_(make-inlined-namespace
                       net.cgrand.enlive-html
                       (make-inlined-code-set
                        net.cgrand.enlive-html
@@ -316,59 +319,43 @@
                         static-selector?
                         cacheable
                         bodies])
-                      (make-inlined-public-fns net.cgrand.enlive-html))
+                      (make-inlined-public-fns net.cgrand.enlive-html {:exclude #{cacheable}})
+                      (make-inlined-code-set-macros bootleg.enlive))
 
-                     (make-inlined-namespace
+                     ;; enlive has HOFs
+                     #_(make-inlined-namespace
                       bootleg.enlive
                       (make-inlined-public-fns bootleg.enlive)
                       (make-inlined-code-set-macros bootleg.enlive))
 
-                     ;; {"name" "pod.retrogradeorbit.a"
-                     ;;  "vars" [{"name" "a"
-                     ;;           "code" "(defn a [] :a)"}]}
-                     ;; {"name" "pod.retrogradeorbit.b"
-                     ;;  "vars" [{"name" "b"
-                     ;;           "code" "(defn b [] (pod.retrogradeorbit.a/a))"}]}
+                     (make-inlined-namespace-basic net.cgrand.jsoup)
+                     (make-inlined-namespace-basic net.cgrand.tagsoup)
+                     (make-inlined-namespace-basic net.cgrand.xml)
 
 
-                     #_(make-inlined-namespace
-                      net.cgrand.enlive-html
-                      (make-inlined-code-set net.cgrand.enlive-html [bodies pad-unless])
-                      (make-inlined-code-set net.cgrand.enlive-html [snippet*]))
+                     (make-inlined-namespace-basic hickory.convert)
+                     (make-inlined-namespace-basic hickory.hiccup-utils)
+                     (make-inlined-namespace-basic hickory.render)
+                     (make-inlined-namespace-basic hickory.select)
+                     (make-inlined-namespace-basic hickory.utils)
+                     (make-inlined-namespace-basic hickory.zip)
 
-                     ;;(make-namespace-def bootleg.enlive)
+                     (make-inlined-namespace-basic hickory.convert)
+                     (make-inlined-namespace-basic hickory.hiccup-utils)
+                     (make-inlined-namespace-basic hickory.render)
+                     (make-inlined-namespace-basic hickory.select)
+                     (make-inlined-namespace-basic hickory.utils)
+                     (make-inlined-namespace-basic hickory.zip)
 
-                     ;; (make-namespace-def net.cgrand.enlive-html)
-                     ;; (make-namespace-def net.cgrand.jsoup)
-                     ;; (make-namespace-def net.cgrand.tagsoup)
-                     ;; (make-namespace-def net.cgrand.xml)
-
-
-                     ;; (make-namespace-def hickory.convert)
-                     ;; (make-namespace-def hickory.hiccup-utils)
-                     ;; (make-namespace-def hickory.render)
-                     ;; (make-namespace-def hickory.select)
-                     ;; (make-namespace-def hickory.utils)
-                     ;; (make-namespace-def hickory.zip)
-
-                     ;; (make-namespace-def hickory.convert)
-                     ;; (make-namespace-def hickory.hiccup-utils)
-                     ;; (make-namespace-def hickory.render)
-                     ;; (make-namespace-def hickory.select)
-                     ;; (make-namespace-def hickory.utils)
-                     ;; (make-namespace-def hickory.zip)
-
-
-
-                     ;; (make-namespace-def selmer.filter-parser)
-                     ;; (make-namespace-def selmer.filters)
-                     ;; (make-namespace-def selmer.middleware)
-                     ;; (make-namespace-def selmer.node)
-                     ;; (make-namespace-def selmer.parser)
-                     ;; (make-namespace-def selmer.tags)
-                     ;; (make-namespace-def selmer.template-parser)
-                     ;; (make-namespace-def selmer.util)
-                     ;; (make-namespace-def selmer.validator)
+                     (make-inlined-namespace-basic selmer.filter-parser)
+                     (make-inlined-namespace-basic selmer.filters)
+                     (make-inlined-namespace-basic selmer.middleware)
+                     (make-inlined-namespace-basic selmer.node)
+                     (make-inlined-namespace-basic selmer.parser)
+                     (make-inlined-namespace-basic selmer.tags)
+                     (make-inlined-namespace-basic selmer.template-parser)
+                     ;(make-inlined-namespace-basic selmer.util)
+                     (make-inlined-namespace-basic selmer.validator)
 
                      ]
                     "id" (String. id)})
