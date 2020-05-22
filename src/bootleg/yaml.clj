@@ -9,3 +9,12 @@
                source
                (utils/slurp-relative source))]
     (yaml/parse-string data :keywords true)))
+
+(defn yaml*
+  [& args]
+  (->> (apply yaml args)
+       (clojure.walk/postwalk
+        (fn [form]
+          (if (map? form)
+            (into {} form)
+            form)))))
