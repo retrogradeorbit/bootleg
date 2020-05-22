@@ -27,6 +27,7 @@
                  [nrepl/bencode "1.1.0"]
                  ]
   :java-source-paths ["src/java"]
+  :test-paths ["test/clojure"]
 
   :main ^:skip-aot bootleg.core
   :target-path "target/%s"
