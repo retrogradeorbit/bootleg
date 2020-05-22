@@ -79,14 +79,25 @@
     "net.cgrand.xml"
     })
 
-(namespace 'foo/bar)
 
-(defmacro process-source [sym & [{:keys [ns-renames]
-                                  :or {ns-renames {}}}]]
+(defn rename-second [form rename]
+  (if (rename (second form))
+    (concat (list (first form)
+                  (rename (second form)))
+            (drop 2 form))
+    form))
+
+#_ (rename-second '(def foo [] bar) {'foo 'baz})
+
+(defmacro process-source [sym & [{:keys [ns-renames rename]
+                                  :or {ns-renames {}
+                                       rename {}
+                                       }}]]
   (->
    (clojure.repl/source-fn sym)
    (edamame.core/parse-string  {:all true
                                 :auto-resolve {:current (namespace sym)}})
+   (rename-second rename)
    (->> (clojure.walk/postwalk
          (fn [form]
            (if (symbol? form)
@@ -158,8 +169,9 @@
            #_(into []))})
 
 
-(defmacro make-inlined-code-set [namespace syms & [{:keys [pre-declares]
-                                                    :or {pre-declares []}
+(defmacro make-inlined-code-set [namespace syms & [{:keys [pre-declares rename]
+                                                    :or {pre-declares []
+                                                         rename {}}
                                                     :as opts}]]
   (let [interns (ns-interns namespace)]
     (into
@@ -170,7 +182,7 @@
                      (clojure.string/join " "))}]
        [])
      (for [sym syms]
-       {"name" (str sym)
+       {"name" (str (get rename sym sym))
         "code" `(process-source ~(symbol (interns sym)) ~opts)}))))
 
 
@@ -202,37 +214,45 @@
    (make-inlined-code-set net.cgrand.enlive-html [snippet*]))
 
 
-(defmacro make-inlined-code-set-macros [namespace]
+(defmacro make-inlined-code-set-macros [namespace & [{:keys [exclude]
+                                                      :or {exclude #{}}}]]
   (let [interns (ns-interns namespace)]
     (into []
           (filter identity
                   (for [sym (keys interns)]
-                    (when (:macro (meta (interns sym)))
+                    (when (and (:macro (meta (interns sym)))
+                               (not (exclude sym)))
                       {"name" (str sym)
                        "code" `(process-source ~(symbol (interns sym)))}))))))
 
 #_ (make-inlined-code-set-macros bootleg.utils)
 
 
-(defmacro make-inlined-public-fns [namespace & [{:keys [exclude]
-                                                 :or {exclude #{}}}]]
-  (let [interns (ns-publics namespace)]
+(defmacro make-inlined-public-fns [namespace & [{:keys [exclude only include-private rename]
+                                                 :or {exclude #{}
+                                                      only (constantly true)
+                                                      include-private false
+                                                      rename {}}}]]
+  (let [interns (if include-private
+                  (ns-interns namespace)
+                  (ns-publics namespace))]
     (into []
           (filter identity
                   (for [sym (keys interns)]
                     (when (and (not (exclude sym))
-                               (not (:macro (meta (interns sym)))))
-                      {"name" (str sym)})))))
+                               (not (:macro (meta (interns sym))))
+                               (only sym))
+                      {"name" (str (get rename sym sym))})))))
   )
 
 #_ (macroexpand-1 (make-inlined-public-fns bootleg.utils {:exclude #{convert-to}}))
 #_ (make-inlined-public-fns bootleg.utils {:exclude #{convert-to}})
 
-(defmacro make-inlined-namespace-basic [namespace]
+(defmacro make-inlined-namespace-basic [namespace & [opts]]
   `(make-inlined-namespace
     ~namespace
-    (make-inlined-public-fns ~namespace)
-    (make-inlined-code-set-macros ~namespace)))
+    (make-inlined-public-fns ~namespace ~opts)
+    (make-inlined-code-set-macros ~namespace ~opts)))
 
 
 #_ "#'net.cgrand.enlive-html/bodies"
