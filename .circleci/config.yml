@@ -112,10 +112,6 @@ jobs:
           command: |
             .circleci/script/install-leiningen
       - run:
-          name: Run JVM tests
-          command: |
-            lein test
-      - run:
           name: Download GraalVM
           command: |
             cd ~
@@ -125,6 +121,10 @@ jobs:
               tar xzf graalvm-ce-java11-darwin-amd64-20.1.0.tar.gz
             fi
             $GRAALVM_HOME/bin/gu install native-image
+      - run:
+          name: Run JVM tests
+          command: |
+            PATH=$GRAALVM_HOME/bin;$PATH JAVA_HOME=$GRAALVM_HOME lein test
       - run:
           name: Build binary
           command: |
