@@ -703,13 +703,63 @@
            [{:type :element
              :attrs {:class "bar"}
              :tag :div
-             content ["one"]}])))
+             :content ["one"]}])))
 
+  (testing "hickory select has-descendant"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
 
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div.bar \"one\"] [:div#inner \"two\"]]]
+[:div \"three\"]
+               ]] :hickory))
 
+(s/select
+  (s/and (s/tag :div)
+         (s/has-descendant (s/id \"inner\")))
+  tree)
+")
+           [{:type :element
+             :attrs nil
+             :tag :div
+             :content [{:type :element
+                        :attrs {:class "foo"}
+                        :tag :span
+                        :content ["hello"
+                                  {:type :element
+                                   :attrs {:class "bar"}
+                                   :tag :div
+                                   :content ["one"]}
+                                  {:type :element
+                                   :attrs {:id "inner"}
+                                   :tag :div
+                                   :content ["two"]}]}]}])))
 
+  (testing "hickory select has-child"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
 
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div.bar \"one\"] [:div#inner \"two\"]]]
+[:div \"three\"]
+               ]] :hickory))
 
-
-
-  )
+(s/select (s/has-child (s/id \"inner\"))
+  tree)
+")
+           [{:type :element
+             :attrs {:class "foo"}
+             :tag :span
+             :content ["hello"
+                       {:type :element
+                        :attrs {:class "bar"}
+                        :tag :div
+                        :content ["one"]}
+                       {:type :element
+                        :attrs {:id "inner"}
+                        :tag :div
+                        :content ["two"]}]}]))))
