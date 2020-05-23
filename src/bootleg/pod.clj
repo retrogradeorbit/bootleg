@@ -627,7 +627,6 @@
                      (make-inlined-namespace-basic hickory.select)
                      (make-inlined-namespace-basic hickory.utils)
                      (make-inlined-namespace-basic hickory.zip)
-
                      (make-inlined-namespace-basic hickory.convert)
                      (make-inlined-namespace-basic hickory.hiccup-utils)
                      (make-inlined-namespace-basic hickory.render)
