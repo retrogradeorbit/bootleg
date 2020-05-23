@@ -36,7 +36,7 @@
             [clojure.java.io :as io])
   (:import [java.io PushbackInputStream]))
 
-(def debug? false)
+(def debug? true)
 (def debug-file "/tmp/bootleg-pod-debug.txt")
 
 (defmacro debug [& args]
@@ -608,7 +608,7 @@
                                    automaton
                                    transform-node
                                    fragment-selector?
-                                   node-selector?
+                                    node-selector?
                                    transform}})
 
                       (make-inlined-code-set-macros bootleg.enlive)
@@ -624,15 +624,49 @@
                      (make-inlined-namespace-basic hickory.convert)
                      (make-inlined-namespace-basic hickory.hiccup-utils)
                      (make-inlined-namespace-basic hickory.render)
-                     (make-inlined-namespace-basic hickory.select)
+                     (make-inlined-namespace
+                      hickory.zip
+                      ;; zipper contain metadata so need to be made
+                      ;; on bb side if bb funcs are also on bb side
+                      ;; https://github.com/babashka/babashka.pods/issues/13
+                      (make-inlined-code-set
+                       hickory.zip
+                       [hickory-zip
+                        children
+                        make
+                        hiccup-zip
+                        ]
+                       {:ns-renames {"zip" "clojure.zip"}})
+                      )
+
+                     (make-inlined-namespace
+                      hickory.select
+                      (make-inlined-code-set
+                       hickory.select
+                       [
+                        tag
+
+                        select-next-loc
+                        select-locs
+                        select
+
+                        ]
+                       {:ns-renames {"hzip" "pod.retrogradeorbit.hickory.zip"
+                                     "zip" "clojure.zip"
+                                     "string" "clojure.string"}})
+
+
+
+                      )
+
+
+
                      (make-inlined-namespace-basic hickory.utils)
-                     (make-inlined-namespace-basic hickory.zip)
+
                      (make-inlined-namespace-basic hickory.convert)
                      (make-inlined-namespace-basic hickory.hiccup-utils)
                      (make-inlined-namespace-basic hickory.render)
-                     (make-inlined-namespace-basic hickory.select)
                      (make-inlined-namespace-basic hickory.utils)
-                     (make-inlined-namespace-basic hickory.zip)
 
                      (make-inlined-namespace-basic selmer.filter-parser)
                      (make-inlined-namespace-basic selmer.filters)
@@ -655,8 +689,7 @@
                                                                             without-escaping
                                                                             ->buf}})
                       (make-inlined-code-set bootleg.selmer [with-escaping without-escaping ->buf]))
-                     (make-inlined-namespace-basic selmer.validator)
-                     ]
+                     (make-inlined-namespace-basic selmer.validator)]
                     "id" (String. id)})
             (recur))
 
