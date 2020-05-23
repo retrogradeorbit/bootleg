@@ -77,4 +77,213 @@
              :content ["hello"]}]))
 
     )
+
+  (testing "hickory select id"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to '([:div [:span#foo \"hello\"]]) :hickory))
+
+(s/select (s/id :foo) tree)
+")
+           [{:type :element
+             :attrs {:id "foo"}
+             :tag :span
+             :content ["hello"]}])))
+
+  (testing "hickory select class"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to '([:div [:span.foo \"hello\"]]) :hickory))
+
+(s/select (s/class :foo) tree)
+")
+           [{:type :element
+             :attrs {:class "foo"}
+             :tag :span
+             :content ["hello"]}])))
+
+  (testing "hickory select any"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to '([:div [:span.foo \"hello\"]]) :hickory))
+
+(s/select s/any tree)
+")
+           [{:type :element
+             :attrs nil
+             :tag :div
+             :content [{:type :element
+                        :attrs {:class "foo"}
+                        :tag :span
+                        :content ["hello"]}]}
+            {:type :element
+             :attrs {:class "foo"}
+             :tag :span
+             :content ["hello"]}])))
+
+  (testing "hickory select element"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to '([:div [:span.foo \"hello\"]]) :hickory))
+
+(s/select s/element tree)
+")
+           [{:type :element
+             :attrs nil
+             :tag :div
+             :content [{:type :element
+                        :attrs {:class "foo"}
+                        :tag :span
+                        :content ["hello"]}]}
+            {:type :element
+             :attrs {:class "foo"}
+             :tag :span
+             :content ["hello"]}])))
+
+  (testing "hickory select root"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\"]]]] :hickory))
+
+(s/select s/root tree)
+")
+           [{:type :element
+             :attrs nil
+             :tag :html
+             :content [{:type :element
+                        :attrs nil
+                        :tag :body
+                        :content [{:type :element
+                                   :attrs nil
+                                   :tag :div
+                                   :content [{:type :element
+                                              :attrs {:class "foo"}
+                                              :tag :span
+                                              :content ["hello"]}]}]}]}])))
+
+  (testing "hickory select n-moves-until"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s]
+         '[clojure.zip :as zip])
+
+(def hicc
+ '(\"<!DOCTYPE html>\n\"
+   \"<!-- Comment 1 -->\"
+   \"\n\"
+   [:html
+    \"\n\"
+    [:head]
+    \"\n\"
+    [:body
+     \"\n\"
+     [:h1 \"Heading\"]
+     \"\n\"
+     [:p \"Paragraph\"]
+     \"\n\"
+     [:a {:href \"http://example.com\"} \"Link\"]
+     \"\n\"
+     [:div
+      {:class \"aclass bclass cool\"}
+      \"\n\"
+      [:span
+       {:disabled \"\",
+        :anotherattr \"\",
+        :thirdthing \"44\",
+        :id \"attrspan\",
+        :capitalized \"UPPERCASED\"}
+       \"\n\"
+       [:div {:class \"subdiv cool\", :id \"deepestdiv\"} \"Div\"]
+       \"\n\"]
+      \"\n\"
+      \"<!-- Comment 2 -->\"
+      \"\n\"
+      [:span {:id \"anid\", :class \"cool\"} \"Span\"]
+      \"\n\"]
+     \"\n\"]
+    \"\n\"]
+   \"\n\")
+)
+
+(def tree
+  (first (drop 3 (convert-to hicc :hickory-seq))))
+
+(s/select (s/n-moves-until 0 6 zip/up nil?) tree)
+")
+           ["Div"])))
+
+  (testing "hickory select nth-of-type"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div \"foo\"]]]]] :hickory))
+
+(s/select (s/nth-of-type 1 :body) tree)
+")
+           [{:type :element
+             :attrs nil
+             :tag :body
+             :content [{:type :element
+                        :attrs nil
+                        :tag :div
+                        :content [{:type :element
+                                   :attrs {:class "foo"}
+                                   :tag :span
+                                   :content ["hello" {:type :element
+                                                      :attrs nil
+                                                      :tag :div
+                                                      :content ["foo"]}]}]}]}])))
+
+  (testing "hickory select nth-last-of-type"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div \"one\"]]]
+[:div \"two\"]
+               ]] :hickory))
+
+(s/select (s/nth-last-of-type 1 :div) tree)
+")
+           [{:type :element
+             :attrs nil
+             :tag :div
+             :content ["one"]}
+            {:type :element
+             :attrs nil
+             :tag :div
+             :content ["two"]}]
+           )))
+
+
+
+
+
+
   )
