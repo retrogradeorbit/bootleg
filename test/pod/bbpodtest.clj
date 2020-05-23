@@ -1,8 +1,9 @@
 (ns testbootlegpod
   (:require [babashka.pods :as pods]))
 
-(pods/load-pod ["lein" "run"])
-#_ (pods/load-pod ["bootleg"])
+(if *command-line-args*
+  (pods/load-pod *command-line-args*)
+  (pods/load-pod ["lein" "run"]))
 
 (require '[pod.retrogradeorbit.bootleg.markdown :as markdown]
          '[pod.retrogradeorbit.bootleg.mustache :as mustache]
@@ -13,8 +14,7 @@
          '[pod.retrogradeorbit.bootleg.json :as json]
          '[pod.retrogradeorbit.bootleg.html :as html]
          '[pod.retrogradeorbit.bootleg.enlive :as enlive]
-         '[pod.retrogradeorbit.net.cgrand.enlive-html :as enlive-html]
-         )
+         '[pod.retrogradeorbit.net.cgrand.enlive-html :as enlive-html])
 
 (assert
  (=
