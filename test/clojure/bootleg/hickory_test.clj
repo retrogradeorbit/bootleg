@@ -589,6 +589,126 @@
                         :tag :div
                         :content ["one"]}]}])))
 
+  (testing "hickory select child"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div.foo \"one\"]]]
+[:div \"two\"]
+               ]] :hickory))
+
+(s/select (s/child (s/el-not (s/tag :div)) (s/class :foo)) tree)
+")
+           [{:type :element
+             :attrs {:class "foo"}
+             :tag :div
+             :content ["one"]}])))
+
+  (testing "hickory select follow-adjacent"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div.bar \"one\"] [:div.foo \"two\"]]]
+[:div \"three\"]
+               ]] :hickory))
+
+(s/select (s/follow-adjacent (s/tag :div) (s/class :foo)) tree)
+")
+           [{:type :element
+             :attrs {:class "foo"}
+             :tag :div
+             :content ["two"]}])))
+
+  (testing "hickory select precede-adjacent"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div.bar \"one\"] [:div.foo \"two\"]]]
+[:div \"three\"]
+               ]] :hickory))
+
+(s/select (s/precede-adjacent (s/tag :div) (s/class :foo)) tree)
+")
+           [{:type :element
+             :attrs {:class "bar"}
+             :tag :div
+             :content ["one"]}])))
+
+  (testing "hickory select descendant"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div.bar \"one\"] [:div.foo \"two\"]]]
+[:div \"three\"]
+               ]] :hickory))
+
+(s/select (s/descendant (s/tag :span)) tree)
+")
+           [{:type :element
+             :attrs {:class "foo"}
+             :tag :span
+             :content ["hello"
+                       {:type :element
+                        :attrs {:class "bar"}
+                        :tag :div
+                        :content ["one"]}
+                       {:type :element
+                        :attrs {:class "foo"}
+                        :tag :div
+                        :content ["two"]}]}])))
+
+  (testing "hickory select follow"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div.bar \"one\"] [:div.foo \"two\"]]]
+[:div \"three\"]
+               ]] :hickory))
+
+(s/select (s/follow (s/class :bar) (s/class :foo)) tree)
+")
+           [{:type :element
+             :attrs {:class "foo"}
+             :tag :div
+             :content ["two"]}])))
+
+  (testing "hickory select precede"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div.bar \"one\"] [:div.foo \"two\"]]]
+[:div \"three\"]
+               ]] :hickory))
+
+(s/select (s/precede (s/class :bar) (s/class :foo)) tree)
+")
+           [{:type :element
+             :attrs {:class "bar"}
+             :tag :div
+             content ["one"]}])))
+
+
+
+
+
 
 
 
