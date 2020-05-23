@@ -124,7 +124,7 @@ jobs:
       - run:
           name: Run JVM tests
           command: |
-            PATH=$GRAALVM_HOME/bin;$PATH JAVA_HOME=$GRAALVM_HOME lein test
+            make test
       - run:
           name: Build binary
           command: |

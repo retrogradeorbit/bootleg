@@ -36,6 +36,9 @@ build/bootleg: target/uberjar/bootleg-$(VERSION)-standalone.jar
 		--no-server \
 		"-J-Xmx6g"
 
+test:
+	lein test
+
 copy-libs-to-resource:
 	-cp $(GRAALVM)/jre/lib/sunec.lib resources
 	-cp $(GRAALVM)/jre/bin/sunec.dll resources
