@@ -281,7 +281,313 @@
              :content ["two"]}]
            )))
 
+  (testing "hickory select nth-child"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
 
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div \"one\"]]]
+[:div \"two\"]
+               ]] :hickory))
+
+(s/select (s/nth-child 0 1) tree)
+")
+           [{:type :element
+             :attrs nil
+             :tag :body
+             :content [{:type :element
+                        :attrs nil
+                        :tag :div
+                        :content [{:type :element
+                                   :attrs {:class "foo"}
+                                   :tag :span
+                                   :content ["hello" {:type :element
+                                                      :attrs nil
+                                                      :tag :div
+                                                      :content ["one"]}]}]}
+                       {:type :element
+                        :attrs nil
+                        :tag :div
+                        :content ["two"]}]} {:type :element
+             :attrs nil
+             :tag :div
+             :content [{:type :element
+                        :attrs {:class "foo"}
+                        :tag :span
+                        :content ["hello" {:type :element
+                                           :attrs nil
+                                           :tag :div
+                                           :content ["one"]}]}]}
+            {:type :element
+             :attrs {:class "foo"}
+             :tag :span
+             :content ["hello" {:type :element
+                                :attrs nil
+                                :tag :div
+                                :content ["one"]}]}
+            {:type :element
+             :attrs nil
+             :tag :div
+             :content ["one"]}]
+           )))
+
+  (testing "hickory select nth-last-child"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div \"one\"]]]
+[:div \"two\"]
+               ]] :hickory))
+
+(s/select (s/nth-last-child 0 1) tree)
+")
+           [{:type :element
+             :attrs nil
+             :tag :body
+             :content [{:type :element
+                        :attrs nil
+                        :tag :div
+                        :content [{:type :element
+                                   :attrs {:class "foo"}
+                                   :tag :span
+                                   :content ["hello" {:type :element
+                                                      :attrs nil
+                                                      :tag :div
+                                                      :content ["one"]}]}]}
+                       {:type :element
+                        :attrs nil
+                        :tag :div
+                        :content ["two"]}]}
+            {:type :element
+             :attrs {:class "foo"}
+             :tag :span
+             :content ["hello" {:type :element
+                                :attrs nil
+                                :tag :div
+                                :content ["one"]}]}
+            {:type :element
+             :attrs nil
+             :tag :div
+             :content ["one"]}
+            {:type :element
+             :attrs nil
+             :tag :div
+             :content ["two"]}]
+           )))
+
+  (testing "hickory select first-child"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div \"one\"]]]
+[:div \"two\"]
+               ]] :hickory))
+
+(s/select s/first-child tree)
+")
+           [{:type :element
+             :attrs nil
+             :tag :body
+             :content [{:type :element
+                        :attrs nil
+                        :tag :div
+                        :content [{:type :element
+                                   :attrs {:class "foo"}
+                                   :tag :span
+                                   :content ["hello"
+                                             {:type :element
+                                              :attrs nil
+                                              :tag :div
+                                              :content ["one"]}]}]}
+                       {:type :element
+                        :attrs nil
+                        :tag :div
+                        :content ["two"]}]}
+            {:type :element
+             :attrs nil
+             :tag :div
+             :content [{:type :element
+                        :attrs {:class "foo"}
+                        :tag :span
+                        :content ["hello"
+                                  {:type :element
+                                   :attrs nil
+                                   :tag :div
+                                   :content ["one"]}]}]}
+            {:type :element
+             :attrs {:class "foo"}
+             :tag :span
+             :content ["hello"
+                       {:type :element
+                        :attrs nil
+                        :tag :div
+                        :content ["one"]}]}
+            {:type :element
+             :attrs nil
+             :tag :div
+             :content ["one"]}]
+           )))
+
+
+  (testing "hickory select last-child"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div \"one\"]]]
+[:div \"two\"]
+               ]] :hickory))
+
+(s/select s/last-child tree)
+")
+           [{:type :element
+             :attrs nil
+             :tag :body
+             :content [{:type :element
+                        :attrs nil
+                        :tag :div
+                        :content [{:type :element
+                                   :attrs {:class "foo"}
+                                   :tag :span
+                                   :content ["hello"
+                                             {:type :element
+                                              :attrs nil
+                                              :tag :div
+                                              :content ["one"]}]}]}
+                       {:type :element
+                        :attrs nil
+                        :tag :div
+                        :content ["two"]}]}
+            {:type :element
+             :attrs {:class "foo"}
+             :tag :span
+             :content ["hello"
+                       {:type :element
+                        :attrs nil
+                        :tag :div
+                        :content ["one"]}]}
+            {:type :element
+             :attrs nil
+             :tag :div
+             :content ["one"]}
+            {:type :element
+             :attrs nil
+             :tag :div
+             :content ["two"]}]
+           )))
+
+  (testing "hickory select and"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div.foo \"one\"]]]
+[:div \"two\"]
+               ]] :hickory))
+
+(s/select (s/and (s/tag :div) (s/class :foo)) tree)
+")
+           [{:type :element
+             :attrs {:class "foo"}
+             :tag :div
+             :content ["one"]}])))
+
+  (testing "hickory select or"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div.foo \"one\"]]]
+[:div \"two\"]
+               ]] :hickory))
+
+(s/select (s/or (s/tag :div) (s/class :foo)) tree)
+")
+           [{:type :element
+             :attrs nil
+             :tag :div
+             :content [{:type :element
+                        :attrs {:class "foo"}
+                        :tag :span
+                        :content ["hello"
+                                  {:type :element
+                                   :attrs {:class "foo"}
+                                   :tag :div
+                                   :content ["one"]}]}]}
+            {:type :element
+             :attrs {:class "foo"}
+             :tag :span
+             :content ["hello"
+                       {:type :element
+                        :attrs {:class "foo"}
+                        :tag :div
+                        :content ["one"]}]}
+            {:type :element
+             :attrs {:class "foo"}
+             :tag :div
+             :content ["one"]}
+            {:type :element
+             :attrs nil
+             :tag :div
+             :content ["two"]}])))
+
+  (testing "hickory select not"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div.foo \"one\"]]]
+[:div \"two\"]
+               ]] :hickory))
+
+(s/select (s/and (s/not (s/tag :div)) (s/class :foo)) tree)
+")
+           [{:type :element
+             :attrs {:class "foo"}
+             :tag :span
+             :content ["hello"
+                       {:type :element
+                        :attrs {:class "foo"}
+                        :tag :div
+                        :content ["one"]}]}])))
+
+  (testing "hickory select el-not"
+    (is (= (process-hiccup-data
+            "test/files"
+            "
+(require '[hickory.select :as s])
+
+(def tree
+  (convert-to [:html [:body [:div [:span.foo \"hello\" [:div.foo \"one\"]]]
+[:div \"two\"]
+               ]] :hickory))
+
+(s/select (s/and (s/el-not (s/tag :div)) (s/class :foo)) tree)
+")
+           [{:type :element
+             :attrs {:class "foo"}
+             :tag :span
+             :content ["hello"
+                       {:type :element
+                        :attrs {:class "foo"}
+                        :tag :div
+                        :content ["one"]}]}])))
 
 
 
