@@ -641,28 +641,118 @@
 
                      (make-inlined-namespace
                       hickory.select
+                      [
+                       {"name" "ordered-adjacent"
+                        "code" "
+(defn ordered-adjacent
+ \"Takes a zipper movement function and any number of selectors as arguments
+   and returns a selector that returns true when the zip-loc given as the
+   argument is satisfied by the first selector, and the zip-loc arrived at by
+   applying the move-fn argument is satisfied by the second selector, and so
+   on for all the selectors given as arguments. If the move-fn
+   moves to nil before the full selector list is satisfied, the entire
+   selector fails, but note that success is checked before a move to nil is
+   checked, so satisfying the last selector with the last node you can move
+   to succeeds.\"
+  [move-fn & selectors]
+  ;; Original had (into-array IFn selectors)
+  ;; we replace with a vector
+  (let [selectors (into [] selectors)]
+    (fn [hzip-loc]
+      (loop [curr-loc hzip-loc
+             idx 0]
+        (cond (>= idx (count selectors))
+              hzip-loc ;; Got to end satisfying selectors, return the loc.
+              (nil? curr-loc)
+              nil ;; Ran off a boundary before satisfying selectors, return nil.
+              :else
+              (if-let [next-loc ((nth selectors idx) curr-loc)]
+                (recur (move-fn next-loc)
+                       (inc idx))))))))
+"}
+                       {"name" "ordered"
+                        "code" "
+(defn ordered
+ \"Takes a zipper movement function and any number of selectors as arguments
+   and returns a selector that returns true when the zip-loc given as the
+   argument is satisfied by the first selector, and some zip-loc arrived at by
+   applying the move-fn argument *one or more times* is satisfied by the second
+   selector, and so on for all the selectors given as arguments. If the move-fn
+   moves to nil before a the full selector list is satisfied, the entire
+   selector fails, but note that success is checked before a move to nil is
+   checked, so satisfying the last selector with the last node you can move
+   to succeeds.\"
+  [move-fn & selectors]
+  ;; original had (into-array IFn selectors)
+  ;; we replace with a vector
+  (let [selectors (into [] selectors)]
+    (fn [hzip-loc]
+      ;; First need to check that the first selector matches the current loc,
+      ;; or else we can return nil immediately.
+      (let [fst-selector (nth selectors 0)]
+        (if (fst-selector hzip-loc)
+          ;; First selector matches this node, so now check along the
+          ;; movement direction for the rest of the selectors.
+          (loop [curr-loc (move-fn hzip-loc)
+                 idx 1]
+            (cond (>= idx (count selectors))
+                  hzip-loc ;; Satisfied all selectors, so return the orig. loc.
+                  (nil? curr-loc)
+                  nil ;; Ran out of movements before selectors, return nil.
+                  :else
+                  (if ((nth selectors idx) curr-loc)
+                    (recur (move-fn curr-loc)
+                           (inc idx))
+                    ;; Failed, so move but retry the same selector
+                    (recur (move-fn curr-loc) idx)))))))))
+"}]
                       (make-inlined-code-set
                        hickory.select
                        [
                         tag
-
+                        node-type
+                        attr
+                        id
+                        class
+                        any
+                        element
+                        root
+                        count-until
+                        n-moves-until
+                        until
+                        left-pred
+                        element-child
+                        nth-of-type
+                        right-pred
+                        nth-last-of-type
+                        left-of-node-type
+                        nth-child
+                        right-of-node-type
+                        nth-last-child
+                        first-child
+                        last-child
+                        and
+                        or
+                        not
+                        el-not
+                        child
+                        follow-adjacent
+                        precede-adjacent
+                        descendant
+                        follow
+                        precede
+                        select-next-loc
+                        after-subtree
+                        has-descendant
+                        has-child
                         select-next-loc
                         select-locs
-                        select
-
-                        ]
+                        select]
                        {:ns-renames {"hzip" "pod.retrogradeorbit.hickory.zip"
                                      "zip" "clojure.zip"
-                                     "string" "clojure.string"}})
-
-
-
-                      )
-
-
+                                     "string" "clojure.string"}}))
 
                      (make-inlined-namespace-basic hickory.utils)
-
                      (make-inlined-namespace-basic hickory.convert)
                      (make-inlined-namespace-basic hickory.hiccup-utils)
                      (make-inlined-namespace-basic hickory.render)
