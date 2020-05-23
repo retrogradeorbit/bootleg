@@ -24,6 +24,7 @@
             [selmer.validator]
             [edamame.core :refer [parse-string]]
             [clojure.walk]
+            [clojure.zip]
             [clojure.tools.cli]
             ))
 
@@ -652,4 +653,8 @@
                   'slurp utils/slurp-relative
                   'spit utils/spit-relative
                   }
+
+   'clojure.zip {
+                 'up clojure.zip/up
+                 }
    })
