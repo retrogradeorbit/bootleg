@@ -36,7 +36,7 @@ build/bootleg: target/uberjar/bootleg-$(VERSION)-standalone.jar
 		--no-server \
 		"-J-Xmx6g"
 
-test:
+tests:
 	lein test
 
 copy-libs-to-resource:

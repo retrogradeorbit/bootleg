@@ -124,7 +124,7 @@ jobs:
       - run:
           name: Run JVM tests
           command: |
-            make test
+            make tests
       - run:
           name: Build binary
           command: |
