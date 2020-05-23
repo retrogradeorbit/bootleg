@@ -13,19 +13,16 @@
             [bootleg.edn]
             [bootleg.file]
             [bootleg.enlive]
-
             [hickory.convert]
             [hickory.hiccup-utils]
             [hickory.render]
             [hickory.select]
             [hickory.utils]
             [hickory.zip]
-
             [net.cgrand.enlive-html]
             [net.cgrand.jsoup]
             [net.cgrand.tagsoup]
             [net.cgrand.xml]
-
             [selmer.filter-parser]
             [selmer.filters]
             [selmer.middleware]
@@ -35,13 +32,10 @@
             [selmer.template-parser]
             [selmer.util]
             [selmer.validator]
-
             [clojure.repl]
+            [clojure.java.io :as io])
+  (:import [java.io PushbackInputStream]))
 
-            [clojure.java.io :as io]
-            )
-  (:import [java.io PushbackInputStream])
-  )
 (def debug? false)
 (def debug-file "/tmp/bootleg-pod-debug.txt")
 
@@ -119,15 +113,6 @@
              form))))
    prn-str))
 
-#_ (bootleg.utils/pprint (process-macro-source
-                          net.cgrand.enlive-html/bodies
-                          ;;bootleg.enlive/deftemplate
-                          )
-                         )
-
-#_ (clojure.repl/source-fn 'net.cgrand.enlive-html/bodies)
-#_ (clojure.repl/source-fn 'bootleg.enlive/deftemplate)
-
 (defmacro make-lookup [ns]
   (->>
    (for [[k v] (ns-interns ns)]
@@ -145,38 +130,6 @@
    (filter identity)
    (into {})))
 
-#_ (meta ((ns-interns 'net.cgrand.enlive-html) 'bodies))
-#_ (((make-lookup net.cgrand.enlive-html) 'pod.retrogradeorbit.net.cgrand.enlive-html/bodies) [[:a] :b])
-#_ (meta ((ns-interns 'net.cgrand.enlive-html) 'pad-unless))
-
-(defmacro make-namespace-def [namespace & [{:keys [predefs only]
-                                            :or {predefs #{}
-                                                 only (constantly true)}}]]
-  (prn predefs)
-  {"name" (str "pod.retrogradeorbit." (str namespace))
-   "vars" (->>
-           (let [interns (ns-interns namespace)
-                 ;;privates (filter #(:private (meta (second %))) interns)
-                 ;;publics (filter #(not (:private (meta (second %)))) interns)
-                 first-set (filter #(let [name (:name (meta (second %)))]
-                                      (prn name (predefs name))
-                                      false ;;(#{'bodies} name)
-                                      )
-                                   interns)
-                 only-set (filter #(and (only (:name (meta (second %))))
-                                        (not (predefs (:name (meta (second %))))))
-                                  interns)
-                 ]
-             [first-set only-set]
-             #_ (for [[k v] (concat first-set only-set)]
-               (let [{:keys [ns name macro private]} (meta v)]
-                 {"name" (str name)
-                  "code" nil #_`(process-macro-source ~(symbol v))}
-                 )))
-           #_(filter identity)
-           #_(into []))})
-
-
 (defmacro make-inlined-code-set [namespace syms & [{:keys [pre-declares rename]
                                                     :or {pre-declares []
                                                          rename {}}
@@ -193,33 +146,25 @@
        {"name" (str (get rename sym sym))
         "code" `(process-source ~(symbol (interns sym)) ~opts)}))))
 
-
-
-#_
-(macroexpand-1 '(make-inlined-set net.cgrand.enlive-html [bodies annotations]))
-
-#_
-(make-inlined-code-set net.cgrand.enlive-html [bodies pad-unless])
-#_
-(make-inlined-code-set net.cgrand.enlive-html [snippet*])
+#_ (macroexpand-1 '(make-inlined-set net.cgrand.enlive-html [bodies annotations]))
+#_ (make-inlined-code-set net.cgrand.enlive-html [bodies pad-unless])
+#_ (make-inlined-code-set net.cgrand.enlive-html [snippet*])
 
 (defmacro make-inlined-namespace [namespace & body]
   `{"name" (str "pod.retrogradeorbit." ~(str namespace))
     "vars" (vec (apply concat (vector ~@body)))}
   )
 
-#_
-(macroexpand-1
+#_ (macroexpand-1
  '(make-inlined-namespace
    net.cgrand.enlive-html
    (make-inlined-code-set net.cgrand.enlive-html [bodies pad-unless])
    (make-inlined-code-set net.cgrand.enlive-html [snippet*])))
 
-#_
-(make-inlined-namespace
-   net.cgrand.enlive-html
-   (make-inlined-code-set net.cgrand.enlive-html [bodies pad-unless])
-   (make-inlined-code-set net.cgrand.enlive-html [snippet*]))
+#_ (make-inlined-namespace
+ net.cgrand.enlive-html
+ (make-inlined-code-set net.cgrand.enlive-html [bodies pad-unless])
+ (make-inlined-code-set net.cgrand.enlive-html [snippet*]))
 
 
 (defmacro make-inlined-code-set-macros [namespace & [{:keys [exclude]
@@ -234,7 +179,6 @@
                        "code" `(process-source ~(symbol (interns sym)))}))))))
 
 #_ (make-inlined-code-set-macros bootleg.utils)
-
 
 (defmacro make-inlined-public-fns [namespace & [{:keys [exclude only include-private rename]
                                                  :or {exclude #{}
@@ -261,27 +205,6 @@
     ~namespace
     (make-inlined-public-fns ~namespace ~opts)
     (make-inlined-code-set-macros ~namespace ~opts)))
-
-
-#_ "#'net.cgrand.enlive-html/bodies"
-
-#_ (process-macro-source net.cgrand.enlive-html/bodies)
-
-#_ (#{'foo} 'foo)
-
-#_ (macroexpand-1 '(make-namespace-def net.cgrand.enlive-html {:predefs #{'bodies 'annotations} :only #{}}))
-
-#_ (
-    (make-namespace-def net.cgrand.enlive-html {:predefs #{'bodies} :only #{}})
-    "vars")
-#_ (make-namespace-def hickory.hiccup-utils)
-#_ (macroexpand-1 '(make-namespace-def bootleg.utils))
-#_ (macroexpand-1 '(make-namespace-def bootleg.glob))
-#_ (macroexpand-1 '(make-namespace-def bootleg.selmer))
-#_ (process-macro-source bootleg.selmer/with-escaping)
-#_ (make-namespace-def bootleg.selmer)
-#_ (bootleg.pod/process-macro-source (clojure.core/symbol #'bootleg.selmer/exception))
-#_ (bootleg.pod/process-macro-source bootleg.selmer/exception)
 
 (def lookup (merge
              (make-lookup bootleg.glob)
