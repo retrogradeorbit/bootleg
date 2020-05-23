@@ -111,6 +111,10 @@ jobs:
           name: Install Leiningen
           command: |
             .circleci/script/install-leiningen
+       - run:
+          name: Run JVM tests
+          command: |
+            lein test
       - run:
           name: Download GraalVM
           command: |
