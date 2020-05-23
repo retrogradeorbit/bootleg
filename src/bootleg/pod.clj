@@ -36,7 +36,7 @@
             [clojure.java.io :as io])
   (:import [java.io PushbackInputStream]))
 
-(def debug? true)
+(def debug? false)
 (def debug-file "/tmp/bootleg-pod-debug.txt")
 
 (defmacro debug [& args]
