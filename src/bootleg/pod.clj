@@ -42,6 +42,14 @@
             )
   (:import [java.io PushbackInputStream])
   )
+(def debug? false)
+(def debug-file "/tmp/bootleg-pod-debug.txt")
+
+(defmacro debug [& args]
+  (if debug?
+    `(with-open [wrtr# (io/writer debug-file :append true)]
+       (.write wrtr# (prn-str ~@args)))
+    nil))
 
 (def stdin (PushbackInputStream. System/in))
 
@@ -319,10 +327,6 @@
   (try
     (loop []
       (let [{:strs [id op var args]} (read-bencode stdin)]
-
-        #_ (with-open [wrtr (io/writer "./pod-in.txt" :append true)]
-             (.write wrtr (prn-str (String. op))))
-
         (case (String. op)
           "describe"
           (do
@@ -718,7 +722,6 @@
                      (make-inlined-namespace-basic selmer.util
                                                    {:exclude #{exception}})
                      (make-inlined-namespace-basic selmer.validator)
-
                      ]
                     "id" (String. id)})
             (recur))
@@ -729,22 +732,17 @@
               (let [var (-> var
                             String.
                             symbol)
-                    args (String. args)
-                    _ (with-open [wrtr (io/writer "./pod-in.txt" :append true)]
-                        (.write wrtr (prn-str 'invoke var args
-                                              )))
-                    args (edn/read-string args)]
-
-                (if-let [f (lookup var)]
-                  (let [value (pr-str (apply f args))
-                        reply {"value" value
-                               "id" id
-                               "status" ["done"]}]
-                    (with-open [wrtr (io/writer "./pod-in.txt" :append true)]
-                      (.write wrtr (prn-str 'reply reply
-                                            )))
-                    (write reply))
-                  (throw (ex-info (str "Var not found: " var) {})))
+                    args (String. args)]
+                (debug 'invoke var args)
+                (let [args (edn/read-string args)]
+                  (if-let [f (lookup var)]
+                    (let [value (pr-str (apply f args))
+                          reply {"value" value
+                                 "id" id
+                                 "status" ["done"]}]
+                      (debug 'reply reply)
+                      (write reply))
+                    (throw (ex-info (str "Var not found: " var) {}))))
                 )
               (catch Throwable e
                 (binding [*out* *err*]
