@@ -111,7 +111,7 @@ jobs:
           name: Install Leiningen
           command: |
             .circleci/script/install-leiningen
-       - run:
+      - run:
           name: Run JVM tests
           command: |
             lein test
