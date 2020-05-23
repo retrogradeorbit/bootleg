@@ -638,11 +638,23 @@
                      (make-inlined-namespace-basic selmer.filters)
                      (make-inlined-namespace-basic selmer.middleware)
                      (make-inlined-namespace-basic selmer.node)
-                     (make-inlined-namespace-basic selmer.parser)
+
+                     (make-inlined-namespace
+                      selmer.parser
+                      (make-inlined-public-fns selmer.parser {:exclude #{add-tag!}})
+                      (make-inlined-code-set-macros selmer.parser {:exclude #{add-tag!}})
+                      (make-inlined-code-set bootleg.selmer [add-tag!]))
+
                      (make-inlined-namespace-basic selmer.tags)
                      (make-inlined-namespace-basic selmer.template-parser)
-                     (make-inlined-namespace-basic selmer.util
-                                                   {:exclude #{exception}})
+                     (make-inlined-namespace
+                      selmer.util
+                      (make-inlined-public-fns selmer.util {:exclude #{exception}})
+                      (make-inlined-code-set-macros selmer.util {:exclude #{exception
+                                                                            with-escaping
+                                                                            without-escaping
+                                                                            ->buf}})
+                      (make-inlined-code-set bootleg.selmer [with-escaping without-escaping ->buf]))
                      (make-inlined-namespace-basic selmer.validator)
                      ]
                     "id" (String. id)})
