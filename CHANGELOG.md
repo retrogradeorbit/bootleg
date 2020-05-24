@@ -3,6 +3,18 @@ All notable changes to this project will be documented in this file. This change
 
 ## [Unreleased]
 
+## [0.1.8] - 2020-05-24
+### Fixed
+- YAML upgrade to SnakeYAML 2.0 #46
+- Build failed when trying build with graalvm-ce-java11-19.3.0 #47
+- Can we have the ns/require code from spire in bootleg? #58
+- Running from file in same directory requires leading `./`#61
+- Generating XML preserving the tag name case #62
+- Fix reflection error preventing XML roundtrip #63
+
+### Added
+- add babashka pod support #60
+
 ## [0.1.7] - 2020-01-31
 ### Fixed
 - fixed broken selmer page inheritance tags - #49
