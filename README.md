@@ -234,6 +234,8 @@ Install the binary, then launch the pod in babashka by invoking the binary:
 
 When invoked as a pod, bootleg reveals the following namespaces to your babashka script:
 
+#### Fully tested namespaces.
+
  - pod.retrogradeorbit.bootleg.glob
  - pod.retrogradeorbit.bootleg.utils
  - pod.retrogradeorbit.bootleg.markdown
@@ -246,13 +248,16 @@ When invoked as a pod, bootleg reveals the following namespaces to your babashka
  - pod.retrogradeorbit.bootleg.edn
  - pod.retrogradeorbit.bootleg.file
  - pod.retrogradeorbit.bootleg.enlive
+ - pod.retrogradeorbit.net.cgrand.enlive-html
+ - pod.retrogradeorbit.hickory.select
+
+#### Untested namepaces. Your mileage may vary.
+
  - pod.retrogradeorbit.hickory.convert
  - pod.retrogradeorbit.hickory.hiccup-utils
  - pod.retrogradeorbit.hickory.render
- - pod.retrogradeorbit.hickory.select
  - pod.retrogradeorbit.hickory.utils
  - pod.retrogradeorbit.hickory.zip
- - pod.retrogradeorbit.net.cgrand.enlive-html
  - pod.retrogradeorbit.net.cgrand.jsoup
  - pod.retrogradeorbit.net.cgrand.tagsoup
  - pod.retrogradeorbit.net.cgrand.xml
@@ -267,6 +272,13 @@ When invoked as a pod, bootleg reveals the following namespaces to your babashka
  - pod.retrogradeorbit.selmer.validator
 
 When used as a pod, bootleg requires babashka 0.0.98 or higher.
+
+As a large library with lots of namespaces and functionality there may
+be parts that dont work correctly. Please open tickets for any such
+issues mentioning the problem is for the pod.
+
+An example of testing verified working parts can be found here:
+https://github.com/retrogradeorbit/bootleg/blob/master/test/pod/bbpodtest.clj
 
 ## Overview
 
