@@ -266,6 +266,8 @@ When invoked as a pod, bootleg reveals the following namespaces to your babashka
  - pod.retrogradeorbit.selmer.util
  - pod.retrogradeorbit.selmer.validator
 
+Bootleg require babashka 0.0.98 or higher.
+
 ## Overview
 
 `bootleg` loads and evaluates the clj file specified on the command line, or evaluates the `CODE` form specified in the -e flag. The code can return any of the supported data structures listed below. `bootleg` will then automatically convert that format into html and write it out to standard out, or to `FILE` if specified. This conversion to html step can be prevented by calling with the `-d` flag. In this case the output will be a pretty formatted edn form of the output data structure.
