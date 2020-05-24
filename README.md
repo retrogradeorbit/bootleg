@@ -266,7 +266,7 @@ When invoked as a pod, bootleg reveals the following namespaces to your babashka
  - pod.retrogradeorbit.selmer.util
  - pod.retrogradeorbit.selmer.validator
 
-When used as a pod, bootleg require babashka 0.0.98 or higher.
+When used as a pod, bootleg requires babashka 0.0.98 or higher.
 
 ## Overview
 
