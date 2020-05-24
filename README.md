@@ -215,6 +215,57 @@ Options:
       --color          Alias for --colour
 ```
 
+### Babashka Pod Usage
+
+Install the binary, then launch the pod in babashka by invoking the binary:
+
+```clojure
+(ns mybbscript
+  (:require [babashka.pods :as pods]))
+
+(pods/load-pod "bootleg")
+(require '[pod.retrogradeorbit.bootleg.utils :as utils])
+
+(-> [:div
+      [:h1 "Using Bootleg From Babashka"]
+      [:p "This is a demo"]]
+  (utils/convert-to :html))
+```
+
+When invoked as a pod, bootleg reveals the following namespaces to your babashka script:
+
+ - pod.retrogradeorbit.bootleg.glob
+ - pod.retrogradeorbit.bootleg.utils
+ - pod.retrogradeorbit.bootleg.markdown
+ - pod.retrogradeorbit.bootleg.mustache
+ - pod.retrogradeorbit.bootleg.html
+ - pod.retrogradeorbit.bootleg.hiccup
+ - pod.retrogradeorbit.bootleg.selmer
+ - pod.retrogradeorbit.bootleg.yaml
+ - pod.retrogradeorbit.bootleg.json
+ - pod.retrogradeorbit.bootleg.edn
+ - pod.retrogradeorbit.bootleg.file
+ - pod.retrogradeorbit.bootleg.enlive
+ - pod.retrogradeorbit.hickory.convert
+ - pod.retrogradeorbit.hickory.hiccup-utils
+ - pod.retrogradeorbit.hickory.render
+ - pod.retrogradeorbit.hickory.select
+ - pod.retrogradeorbit.hickory.utils
+ - pod.retrogradeorbit.hickory.zip
+ - pod.retrogradeorbit.net.cgrand.enlive-html
+ - pod.retrogradeorbit.net.cgrand.jsoup
+ - pod.retrogradeorbit.net.cgrand.tagsoup
+ - pod.retrogradeorbit.net.cgrand.xml
+ - pod.retrogradeorbit.selmer.filter-parser
+ - pod.retrogradeorbit.selmer.filters
+ - pod.retrogradeorbit.selmer.middleware
+ - pod.retrogradeorbit.selmer.node
+ - pod.retrogradeorbit.selmer.parser
+ - pod.retrogradeorbit.selmer.tags
+ - pod.retrogradeorbit.selmer.template-parser
+ - pod.retrogradeorbit.selmer.util
+ - pod.retrogradeorbit.selmer.validator
+
 ## Overview
 
 `bootleg` loads and evaluates the clj file specified on the command line, or evaluates the `CODE` form specified in the -e flag. The code can return any of the supported data structures listed below. `bootleg` will then automatically convert that format into html and write it out to standard out, or to `FILE` if specified. This conversion to html step can be prevented by calling with the `-d` flag. In this case the output will be a pretty formatted edn form of the output data structure.
