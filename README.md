@@ -252,18 +252,6 @@ When invoked as a pod, bootleg reveals the following namespaces to your babashka
  - pod.retrogradeorbit.hickory.select
  - pod.retrogradeorbit.hickory.zip
 
-#### Untested namepaces. Your mileage may vary.
-
- - pod.retrogradeorbit.selmer.filter-parser
- - pod.retrogradeorbit.selmer.filters
- - pod.retrogradeorbit.selmer.middleware
- - pod.retrogradeorbit.selmer.node
- - pod.retrogradeorbit.selmer.parser
- - pod.retrogradeorbit.selmer.tags
- - pod.retrogradeorbit.selmer.template-parser
- - pod.retrogradeorbit.selmer.util
- - pod.retrogradeorbit.selmer.validator
-
 When used as a pod, bootleg requires babashka 0.0.98 or higher.
 
 As a large library with lots of namespaces and functionality there may
