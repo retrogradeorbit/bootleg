@@ -2,6 +2,14 @@
   (:require [bootleg.utils :as utils]
             [bootleg.enlive :as enlive]
             [bootleg.selmer :as selmer]
+            [bootleg.markdown :as markdown]
+            [bootleg.mustache :as mustache]
+            [bootleg.html :as html]
+            [bootleg.yaml :as yaml]
+            [bootleg.json :as json]
+            [bootleg.edn :as edn]
+            [bootleg.glob :as glob]
+            [bootleg.file :as file]
             [hickory.convert]
             [hickory.hiccup-utils]
             [hickory.render]
@@ -23,6 +31,7 @@
             [selmer.util]
             [selmer.validator]
             [edamame.core :refer [parse-string]]
+            [sci.core :as sci]
             [clojure.walk]
             [clojure.zip]
             [clojure.tools.cli]
@@ -658,3 +667,72 @@
                  'up clojure.zip/up
                  }
    })
+
+(def bindings
+  {
+   ;; file loading
+   'markdown markdown/markdown
+   'mustache mustache/mustache
+   'html html/html
+   'selmer selmer/selmer
+
+   ;; vars files
+   'yaml yaml/yaml
+   'json json/json
+   'edn edn/edn
+
+   ;; directories and filenames
+   'glob glob/glob
+   'symlink file/symlink
+   'mkdir file/mkdir
+   'mkdirs file/mkdirs
+
+   ;; testing
+   'is-hiccup? utils/is-hiccup?
+   'is-hiccup-seq? utils/is-hiccup-seq?
+   'is-hickory? utils/is-hickory?
+   'is-hickory-seq? utils/is-hickory-seq?
+
+   ;; conversions
+   'convert-to utils/convert-to
+   'markup-type utils/markup-type
+   'as-html utils/as-html
+
+   ;; standard in out err
+   '*in* (sci/new-dynamic-var '*in* *in*)
+   '*out* (sci/new-dynamic-var '*out* *out*)
+   '*err* (sci/new-dynamic-var '*err* *err*)
+   })
+
+(def imports
+  {'System 'java.lang.System
+   'Thread 'java.lang.Thread
+   }
+  )
+
+(def classes
+  {'java.lang.System System
+   'java.lang.Thread Thread
+   'java.time.Clock java.time.Clock
+   'java.time.DateTimeException java.time.DateTimeException
+   'java.time.DayOfWeek java.time.DayOfWeek
+   'java.time.Duration java.time.Duration
+   'java.time.Instant java.time.Instant
+   'java.time.LocalDate java.time.LocalDate
+   'java.time.LocalDateTime java.time.LocalDateTime
+   'java.time.LocalTime java.time.LocalTime
+   'java.time.Month java.time.Month
+   'java.time.MonthDay java.time.MonthDay
+   'java.time.OffsetDateTime java.time.OffsetDateTime
+   'java.time.OffsetTime java.time.OffsetTime
+   'java.time.Period java.time.Period
+   'java.time.Year java.time.Year
+   'java.time.YearMonth java.time.YearMonth
+   'java.time.ZonedDateTime java.time.ZonedDateTime
+   'java.time.ZoneId java.time.ZoneId
+   'java.time.ZoneOffset java.time.ZoneOffset
+   'java.time.temporal.TemporalAccessor java.time.temporal.TemporalAccessor
+   'java.time.format.DateTimeFormatter java.time.format.DateTimeFormatter
+   'java.time.format.DateTimeFormatterBuilder java.time.format.DateTimeFormatterBuilder
+   }
+  )
