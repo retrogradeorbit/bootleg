@@ -10,6 +10,7 @@
             [fipp.edn :as fipp]
             [puget.printer :as puget]
             [clojure.data.xml :as xml]
+            [sci.impl.vars :as sci-vars]
             ))
 
 (defn- i-starts-with?
@@ -527,3 +528,9 @@
 
 (defn pprint-str [form & [opts]]
   (with-out-str (fipp/pprint form opts)))
+
+(defn current-file []
+  (or @sci-vars/current-file ""))
+
+(defn current-file-parent []
+  (or (some-> (current-file) io/file .getParent) "."))
