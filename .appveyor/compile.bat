@@ -1,6 +1,6 @@
 @echo off
 
-Rem set GRAALVM_HOME=C:\Users\IEUser\Downloads\graalvm\graalvm-ce-java8-19.3.0
+Rem set GRAALVM_HOME=C:\Users\IEUser\Downloads\graalvm\graalvm-ce-java11-20.1.0
 Rem set PATH=%PATH%;C:\Users\IEUser\bin
 
 if "%GRAALVM_HOME%"=="" (
