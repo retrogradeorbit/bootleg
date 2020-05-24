@@ -15,7 +15,9 @@
          '[pod.retrogradeorbit.bootleg.html :as html]
          '[pod.retrogradeorbit.bootleg.enlive :as enlive]
          '[pod.retrogradeorbit.net.cgrand.enlive-html :as enlive-html]
-         )
+         '[pod.retrogradeorbit.hickory.select :as s]
+         '[pod.retrogradeorbit.hickory.zip :as z]
+         '[clojure.zip :as zip])
 
 (assert
  (=
@@ -563,15 +565,10 @@
 ;;
 ;; hickory tests
 ;;
-(require '[pod.retrogradeorbit.hickory.select :as s]
-         '[pod.retrogradeorbit.hickory.zip :as z]
-         '[pod.retrogradeorbit.bootleg.utils :refer [convert-to]]
-         '[clojure.zip :as zip]
-         )
 
 (assert
  (->>
-  (convert-to '([:div [:span "hello"]]) :hickory)
+  (utils/convert-to '([:div [:span "hello"]]) :hickory)
   (s/select (s/tag :span))
   (= [{:type :element
        :attrs nil
@@ -581,7 +578,7 @@
 
 (assert
  (->>
-  (convert-to '([:div [:span "1"] [:span "2" [:span "sub"]]]) :hickory)
+  (utils/convert-to '([:div [:span "1"] [:span "2" [:span "sub"]]]) :hickory)
   (s/select (s/tag :span))
   (= [{:type :element
        :attrs nil
@@ -602,14 +599,14 @@
 
 (assert
  (->>
-  (convert-to '([:div [:span "hello" "<!-- wat -->"]]) :hickory)
+  (utils/convert-to '([:div [:span "hello" "<!-- wat -->"]]) :hickory)
   (s/select (s/node-type :comment))
   (= [{:type :comment
        :content [" wat "]}])))
 
 (assert
  (->>
-  (convert-to '([:div {:foo "baz"} [:span {:foo "barry"} "hello"]]) :hickory)
+  (utils/convert-to '([:div {:foo "baz"} [:span {:foo "barry"} "hello"]]) :hickory)
   (s/select (s/attr :foo #(.startsWith % "bar")))
   (= [{:type :element
        :attrs {:foo "barry"}
@@ -618,7 +615,7 @@
 
 (assert
  (->>
-  (convert-to '([:div [:span#foo "hello"]]) :hickory)
+  (utils/convert-to '([:div [:span#foo "hello"]]) :hickory)
   (s/select (s/id :foo))
   (=
    [{:type :element
@@ -631,7 +628,7 @@
 
 (assert
  (->>
-  (convert-to '([:div [:span.foo "hello"]]) :hickory)
+  (utils/convert-to '([:div [:span.foo "hello"]]) :hickory)
   (s/select (s/class :foo))
   (=
    [{:type :element
@@ -645,7 +642,7 @@
 
 (assert
  (->>
-  (convert-to '([:div [:span.foo "hello"]]) :hickory)
+  (utils/convert-to '([:div [:span.foo "hello"]]) :hickory)
   (s/select s/any)
   (=
    [{:type :element
@@ -666,7 +663,7 @@
 
 (assert
  (->>
-  (convert-to '([:div [:span.foo "hello"]]) :hickory)
+  (utils/convert-to '([:div [:span.foo "hello"]]) :hickory)
   (s/select s/element)
   (=
    [{:type :element
@@ -688,7 +685,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello"]]]] :hickory)
+  (utils/convert-to [:html [:body [:div [:span.foo "hello"]]]] :hickory)
   (s/select s/root)
   (=
    [{:type :element
@@ -749,13 +746,13 @@
 
 (assert
  (->>
-  (first (drop 3 (convert-to hicc :hickory-seq)))
+  (first (drop 3 (utils/convert-to hicc :hickory-seq)))
   (s/select (s/n-moves-until 0 6 zip/up nil?))
   (= ["Div"])))
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div "foo"]]]]] :hickory)
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div "foo"]]]]] :hickory)
   (s/select (s/nth-of-type 1 :body))
   (= [{:type :element
      :attrs nil
@@ -773,7 +770,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div "one"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div "one"]]]
                       [:div "two"]
                       ]] :hickory)
   (s/select (s/nth-last-of-type 1 :div))
@@ -790,7 +787,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div "one"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div "one"]]]
                       [:div "two"]
                       ]] :hickory)
   (s/select (s/nth-child 0 1))
@@ -838,7 +835,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div "one"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div "one"]]]
                       [:div "two"]
                       ]] :hickory)
   (s/select (s/nth-last-child 0 1))
@@ -880,7 +877,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div "one"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div "one"]]]
                       [:div "two"]
                       ]] :hickory)
   (s/select s/first-child)
@@ -929,7 +926,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div "one"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div "one"]]]
                       [:div "two"]
                       ]] :hickory)
   (s/select s/last-child)
@@ -971,7 +968,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div.foo "one"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div.foo "one"]]]
                       [:div "two"]
                       ]] :hickory)
   (s/select (s/and (s/tag :div) (s/class :foo)))
@@ -983,7 +980,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div.foo "one"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div.foo "one"]]]
                       [:div "two"]
                       ]] :hickory)
   (s/select (s/or (s/tag :div) (s/class :foo)))
@@ -1018,7 +1015,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div.foo "one"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div.foo "one"]]]
                       [:div "two"]
                       ]] :hickory)
   (s/select (s/and (s/not (s/tag :div)) (s/class :foo)))
@@ -1034,7 +1031,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div.foo "one"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div.foo "one"]]]
                       [:div "two"]
                       ]] :hickory)
   (s/select (s/and (s/el-not (s/tag :div)) (s/class :foo)))
@@ -1050,7 +1047,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div.foo "one"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div.foo "one"]]]
                       [:div "two"]
                       ]] :hickory)
   (s/select (s/child (s/el-not (s/tag :div)) (s/class :foo)))
@@ -1062,7 +1059,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div.bar "one"] [:div.foo "two"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div.bar "one"] [:div.foo "two"]]]
                       [:div "three"]
                       ]] :hickory)
   (s/select (s/follow-adjacent (s/tag :div) (s/class :foo)))
@@ -1074,7 +1071,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div.bar "one"] [:div.foo "two"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div.bar "one"] [:div.foo "two"]]]
                       [:div "three"]
                       ]] :hickory)
   (s/select (s/precede-adjacent (s/tag :div) (s/class :foo)))
@@ -1086,7 +1083,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div.bar "one"] [:div.foo "two"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div.bar "one"] [:div.foo "two"]]]
                       [:div "three"]
                       ]] :hickory)
   (s/select (s/descendant (s/tag :span)))
@@ -1106,7 +1103,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div.bar "one"] [:div.foo "two"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div.bar "one"] [:div.foo "two"]]]
                       [:div "three"]
                       ]] :hickory)
   (s/select (s/follow (s/class :bar) (s/class :foo)))
@@ -1118,7 +1115,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div.bar "one"] [:div.foo "two"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div.bar "one"] [:div.foo "two"]]]
                       [:div "three"]
                       ]] :hickory)
   (s/select (s/precede (s/class :bar) (s/class :foo)))
@@ -1130,7 +1127,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div.bar "one"] [:div#inner "two"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div.bar "one"] [:div#inner "two"]]]
                       [:div "three"]
                       ]] :hickory)
   (s/select
@@ -1156,7 +1153,7 @@
 
 (assert
  (->>
-  (convert-to [:html [:body [:div [:span.foo "hello" [:div.bar "one"] [:div#inner "two"]]]
+  (utils/convert-to [:html [:body [:div [:span.foo "hello" [:div.bar "one"] [:div#inner "two"]]]
                       [:div "three"]
                       ]] :hickory)
   (s/select (s/has-child (s/id "inner")))
