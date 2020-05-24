@@ -254,13 +254,6 @@ When invoked as a pod, bootleg reveals the following namespaces to your babashka
 
 #### Untested namepaces. Your mileage may vary.
 
- - pod.retrogradeorbit.hickory.convert
- - pod.retrogradeorbit.hickory.hiccup-utils
- - pod.retrogradeorbit.hickory.render
- - pod.retrogradeorbit.hickory.utils
- - pod.retrogradeorbit.net.cgrand.jsoup
- - pod.retrogradeorbit.net.cgrand.tagsoup
- - pod.retrogradeorbit.net.cgrand.xml
  - pod.retrogradeorbit.selmer.filter-parser
  - pod.retrogradeorbit.selmer.filters
  - pod.retrogradeorbit.selmer.middleware
