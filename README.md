@@ -230,6 +230,7 @@ Install the binary, then launch the pod in babashka by invoking the binary:
       [:h1 "Using Bootleg From Babashka"]
       [:p "This is a demo"]]
   (utils/convert-to :html))
+;;=> "<div><h1>Using Bootleg From Babashka</h1><p>This is a demo</p></div>"
 ```
 
 When invoked as a pod, bootleg reveals the following namespaces to your babashka script:
