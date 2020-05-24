@@ -4,7 +4,7 @@
 
 (deftest transform-tests
   (testing "transform content"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])
@@ -14,7 +14,7 @@
 ")
            [:div [:p] [:p {:id "flag"} "test"]]))
 
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])
@@ -24,7 +24,7 @@
 ")
            [:div [:p] [:p {:id "flag"} [:span "test"]]]))
 
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])
@@ -34,7 +34,7 @@
 ")
            [:div [:p] [:p {:id "flag"} [:span "test"] [:p "p"]]]))
 
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])
@@ -44,7 +44,7 @@
 ")
            [:div [:p] [:p {:id "flag"} "&lt;p&gt;foo&lt;/p&gt;"]]))
 
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])
@@ -54,7 +54,7 @@
 ")
            [:div [:p] [:p {:id "flag"} [:p "foo"]]]))
 
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])
@@ -64,7 +64,7 @@
 ")
            [:div [:p] [:p {:id "flag"} "foo&gt;bar"]]))
 
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])
@@ -76,7 +76,7 @@
 
 
   (testing "transform append"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])
@@ -87,7 +87,7 @@
            [:div [:p] [:p {:id "flag"} "foo" [:div "one"] [:div "two"] [:div "three"]]])))
 
   (testing "transform prepend"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])
@@ -98,7 +98,7 @@
            [:div [:p] [:p {:id "flag"} [:div "one"] [:div "two"] [:div "three"] "foo"]])))
 
   (testing "transform after"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])
@@ -109,7 +109,7 @@
            [:div [:p] [:p {:id "flag"} "foo"] [:div "one"] [:div "two"] [:div "three"]])))
 
   (testing "transform before"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])
@@ -120,7 +120,7 @@
            [:div [:p] [:div "one"] [:div "two"] [:div "three"] [:p {:id "flag"} "foo"]])))
 
   (testing "transform substitute"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])
@@ -131,7 +131,7 @@
            [:div [:p] [:div "one"] [:div "two"] [:div "three"]])))
 
   (testing "transform reagent styles"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])
@@ -143,7 +143,7 @@
             [:p {:style "margin-top:10px;"}]])))
 
   (testing "transform set-attr reagent styles"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])
@@ -154,7 +154,7 @@
            [:div {:style "margin-top:10px;"}
             [:p {:style "margin-top:10px;"}]]))
 
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])
@@ -165,7 +165,7 @@
            [:div {:style "margin-top:10px;"}
             [:p {:style "margin-top:10px;"}]]))
 
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[net.cgrand.enlive-html :as html])

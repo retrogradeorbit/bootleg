@@ -2,6 +2,7 @@
   (:require [bootleg.file :as file]
             [bootleg.namespaces :as namespaces]
             [bootleg.context :as context]
+            [bootleg.eval :as eval]
             [sci.core :as sci]
             [clojure.walk :as walk]))
 
@@ -19,32 +20,22 @@
        f))
    form))
 
-(defn process-hiccup-data [path data]
-  (let [ctx {
-             :namespaces namespaces/namespaces
-             :bindings (assoc namespaces/bindings
-                              'hiccup process-hiccup
-                              '*command-line-args* (sci/new-dynamic-var '*command-line-args* *command-line-args*)
-                              )
-             :imports namespaces/imports
-             :classes namespaces/classes}]
-    (context/with-path path
-      (-> data
-          (sci/eval-string
-           (update ctx
-                   :bindings assoc 'load-file
-                   #(load-file*
-                     ctx
-                     (file/path-join path %))))
-          realize-all-seqs))))
+(defn process-hiccup-data [args path data]
+  (context/with-path path
+    (-> (eval/evaluate
+         args data
+         (assoc namespaces/bindings
+                process-hiccup (partial process-hiccup args)
+                '*command-line-args* (sci/new-dynamic-var '*command-line-args* *command-line-args*)))
+        realize-all-seqs)))
 
 (defn process-hiccup
-  ([file]
+  ([args file]
    (let [fullpath (file/path-join context/*path* file)
          [path file] (file/path-split fullpath)]
-     (process-hiccup path file)))
-  ([path file]
+     (process-hiccup args path file)))
+  ([args path file]
    (->> file
         (file/path-join path)
         slurp
-        (process-hiccup-data path))))
+        (process-hiccup-data args path))))

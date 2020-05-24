@@ -4,25 +4,25 @@
 
 (deftest selmer-tests
   (testing "selmer tests"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "(selmer.parser/render \"Hello {{name}}!\" {:name \"world\"})")
            "Hello world!"))
 
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "(selmer.parser/render \"Hello {{name|capitalize}}!\" {:name \"world\"})")
            "Hello World!"))
 
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "(selmer \"test.selmer\" {:nums [1 2 3]})")
            '([:div "\n" [:p "1"] [:p "2"] [:p "3"] "\n"])))
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "(selmer \"test.selmer\" {:nums [1 2 3]} :html)")
            "<div>\n<p>1</p><p>2</p><p>3</p>\n</div>"))
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "(selmer \"test.selmer\" {:nums [1 2 3]} :hickory-seq)")
            '({:type :element
@@ -43,7 +43,7 @@
                          :content ["3"]}
                         "\n"
                         ]})))
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "."
             "(selmer \"test/files/selmer/child-a.html\" {})")
            '([:html
@@ -57,7 +57,7 @@
               "\n"]
              "\n")))
 
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "."
             "(selmer \"test/files/selmer/child-b.html\" {})")
            '([:html
@@ -73,7 +73,7 @@
               "\n"]
              "\n")))
 
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "(selmer \"selmer/child-b.html\" {})")
            '([:html

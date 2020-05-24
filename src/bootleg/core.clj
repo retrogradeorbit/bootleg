@@ -33,9 +33,9 @@
         options-summary]
        (string/join \newline)))
 
-(defn process [filename]
+(defn process [args filename]
   (let [[path file] (file/path-split filename)]
-    (hiccup/process-hiccup (or path ".") file)))
+    (hiccup/process-hiccup args (or path ".") file)))
 
 (defn output-result [options result]
   (let [out (if (:output options)
@@ -68,15 +68,15 @@
               (println "Version:" version)
 
               (:evaluate options)
-              (let [result (->> options :evaluate (hiccup/process-hiccup-data "."))]
+              (let [result (->> options :evaluate (hiccup/process-hiccup-data args "."))]
                 (output-result options result))
 
               (= 1 (count arguments))
-              (let [result (-> arguments first process)]
+              (let [result (->> arguments first (process args))]
                 (output-result options result))
 
               (zero? (count arguments))
-              (let [result (->> *in* slurp (hiccup/process-hiccup-data "."))]
+              (let [result (->> *in* slurp (hiccup/process-hiccup-data args "."))]
                 (output-result options result))
 
               :else

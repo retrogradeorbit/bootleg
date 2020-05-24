@@ -4,7 +4,7 @@
 
 (deftest hickory
   (testing "hickory select tag"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -19,7 +19,7 @@
              :tag :span
              :content ["hello"]}]))
 
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -47,7 +47,7 @@
              :content ["sub"]}])))
 
   (testing "hickory select node-type"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -61,7 +61,7 @@
              :content [" wat "]}])))
 
   (testing "hickory select attr"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -79,7 +79,7 @@
     )
 
   (testing "hickory select id"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -95,7 +95,7 @@
              :content ["hello"]}])))
 
   (testing "hickory select class"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -111,7 +111,7 @@
              :content ["hello"]}])))
 
   (testing "hickory select any"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -134,7 +134,7 @@
              :content ["hello"]}])))
 
   (testing "hickory select element"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -157,7 +157,7 @@
              :content ["hello"]}])))
 
   (testing "hickory select root"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -182,7 +182,7 @@
                                               :content ["hello"]}]}]}]}])))
 
   (testing "hickory select n-moves-until"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s]
@@ -234,7 +234,7 @@
            ["Div"])))
 
   (testing "hickory select nth-of-type"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -259,7 +259,7 @@
                                                       :content ["foo"]}]}]}]}])))
 
   (testing "hickory select nth-last-of-type"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -282,7 +282,7 @@
            )))
 
   (testing "hickory select nth-child"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -334,7 +334,7 @@
            )))
 
   (testing "hickory select nth-last-child"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -381,7 +381,7 @@
            )))
 
   (testing "hickory select first-child"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -438,7 +438,7 @@
 
 
   (testing "hickory select last-child"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -487,7 +487,7 @@
            )))
 
   (testing "hickory select and"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -505,7 +505,7 @@
              :content ["one"]}])))
 
   (testing "hickory select or"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -546,7 +546,7 @@
              :content ["two"]}])))
 
   (testing "hickory select not"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -568,7 +568,7 @@
                         :content ["one"]}]}])))
 
   (testing "hickory select el-not"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -590,7 +590,7 @@
                         :content ["one"]}]}])))
 
   (testing "hickory select child"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -608,7 +608,7 @@
              :content ["one"]}])))
 
   (testing "hickory select follow-adjacent"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -626,7 +626,7 @@
              :content ["two"]}])))
 
   (testing "hickory select precede-adjacent"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -644,7 +644,7 @@
              :content ["one"]}])))
 
   (testing "hickory select descendant"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -670,7 +670,7 @@
                         :content ["two"]}]}])))
 
   (testing "hickory select follow"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -688,7 +688,7 @@
              :content ["two"]}])))
 
   (testing "hickory select precede"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -706,7 +706,7 @@
              :content ["one"]}])))
 
   (testing "hickory select has-descendant"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])
@@ -738,7 +738,7 @@
                                    :content ["two"]}]}]}])))
 
   (testing "hickory select has-child"
-    (is (= (process-hiccup-data
+    (is (= (process-hiccup-data []
             "test/files"
             "
 (require '[hickory.select :as s])

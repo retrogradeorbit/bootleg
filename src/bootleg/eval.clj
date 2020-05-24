@@ -1,9 +1,8 @@
 (ns bootleg.eval
-  (:require [sci.core :as sci]
+  (:require [bootleg.utils :as utils]
+            [bootleg.namespaces :as namespaces]
+            [sci.core :as sci]
             [sci.addons :as addons]
-            [babashka.nrepl.server :as nrepl]
-            ;; [spire.namespaces :as namespaces]
-            ;; [spire.utils :as utils]
             [clojure.string :as string]
             [clojure.java.io :as io]))
 
@@ -62,7 +61,7 @@
                         sci/file file-path}
       (sci/eval-string* sci-opts source))))
 
-(defn setup-sci-context [args]
+(defn setup-sci-context [args bindings]
   (let [env (atom {})
         ctx-ref (atom nil)
         namespaces (update namespaces/namespaces
@@ -72,7 +71,7 @@
                            'load-file #(load-file* @ctx-ref %))
         opts (-> {:env env
                   :namespaces namespaces
-                  :bindings namespaces/bindings
+                  :bindings bindings
                   :imports namespaces/imports
                   :features #{:bb :clj}
                   :classes namespaces/classes
@@ -82,14 +81,7 @@
     (reset! ctx-ref sci-ctx)
     sci-ctx))
 
-(defn evaluate [args script]
+(defn evaluate [args script bindings]
   (sci/eval-string*
-   (setup-sci-context args)
+   (setup-sci-context args bindings)
    script))
-
-(defn nrepl-server [args address]
-  (-> args
-      setup-sci-context
-      (nrepl/start-server! (nrepl/parse-opt address))
-      :future
-      deref))
