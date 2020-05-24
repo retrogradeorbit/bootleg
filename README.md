@@ -250,6 +250,7 @@ When invoked as a pod, bootleg reveals the following namespaces to your babashka
  - pod.retrogradeorbit.bootleg.enlive
  - pod.retrogradeorbit.net.cgrand.enlive-html
  - pod.retrogradeorbit.hickory.select
+ - pod.retrogradeorbit.hickory.zip
 
 #### Untested namepaces. Your mileage may vary.
 
@@ -257,7 +258,6 @@ When invoked as a pod, bootleg reveals the following namespaces to your babashka
  - pod.retrogradeorbit.hickory.hiccup-utils
  - pod.retrogradeorbit.hickory.render
  - pod.retrogradeorbit.hickory.utils
- - pod.retrogradeorbit.hickory.zip
  - pod.retrogradeorbit.net.cgrand.jsoup
  - pod.retrogradeorbit.net.cgrand.tagsoup
  - pod.retrogradeorbit.net.cgrand.xml
