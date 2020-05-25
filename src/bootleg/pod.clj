@@ -1,4 +1,5 @@
 (ns bootleg.pod
+  (:refer-clojure :exclude [read-string])
   (:require [bencode.core :refer [read-bencode write-bencode]]
             [clojure.edn :as edn]
             [bootleg.glob]
@@ -35,6 +36,11 @@
             [clojure.repl]
             [clojure.java.io :as io])
   (:import [java.io PushbackInputStream]))
+
+(set! *warn-on-reflection* true)
+
+(defn read-string [^"[B" v]
+  (String. v))
 
 (def debug? false)
 (def debug-file "/tmp/bootleg-pod-debug.txt")
@@ -156,15 +162,15 @@
   )
 
 #_ (macroexpand-1
- '(make-inlined-namespace
-   net.cgrand.enlive-html
-   (make-inlined-code-set net.cgrand.enlive-html [bodies pad-unless])
-   (make-inlined-code-set net.cgrand.enlive-html [snippet*])))
+    '(make-inlined-namespace
+      net.cgrand.enlive-html
+      (make-inlined-code-set net.cgrand.enlive-html [bodies pad-unless])
+      (make-inlined-code-set net.cgrand.enlive-html [snippet*])))
 
 #_ (make-inlined-namespace
- net.cgrand.enlive-html
- (make-inlined-code-set net.cgrand.enlive-html [bodies pad-unless])
- (make-inlined-code-set net.cgrand.enlive-html [snippet*]))
+    net.cgrand.enlive-html
+    (make-inlined-code-set net.cgrand.enlive-html [bodies pad-unless])
+    (make-inlined-code-set net.cgrand.enlive-html [snippet*]))
 
 
 (defmacro make-inlined-code-set-macros [namespace & [{:keys [exclude]
@@ -246,17 +252,360 @@
 
              ))
 
+(def enlive
+  ;; enlive has HOFs
+  (update (make-inlined-namespace
+           bootleg.enlive
+
+           (make-inlined-code-set
+            net.cgrand.enlive-html
+            ;; the following are used in net.cgrand.enlive-html
+            ;; and also bootleg.enlive, so they have to come first
+            [
+             node?
+             attr-values
+             attr-has
+             pad-unless
+             static-selector?
+             cacheable
+             cacheable?
+             bodies
+             append!
+             accept-key
+             children-locs
+             step
+             transform-loc
+             mapknitv
+             union
+             intersection
+             id=
+             tag=
+             zip-pred
+             pred
+             any
+             as-nodes
+             has-class
+             compile-keyword
+             compile-step
+             compile-chain
+             selector-chains
+             states
+             predset
+             make-state
+             lockstep-automaton*
+             memoized-lockstep-automaton*
+             lockstep-automaton
+             lockstep-transform
+             transform-fragment-locs
+             flatten-nodes-coll
+             transform-fragment
+             automaton*
+             memoized-automaton*
+             automaton
+             transform-node
+             fragment-selector?
+             node-selector?
+             transform
+             content
+             append
+             prepend
+             after
+             before
+             substitute
+             set-attr
+             zip-select-fragments*
+             select-fragments*
+             zip-select-nodes*
+             select-nodes*
+             select
+             remove-attr
+             replace-vars
+             replace-words
+             wrap
+             unwrap
+             add-class
+             remove-class
+             flatmap
+             do->
+             clone-for
+             move
+             ]
+            {:ns-renames {"z" "clojure.zip"
+                          "xml" "pod.retrogradeorbit.net.cgrand.xml"
+                          "str" "clojure.string"
+                          }
+             :pre-declares ["pred"
+                            "substitute"
+                            "at"
+                            "mapknitv"
+                            "automaton*"
+                            "flatten-nodes-coll"
+                            "automaton"]
+             :rename {content content*
+                      append append*
+                      prepend prepend*
+                      after after*
+                      before before*
+                      substitute substitute*}})
+
+           (make-inlined-public-fns
+            net.cgrand.enlive-html
+            {:exclude #{
+                        content
+                        append
+                        prepend
+                        after
+                        before
+                        substitute
+                        set-attr
+                        zip-select-fragments*
+                        select-fragments*
+                        zip-select-nodes*
+                        select-nodes*
+                        select
+                        remove-attr
+                        replace-vars
+                        replace-words
+                        wrap
+                        unwrap
+                        add-class
+                        remove-class
+                        flatmap
+                        do->
+                        clone-for
+                        move
+                        cacheable
+                        cacheable?
+                        node?
+                        append!
+                        accept-key
+                        children-locs
+                        step
+                        transform-loc
+                        mapknitv
+                        union
+                        intersection
+                        id=
+                        tag=
+                        attr-values
+                        zip-pred
+                        pred
+                        any
+                        as-nodes
+                        attr-has
+                        has-class
+                        compile-keyword
+                        compile-step
+                        compile-chain
+                        selector-chains
+                        states
+                        pred-set
+                        make-state
+                        lockstep-automaton*
+                        memoized-lockstep-automaton*
+                        lockstep-automaton
+                        lockstep-transform
+                        transform-fragment-locs
+                        flatten-nodes-coll
+                        transform-fragment
+                        automaton*
+                        memoized-automaton*
+                        automaton
+                        transform-node
+                        fragment-selector?
+                        node-selector?
+                        transform}})
+
+           (make-inlined-code-set-macros bootleg.enlive)
+
+           (make-inlined-code-set
+            bootleg.enlive
+            [content append prepend after before substitute]))
+          "vars" (fn [vars]
+                   (into [{"name" "_"
+                           "code" "(require '[pod.retrogradeorbit.net.cgrand.enlive-html])"}]
+                         vars))))
+
+(def enlive-html
+  (make-inlined-namespace
+   net.cgrand.enlive-html
+
+   (make-inlined-code-set
+    net.cgrand.enlive-html
+    ;; the following are used in net.cgrand.enlive-html
+    ;; and also bootleg.enlive, so they have to come first
+    [
+     node?
+     attr-values
+     attr-has
+     pad-unless
+     static-selector?
+     cacheable
+     cacheable?
+     bodies
+     append!
+     accept-key
+     children-locs
+     step
+     transform-loc
+     mapknitv
+     union
+     intersection
+     id=
+     tag=
+     zip-pred
+     pred
+     any
+     as-nodes
+     has-class
+     compile-keyword
+     compile-step
+     compile-chain
+     selector-chains
+     states
+     predset
+     make-state
+     lockstep-automaton*
+     memoized-lockstep-automaton*
+     lockstep-automaton
+     lockstep-transform
+     transform-fragment-locs
+     flatten-nodes-coll
+     transform-fragment
+     automaton*
+     memoized-automaton*
+     automaton
+     transform-node
+     fragment-selector?
+     node-selector?
+     transform
+     content
+     append
+     prepend
+     after
+     before
+     substitute
+     set-attr
+     zip-select-fragments*
+     select-fragments*
+     zip-select-nodes*
+     select-nodes*
+     select
+     remove-attr
+     replace-vars
+     replace-words
+     wrap
+     unwrap
+     add-class
+     remove-class
+     flatmap
+     do->
+     clone-for
+     move
+     ]
+    {:ns-renames {"z" "clojure.zip"
+                  "xml" "pod.retrogradeorbit.net.cgrand.xml"
+                  "str" "clojure.string"
+                  }
+     :pre-declares ["pred"
+                    "substitute"
+                    "at"
+                    "mapknitv"
+                    "automaton*"
+                    "flatten-nodes-coll"
+                    "automaton"]
+     :rename {content content*
+              append append*
+              prepend prepend*
+              after after*
+              before before*
+              substitute substitute*}})
+
+   (make-inlined-public-fns
+    net.cgrand.enlive-html
+    {:exclude #{
+                content
+                append
+                prepend
+                after
+                before
+                substitute
+                set-attr
+                zip-select-fragments*
+                select-fragments*
+                zip-select-nodes*
+                select-nodes*
+                select
+                remove-attr
+                replace-vars
+                replace-words
+                wrap
+                unwrap
+                add-class
+                remove-class
+                flatmap
+                do->
+                clone-for
+                move
+                cacheable
+                cacheable?
+                node?
+                append!
+                accept-key
+                children-locs
+                step
+                transform-loc
+                mapknitv
+                union
+                intersection
+                id=
+                tag=
+                attr-values
+                zip-pred
+                pred
+                any
+                as-nodes
+                attr-has
+                has-class
+                compile-keyword
+                compile-step
+                compile-chain
+                selector-chains
+                states
+                pred-set
+                make-state
+                lockstep-automaton*
+                memoized-lockstep-automaton*
+                lockstep-automaton
+                lockstep-transform
+                transform-fragment-locs
+                flatten-nodes-coll
+                transform-fragment
+                automaton*
+                memoized-automaton*
+                automaton
+                transform-node
+                fragment-selector?
+                node-selector?
+                transform}})
+
+   (make-inlined-code-set-macros bootleg.enlive)
+
+   (make-inlined-code-set
+    bootleg.enlive
+    [content append prepend after before substitute])))
+
 (defn main []
   (try
     (loop []
-      (let [{:strs [id op var args]} (read-bencode stdin)]
-        (case (String. op)
+      (let [{:strs [id op var args ns]} (read-bencode stdin)]
+        (case (read-string op)
           "describe"
           (do
             (write {"format" "edn"
+                    "ops" {"load-ns" {}}
                     "namespaces"
-                    [
-                     (make-inlined-namespace-basic bootleg.glob)
+                    [(make-inlined-namespace-basic bootleg.glob)
                      (make-inlined-namespace-basic bootleg.utils)
                      (make-inlined-namespace-basic bootleg.markdown)
                      (make-inlined-namespace-basic bootleg.mustache)
@@ -267,7 +616,6 @@
                      (make-inlined-namespace-basic bootleg.json)
                      (make-inlined-namespace-basic bootleg.edn)
                      (make-inlined-namespace-basic bootleg.file)
-
                      (make-inlined-namespace
                       net.cgrand.xml
                       (make-inlined-code-set
@@ -279,345 +627,10 @@
                        {:ns-renames {"z" "clojure.zip"}
                         :pre-declares []}))
 
-                     ;; elive has HOFs
-                     (make-inlined-namespace
-                      net.cgrand.enlive-html
-
-                      (make-inlined-code-set
-                       net.cgrand.enlive-html
-                       ;; the following are used in net.cgrand.enlive-html
-                       ;; and also bootleg.enlive, so they have to come first
-                       [
-                        node?
-                        attr-values
-                        attr-has
-                        pad-unless
-                        static-selector?
-                        cacheable
-                        cacheable?
-                        bodies
-                        append!
-                        accept-key
-                        children-locs
-                        step
-                        transform-loc
-                        mapknitv
-                        union
-                        intersection
-                        id=
-                        tag=
-                        zip-pred
-                        pred
-                        any
-                        as-nodes
-                        has-class
-                        compile-keyword
-                        compile-step
-                        compile-chain
-                        selector-chains
-                        states
-                        predset
-                        make-state
-                        lockstep-automaton*
-                        memoized-lockstep-automaton*
-                        lockstep-automaton
-                        lockstep-transform
-                        transform-fragment-locs
-                        flatten-nodes-coll
-                        transform-fragment
-                        automaton*
-                        memoized-automaton*
-                        automaton
-                        transform-node
-                        fragment-selector?
-                        node-selector?
-                        transform
-                        content
-                        append
-                        prepend
-                        after
-                        before
-                        substitute
-                        set-attr
-                        zip-select-fragments*
-                        select-fragments*
-                        zip-select-nodes*
-                        select-nodes*
-                        select
-                        remove-attr
-                        replace-vars
-                        replace-words
-                        wrap
-                        unwrap
-                        add-class
-                        remove-class
-                        flatmap
-                        do->
-                        clone-for
-                        move
-                        ]
-                       {:ns-renames {"z" "clojure.zip"
-                                     "xml" "pod.retrogradeorbit.net.cgrand.xml"
-                                     "str" "clojure.string"
-                                     }
-                        :pre-declares ["pred"
-                                       "substitute"
-                                       "at"
-                                       "mapknitv"
-                                       "automaton*"
-                                       "flatten-nodes-coll"
-                                       "automaton"]
-                        :rename {content content*
-                                 append append*
-                                 prepend prepend*
-                                 after after*
-                                 before before*
-                                 substitute substitute*}})
-
-                      (make-inlined-public-fns
-                       net.cgrand.enlive-html
-                       {:exclude #{
-                                   content
-                                   append
-                                   prepend
-                                   after
-                                   before
-                                   substitute
-                                   set-attr
-                                   zip-select-fragments*
-                                   select-fragments*
-                                   zip-select-nodes*
-                                   select-nodes*
-                                   select
-                                   remove-attr
-                                   replace-vars
-                                   replace-words
-                                   wrap
-                                   unwrap
-                                   add-class
-                                   remove-class
-                                   flatmap
-                                   do->
-                                   clone-for
-                                   move
-                                   cacheable
-                                   cacheable?
-                                   node?
-                                   append!
-                                   accept-key
-                                   children-locs
-                                   step
-                                   transform-loc
-                                   mapknitv
-                                   union
-                                   intersection
-                                   id=
-                                   tag=
-                                   attr-values
-                                   zip-pred
-                                   pred
-                                   any
-                                   as-nodes
-                                   attr-has
-                                   has-class
-                                   compile-keyword
-                                   compile-step
-                                   compile-chain
-                                   selector-chains
-                                   states
-                                   pred-set
-                                   make-state
-                                   lockstep-automaton*
-                                   memoized-lockstep-automaton*
-                                   lockstep-automaton
-                                   lockstep-transform
-                                   transform-fragment-locs
-                                   flatten-nodes-coll
-                                   transform-fragment
-                                   automaton*
-                                   memoized-automaton*
-                                   automaton
-                                   transform-node
-                                   fragment-selector?
-                                   node-selector?
-                                   transform}})
-
-                      (make-inlined-code-set-macros bootleg.enlive)
-
-                      (make-inlined-code-set
-                       bootleg.enlive
-                       [content append prepend after before substitute]))
-
-                     ;; enlive has HOFs
-                     (make-inlined-namespace
-                      bootleg.enlive
-
-                      (make-inlined-code-set
-                       net.cgrand.enlive-html
-                       ;; the following are used in net.cgrand.enlive-html
-                       ;; and also bootleg.enlive, so they have to come first
-                       [
-                        node?
-                        attr-values
-                        attr-has
-                        pad-unless
-                        static-selector?
-                        cacheable
-                        cacheable?
-                        bodies
-                        append!
-                        accept-key
-                        children-locs
-                        step
-                        transform-loc
-                        mapknitv
-                        union
-                        intersection
-                        id=
-                        tag=
-                        zip-pred
-                        pred
-                        any
-                        as-nodes
-                        has-class
-                        compile-keyword
-                        compile-step
-                        compile-chain
-                        selector-chains
-                        states
-                        predset
-                        make-state
-                        lockstep-automaton*
-                        memoized-lockstep-automaton*
-                        lockstep-automaton
-                        lockstep-transform
-                        transform-fragment-locs
-                        flatten-nodes-coll
-                        transform-fragment
-                        automaton*
-                        memoized-automaton*
-                        automaton
-                        transform-node
-                        fragment-selector?
-                        node-selector?
-                        transform
-                        content
-                        append
-                        prepend
-                        after
-                        before
-                        substitute
-                        set-attr
-                        zip-select-fragments*
-                        select-fragments*
-                        zip-select-nodes*
-                        select-nodes*
-                        select
-                        remove-attr
-                        replace-vars
-                        replace-words
-                        wrap
-                        unwrap
-                        add-class
-                        remove-class
-                        flatmap
-                        do->
-                        clone-for
-                        move
-                        ]
-                       {:ns-renames {"z" "clojure.zip"
-                                     "xml" "pod.retrogradeorbit.net.cgrand.xml"
-                                     "str" "clojure.string"
-                                     }
-                        :pre-declares ["pred"
-                                       "substitute"
-                                       "at"
-                                       "mapknitv"
-                                       "automaton*"
-                                       "flatten-nodes-coll"
-                                       "automaton"]
-                        :rename {content content*
-                                 append append*
-                                 prepend prepend*
-                                 after after*
-                                 before before*
-                                 substitute substitute*}})
-
-                      (make-inlined-public-fns
-                       net.cgrand.enlive-html
-                       {:exclude #{
-                                   content
-                                   append
-                                   prepend
-                                   after
-                                   before
-                                   substitute
-                                   set-attr
-                                   zip-select-fragments*
-                                   select-fragments*
-                                   zip-select-nodes*
-                                   select-nodes*
-                                   select
-                                   remove-attr
-                                   replace-vars
-                                   replace-words
-                                   wrap
-                                   unwrap
-                                   add-class
-                                   remove-class
-                                   flatmap
-                                   do->
-                                   clone-for
-                                   move
-                                   cacheable
-                                   cacheable?
-                                   node?
-                                   append!
-                                   accept-key
-                                   children-locs
-                                   step
-                                   transform-loc
-                                   mapknitv
-                                   union
-                                   intersection
-                                   id=
-                                   tag=
-                                   attr-values
-                                   zip-pred
-                                   pred
-                                   any
-                                   as-nodes
-                                   attr-has
-                                   has-class
-                                   compile-keyword
-                                   compile-step
-                                   compile-chain
-                                   selector-chains
-                                   states
-                                   pred-set
-                                   make-state
-                                   lockstep-automaton*
-                                   memoized-lockstep-automaton*
-                                   lockstep-automaton
-                                   lockstep-transform
-                                   transform-fragment-locs
-                                   flatten-nodes-coll
-                                   transform-fragment
-                                   automaton*
-                                   memoized-automaton*
-                                   automaton
-                                   transform-node
-                                   fragment-selector?
-                                    node-selector?
-                                   transform}})
-
-                      (make-inlined-code-set-macros bootleg.enlive)
-
-                      (make-inlined-code-set
-                       bootleg.enlive
-                       [content append prepend after before substitute])
-                      )
-
+                     {"name" "pod.retrogradeorbit.net.cgrand.enlive-html"
+                      "vars" []}
+                     {"name" "pod.retrogradeorbit.bootleg.enlive"
+                      "vars" []}
                      (make-inlined-namespace-basic net.cgrand.jsoup)
                      (make-inlined-namespace-basic net.cgrand.tagsoup)
 
@@ -751,7 +764,6 @@
                        {:ns-renames {"hzip" "pod.retrogradeorbit.hickory.zip"
                                      "zip" "clojure.zip"
                                      "string" "clojure.string"}}))
-
                      (make-inlined-namespace-basic hickory.utils)
                      (make-inlined-namespace-basic hickory.convert)
                      (make-inlined-namespace-basic hickory.hiccup-utils)
@@ -780,16 +792,41 @@
                                                                             ->buf}})
                       (make-inlined-code-set bootleg.selmer [with-escaping without-escaping ->buf]))
                      (make-inlined-namespace-basic selmer.validator)]
-                    "id" (String. id)})
+                    "id" (read-string id)})
             (recur))
-
+          "load-ns"
+          (do
+            (try
+              (let [ns (-> ns
+                           read-string
+                           symbol)]
+                (case ns
+                  pod.retrogradeorbit.net.cgrand.enlive-html
+                  (write (assoc enlive-html
+                                "id" (read-string id)
+                                "status" ["done"]))
+                  pod.retrogradeorbit.bootleg.enlive
+                  (write (assoc enlive
+                                "id" (read-string id)
+                                "status" ["done"]))))
+              (catch Throwable e
+                (binding [*out* *err*]
+                  (println e))
+                (let [reply {"ex-message" (.getMessage e)
+                             "ex-data" (pr-str
+                                        (assoc (ex-data e)
+                                               :type (class e)))
+                             "id" id
+                             "status" ["done" "error"]}]
+                  (write reply))))
+            (recur))
           "invoke"
           (do
             (try
               (let [var (-> var
-                            String.
+                            read-string
                             symbol)
-                    args (String. args)]
+                    args (read-string args)]
                 (debug 'invoke var args)
                 (let [args (edn/read-string args)]
                   (if-let [f (lookup var)]
@@ -799,8 +836,7 @@
                                  "status" ["done"]}]
                       (debug 'reply reply)
                       (write reply))
-                    (throw (ex-info (str "Var not found: " var) {}))))
-                )
+                    (throw (ex-info (str "Var not found: " var) {})))))
               (catch Throwable e
                 (binding [*out* *err*]
                   (println e))
