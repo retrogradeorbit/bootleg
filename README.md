@@ -253,7 +253,10 @@ When invoked as a pod, bootleg reveals the following namespaces to your babashka
  - pod.retrogradeorbit.hickory.select
  - pod.retrogradeorbit.hickory.zip
 
-When used as a pod, bootleg requires babashka 0.0.98 or higher.
+#### Compatibility
+
+Bootleg 0.1.8 requires babashka 0.0.98 or higher.
+Bootleg 0.1.9 requires babashka 0.0.99 or higher.
 
 As a large library with lots of namespaces and functionality there may
 be parts that dont work correctly. Please open tickets for any such
