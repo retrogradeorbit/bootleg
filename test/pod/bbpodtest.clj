@@ -13,8 +13,6 @@
          '[pod.retrogradeorbit.bootleg.glob :as glob]
          '[pod.retrogradeorbit.bootleg.json :as json]
          '[pod.retrogradeorbit.bootleg.html :as html]
-         '[pod.retrogradeorbit.bootleg.enlive :as enlive]
-         '[pod.retrogradeorbit.net.cgrand.enlive-html :as enlive-html]
          '[pod.retrogradeorbit.hickory.select :as s]
          '[pod.retrogradeorbit.hickory.zip :as z]
          '[clojure.zip :as zip])
@@ -215,6 +213,9 @@
      [:a {:href "url"} "\n  "
       [:img {:src "url"}] "\n "]
      "\n"])))
+
+(require '[pod.retrogradeorbit.bootleg.enlive :as enlive]
+         '[pod.retrogradeorbit.net.cgrand.enlive-html :as enlive-html])
 
 (assert
  (=
