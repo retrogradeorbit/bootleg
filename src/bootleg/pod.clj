@@ -595,64 +595,8 @@
     bootleg.enlive
     [content append prepend after before substitute])))
 
-(defn main []
-  (try
-    (loop []
-      (let [{:strs [id op var args ns]} (read-bencode stdin)]
-        (case (read-string op)
-          "describe"
-          (do
-            (write {"format" "edn"
-                    "ops" {"load-ns" {}}
-                    "namespaces"
-                    [(make-inlined-namespace-basic bootleg.glob)
-                     (make-inlined-namespace-basic bootleg.utils)
-                     (make-inlined-namespace-basic bootleg.markdown)
-                     (make-inlined-namespace-basic bootleg.mustache)
-                     (make-inlined-namespace-basic bootleg.html)
-                     (make-inlined-namespace-basic bootleg.hiccup)
-                     (make-inlined-namespace-basic bootleg.selmer)
-                     (make-inlined-namespace-basic bootleg.yaml)
-                     (make-inlined-namespace-basic bootleg.json)
-                     (make-inlined-namespace-basic bootleg.edn)
-                     (make-inlined-namespace-basic bootleg.file)
-                     (make-inlined-namespace
-                      net.cgrand.xml
-                      (make-inlined-code-set
-                       net.cgrand.xml
-                       [
-                        document?
-                        tag?
-                        xml-zip]
-                       {:ns-renames {"z" "clojure.zip"}
-                        :pre-declares []}))
-
-                     {"name" "pod.retrogradeorbit.net.cgrand.enlive-html"
-                      "vars" []}
-                     {"name" "pod.retrogradeorbit.bootleg.enlive"
-                      "vars" []}
-                     (make-inlined-namespace-basic net.cgrand.jsoup)
-                     (make-inlined-namespace-basic net.cgrand.tagsoup)
-
-                     (make-inlined-namespace-basic hickory.convert)
-                     (make-inlined-namespace-basic hickory.hiccup-utils)
-                     (make-inlined-namespace-basic hickory.render)
-                     (make-inlined-namespace
-                      hickory.zip
-                      ;; zipper contain metadata so need to be made
-                      ;; on bb side if bb funcs are also on bb side
-                      ;; https://github.com/babashka/babashka.pods/issues/13
-                      (make-inlined-code-set
-                       hickory.zip
-                       [hickory-zip
-                        children
-                        make
-                        hiccup-zip
-                        ]
-                       {:ns-renames {"zip" "clojure.zip"}})
-                      )
-
-                     (make-inlined-namespace
+(def hickory-select
+  (make-inlined-namespace
                       hickory.select
                       [
                        {"name" "ordered-adjacent"
@@ -763,7 +707,66 @@
                         select]
                        {:ns-renames {"hzip" "pod.retrogradeorbit.hickory.zip"
                                      "zip" "clojure.zip"
-                                     "string" "clojure.string"}}))
+                                     "string" "clojure.string"}})))
+
+(defn main []
+  (try
+    (loop []
+      (let [{:strs [id op var args ns]} (read-bencode stdin)]
+        (case (read-string op)
+          "describe"
+          (do
+            (write {"format" "edn"
+                    "namespaces"
+                    [(make-inlined-namespace-basic bootleg.glob)
+                     (make-inlined-namespace-basic bootleg.utils)
+                     (make-inlined-namespace-basic bootleg.markdown)
+                     (make-inlined-namespace-basic bootleg.mustache)
+                     (make-inlined-namespace-basic bootleg.html)
+                     (make-inlined-namespace-basic bootleg.hiccup)
+                     (make-inlined-namespace-basic bootleg.selmer)
+                     (make-inlined-namespace-basic bootleg.yaml)
+                     (make-inlined-namespace-basic bootleg.json)
+                     (make-inlined-namespace-basic bootleg.edn)
+                     (make-inlined-namespace-basic bootleg.file)
+                     (make-inlined-namespace
+                      net.cgrand.xml
+                      (make-inlined-code-set
+                       net.cgrand.xml
+                       [
+                        document?
+                        tag?
+                        xml-zip]
+                       {:ns-renames {"z" "clojure.zip"}
+                        :pre-declares []}))
+
+                     {"name" "pod.retrogradeorbit.net.cgrand.enlive-html"
+                      "defer" "true"}
+                     {"name" "pod.retrogradeorbit.bootleg.enlive"
+                      "defer" "true"}
+                     (make-inlined-namespace-basic net.cgrand.jsoup)
+                     (make-inlined-namespace-basic net.cgrand.tagsoup)
+
+                     (make-inlined-namespace-basic hickory.convert)
+                     (make-inlined-namespace-basic hickory.hiccup-utils)
+                     (make-inlined-namespace-basic hickory.render)
+                     (make-inlined-namespace
+                      hickory.zip
+                      ;; zipper contain metadata so need to be made
+                      ;; on bb side if bb funcs are also on bb side
+                      ;; https://github.com/babashka/babashka.pods/issues/13
+                      (make-inlined-code-set
+                       hickory.zip
+                       [hickory-zip
+                        children
+                        make
+                        hiccup-zip
+                        ]
+                       {:ns-renames {"zip" "clojure.zip"}})
+                      )
+
+                     {"name" "pod.retrogradeorbit.hickory.select"
+                      "defer" "true"}
                      (make-inlined-namespace-basic hickory.utils)
                      (make-inlined-namespace-basic hickory.convert)
                      (make-inlined-namespace-basic hickory.hiccup-utils)
@@ -807,6 +810,10 @@
                                 "status" ["done"]))
                   pod.retrogradeorbit.bootleg.enlive
                   (write (assoc enlive
+                                "id" (read-string id)
+                                "status" ["done"]))
+                  pod.retrogradeorbit.hickory.select
+                  (write (assoc hickory-select
                                 "id" (read-string id)
                                 "status" ["done"]))))
               (catch Throwable e
