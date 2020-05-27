@@ -235,15 +235,14 @@ Install the binary, then launch the pod in babashka by invoking the binary:
 
 When invoked as a pod, bootleg reveals the following namespaces to your babashka script:
 
-#### Available namespaces.
+#### Useful namespaces.
 
  - pod.retrogradeorbit.bootleg.glob
  - pod.retrogradeorbit.bootleg.utils
  - pod.retrogradeorbit.bootleg.markdown
  - pod.retrogradeorbit.bootleg.mustache
- - pod.retrogradeorbit.bootleg.html
- - pod.retrogradeorbit.bootleg.hiccup
  - pod.retrogradeorbit.bootleg.selmer
+ - pod.retrogradeorbit.bootleg.html
  - pod.retrogradeorbit.bootleg.yaml
  - pod.retrogradeorbit.bootleg.json
  - pod.retrogradeorbit.bootleg.edn
