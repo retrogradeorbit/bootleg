@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. This change
 
 ## [Unreleased]
 
+## [0.1.9] - 2020-05-27
+### Added
+- Support for deferred pod namespace loading in babashka (requires bb >= 0.0.99) - #65
+
 ## [0.1.8] - 2020-05-24
 ### Fixed
 - YAML upgrade to SnakeYAML 2.0 #46
@@ -91,7 +95,9 @@ All notable changes to this project will be documented in this file. This change
 ## [0.1.1] - 2019-10-23
 Initial release
 
-[Unreleased]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.7...HEAD
+[Unreleased]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.9...HEAD
+[0.1.9]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.8...v0.1.9
+[0.1.8]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.7...v0.1.8
 [0.1.7]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.6-1...v0.1.7
 [0.1.6-1]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.6...v0.1.6-1
 [0.1.6]: https://github.com/retrogradeorbit/bootleg/compare/v0.1.5...v0.1.6
