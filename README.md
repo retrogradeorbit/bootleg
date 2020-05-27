@@ -15,16 +15,16 @@ Bootleg is a command line tool that rapidly renders clojure based templates. Wit
 Install for Linux:
 
 ```shell
-$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.8/bootleg-0.1.8-linux-amd64.tgz
-$ tar xvf bootleg-0.1.8-linux-amd64.tgz
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.9/bootleg-0.1.9-linux-amd64.tgz
+$ tar xvf bootleg-0.1.9-linux-amd64.tgz
 $ mv bootleg ~/bin
 ```
 
 Install for MacOS:
 
 ```shell
-$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.8/bootleg-0.1.8-macos-amd64.zip
-$ unzip bootleg-0.1.8-macos-amd64.zip
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.9/bootleg-0.1.9-macos-amd64.zip
+$ unzip bootleg-0.1.9-macos-amd64.zip
 $ mv bootleg /usr/local/bin
 ```
 
@@ -179,19 +179,19 @@ $ bootleg example-data.clj          # <- no -d flag means output will be html
 Bootleg is distributed for linux as a single executable file. Download the latest tarball from https://github.com/retrogradeorbit/bootleg/releases and then extract it. Once extracted, move the binary to your path. For system wide installation try `/usr/local/bin` or for personal use `~/bin`
 
 ```shell
-$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.8/bootleg-0.1.8-linux-amd64.tgz
-$ tar xvf bootleg-0.1.8-linux-amd64.tgz
+$ curl -LO https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.9/bootleg-0.1.9-linux-amd64.tgz
+$ tar xvf bootleg-0.1.9-linux-amd64.tgz
 $ mv bootleg /usr/local/bin
 ```
 
 ### Other Platforms
 
-Windows support is experimental. Download (https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.8/bootleg-0.1.8-windows-amd64.zip) and unzip the archive. Copy the bootleg.exe binary to somewhere on your path.
+Windows support is experimental. Download (https://github.com/retrogradeorbit/bootleg/releases/download/v0.1.9/bootleg-0.1.9-windows-amd64.zip) and unzip the archive. Copy the bootleg.exe binary to somewhere on your path.
 
 The jar release file is also an option if you have java installed. You can run it as follows:
 
 ```shell
-$ java -jar bootleg-0.1.8.jar
+$ java -jar bootleg-0.1.9.jar
 ```
 
 ## Usage
@@ -254,7 +254,7 @@ When invoked as a pod, bootleg reveals the following namespaces to your babashka
 
 #### Compatibility
 
-Bootleg 0.1.8 requires babashka 0.0.98 or higher.
+Bootleg 0.1.9 requires babashka 0.0.98 or higher.
 Bootleg 0.1.9 requires babashka 0.0.99 or higher.
 
 As a large library with lots of namespaces and functionality there may
