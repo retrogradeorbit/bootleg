@@ -217,7 +217,7 @@ Options:
 
 ### Babashka Pod Usage
 
-Note: There is a known issue with this pod and bb v0.2.1. For the time being use this pod with v0.2.0.
+Note: There is a known issue with this pod and bb v0.2.1. Use bb v0.2.2 or higher.
 
 Install the binary, then launch the pod in babashka by invoking the binary:
 
