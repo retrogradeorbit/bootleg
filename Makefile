@@ -1,4 +1,4 @@
-GRAALVM = $(HOME)/graalvm-ce-java11-20.1.0
+GRAALVM = $(HOME)/graalvm-ce-java11-21.3.0
 JAVA_HOME = $(GRAALVM)
 PATH = $(GRAALVM)/bin:$(shell echo $$PATH)
 SRC = src/bootleg/core.clj
