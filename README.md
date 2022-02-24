@@ -217,6 +217,8 @@ Options:
 
 ### Babashka Pod Usage
 
+Note: There is a known issue with this pod and bb v0.2.1. Use bb v0.2.2 or higher.
+
 Install the binary, then launch the pod in babashka by invoking the binary:
 
 ```clojure
@@ -943,6 +945,7 @@ The following are some example sites built using bootleg for you to use as inspi
 
  * [epiccastle.io](https://github.com/epiccastle/epiccastle.io)
  * [michielborkent.nl](https://github.com/borkdude/michielborkent.nl)
+ * [gaiwan.co](https://github.com/lambdaisland/gaiwan_co)
 
 ## Blog Posts
 
