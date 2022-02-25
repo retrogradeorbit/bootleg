@@ -30,6 +30,7 @@ build/bootleg: target/uberjar/bootleg-$(VERSION)-standalone.jar
 		--initialize-at-build-time \
 		-H:Log=registerResource: \
 		-H:EnableURLProtocols=http,https \
+		--static \
 		--verbose \
 		--allow-incomplete-classpath \
 		--no-fallback \
