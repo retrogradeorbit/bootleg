@@ -151,7 +151,6 @@
     (is (= (convert-to hickory-seq-snippet-multi :hiccup) hiccup-snippet-multi))
     (is (= (convert-to hickory-seq-doc :hiccup) hiccup-doc))))
 
-
 (deftest test-issues
   (testing "issue #7"
     (let [html "<h1>heading</h1>\n"
@@ -480,6 +479,10 @@
 (deftest new-test-issues
   (testing "issue #62 - Generating XML preserving the tag name case"
     (is (= (html-output-to #{:hiccup} "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Foo>bar</Foo>")
-           [:Foo "bar"]))
+           [:Foo "bar"])))
+  (testing "issue #69 - nil attribute causes convert-to to fail"
+    (is (= "<div></div>") (convert-to [:div {:class nil}] :html))
+    (is (= "<div extra=\"none\" style=\"a:a;\"></div>" (convert-to [:div {:style {:a "a"} :class nil :extra "none"}] :html)))
+
     )
   )

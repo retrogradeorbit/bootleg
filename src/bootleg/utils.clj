@@ -131,12 +131,26 @@
                    (keyword (first form))
                    (map? (second form)))
             (update form 1 walk/keywordize-keys)
-            form))))
-  )
+            form)))))
+
+(defn- remove-attrs-with-nil-values [hiccup]
+  (->> hiccup
+       (walk/postwalk
+        (fn [form]
+          (if (and (vector? form)
+                   (keyword (first form))
+                   (map? (second form)))
+            (update form 1
+                    (fn [attrs]
+                      (->> attrs
+                           (filter (comp not nil? second))
+                           (into {}))))
+            form)))))
 
 (defn- preprocess-hiccup [hiccup]
   (->> hiccup
        keywordize-all-attrs
+       remove-attrs-with-nil-values
        stringify-all-style-maps
        collapse-nils-and-empty-forms))
 
