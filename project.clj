@@ -8,13 +8,16 @@
                  [org.clojure/data.json "2.4.0"]
                  [org.clojure/data.xml "0.2.0-alpha6"]
                  [markdown-clj "1.10.8"]
-
                  [io.forward/yaml "1.0.11" :exclusions [org.yaml/snakeyaml org.flatland/ordered]]
-
                  [cljstache "2.0.6"]
                  [enlive "1.1.6" :exclusions [org.jsoup/jsoup]]
                  [hickory "0.7.1" :exclusions [org.clojure/tools.reader]]
                  [selmer "1.12.17"]
+
+                 ;; minification
+                 [com.github.hazendaz/htmlcompressor "1.7.3"]
+                 ;;[com.google.javascript/closure-compiler "v20220202"]
+                 [com.yahoo.platform.yui/yuicompressor "2.4.8"]
 
                  ;; for clojure eval
                  [org.babashka/sci "0.2.8"]
