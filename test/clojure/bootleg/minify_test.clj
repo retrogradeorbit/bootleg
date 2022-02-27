@@ -129,10 +129,91 @@ p:
             {:compress-css true})
            "<style>h1,h2:font-family:sans-serif;font-weight:900;p:font-size:12pt;</style>"))
 
-    #_ (compress-html "<script type=\"text/javascript\">var foo;
+    (is (= (compress-html "<script type=\"text/javascript\">var foo;
 var bar=4;
+</script>
  "
-                     {:javascript-compressor :google-closure})
+                          {:compress-javascript true
+                           :javascript-compressor :closure
+                           :javascript-compressor-options {:level :whitespace}})
+           "<script type=\"text/javascript\">var foo;var bar=4;</script>"))
+
+    (is (= (compress-html "<script type=\"text/javascript\">var foo;
+var bar=4;
+</script>
+ "
+                          {:compress-javascript true
+                           :javascript-compressor :closure
+                           :javascript-compressor-options {:level :simple}})
+           "<script type=\"text/javascript\">var foo,bar=4;</script>"))
+
+    (is (= (compress-html "<script type=\"text/javascript\">var foo;
+var bar=4;
+</script>
+ "
+                          {:compress-javascript true
+                           :javascript-compressor :closure
+                           :javascript-compressor-options {:level :advanced}})
+           "<script type=\"text/javascript\"></script>"))
+
+    (is (= (compress-html "<script type=\"text/javascript\">console.log(foobar());
+</script>
+ "
+                          {:compress-javascript true
+                           :javascript-compressor :closure
+                           :javascript-compressor-options
+                           {:level :advanced
+                            :externs {:default false
+                                      #_#_ :files ["externs.js"
+                                              {:filename "externs2.js"
+                                               :encoding "UTF-8"}
+                                              "externs.zip"
+                                              {:filename "externs.zip"
+                                               :encoding "UTF-16"}]
+                                      #_#_ :content ["console={}; console.log={};"]}}})
+           "<script type=\"text/javascript\">console.a(foobar());</script>"))
+
+    (is (= (compress-html "<script type=\"text/javascript\">console.log(foobar());
+</script>
+ "
+                          {:compress-javascript true
+                           :javascript-compressor :closure
+                           :javascript-compressor-options
+                           {:level :advanced
+                            :externs {:default true}}})
+           "<script type=\"text/javascript\">console.log(foobar());</script>"))
+
+
+    #_(is (= (compress-html "
+<script type=\"text/javascript\">
+        var i = 0; //comment
+        i = i + 1;
+        alert(i);
+</script>
+
+<script>
+        <![CDATA[
+                var i = 0; //comment
+                i = i + 1;
+                alert(i);
+        ]]>
+</script>
+
+<pre>
+        <script>
+                var i = 0; //comment
+                i = i + 1;
+                alert(i);
+        </script>
+</pre>
+
+<script type=\"text/x-jquery-tmpl\">     <a>     <!-- comment -->   <b>   </script>
+<script type=\"text/custom\">  var i=1@#$%^2   <a>     <!-- comment -->   <b>   </script>
+ "
+                          {:compress-javascript true
+                           :javascript-compressor :closure
+                           :javascript-compressor-options {:level :whitespace}})
+           "<script type=\"text/javascript\">var i=0,i=i+1;alert(i);</script> <script><![CDATA[var i=0,i=i+1;alert(i);]]></script> <pre>\n        <script>\n                var i = 0; //comment\n                i = i + 1;\n                alert(i);\n        </script>\n</pre> <script type=\"text/x-jquery-tmpl\"> <a> <b> </script> <script type=\"text/custom\">  var i=1@#$%^2   <a>     <!-- comment -->   <b>   </script>"))
 
 
     ;; (is (= (compress-html

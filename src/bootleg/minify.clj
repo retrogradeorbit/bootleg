@@ -1,14 +1,50 @@
 (ns bootleg.minify
   (:require [clojure.string :as string])
   (:import ;;com.yahoo.platform.yui.compressor.CssCompressor
-           [com.googlecode.htmlcompressor.compressor HtmlCompressor]
-           [com.google.javascript.jscomp
-            CompilationLevel
-            CompilerOptions
-            SourceFile
-            CompilerOptions$LanguageMode
-            CommandLineRunner
-            ]))
+   [com.googlecode.htmlcompressor.compressor
+    HtmlCompressor
+    ClosureJavaScriptCompressor
+    YuiJavaScriptCompressor]
+   [com.google.javascript.jscomp
+    CompilationLevel
+    CompilerOptions
+    SourceFile
+    CompilerOptions$LanguageMode
+    CommandLineRunner]
+   [java.nio.charset Charset]))
+
+
+(defn make-externs-source-files [{:keys [default files content] :as externs}]
+  (let [file-set (for [file files]
+                   (if (string? file)
+                     ;; string file definition
+                     (if (string/ends-with? file ".zip")
+                       (SourceFile/fromZipFile file (Charset/defaultCharset))
+                       (SourceFile/fromFile file (Charset/defaultCharset)))
+
+                     ;; hashmap file definition
+                     (if (string/ends-with? (:filename file) ".zip")
+                       (SourceFile/fromZipFile
+                        (:filename file)
+                        (if (:encoding file)
+                          (Charset/forName (:encoding file))
+                          (Charset/defaultCharset)))
+                       (SourceFile/fromFile
+                        (:filename file)
+                        (if (:encoding file)
+                          (Charset/forName (:encoding file))
+                          (Charset/defaultCharset))))))
+        content-set (for [[n data] (map vector (range) content)]
+                      (SourceFile/fromCode
+                       (str "inline-extern-content-" n ".js")
+                       data))
+        default-zip (if default
+                      [(SourceFile/fromInputStream
+                        "default-externs.js"
+                        (clojure.java.io/input-stream (clojure.java.io/resource "default-externs.js"))
+                        )]
+                      [])]
+    (into [] (concat file-set content-set default-zip))))
 
 (defn html-compressor
   [{:keys [
@@ -18,11 +54,11 @@
            ;; compress javascript inside <script> tags
            compress-javascript
 
-           ;; js compression method to use. set to :yui or :google-closure
+           ;; js compression method to use. set to :yui or :closure
            javascript-compressor
 
            ;; the options for the javascript compressor chosen.
-           ;; for yui, hashmap with keys:
+           ;; for :yui, hashmap with keys:
            ;;  :css-line-break
            ;;  :error-reporter
            ;;  :disable-optimizations
@@ -30,8 +66,8 @@
            ;;  :js-no-munge
            ;;  :js-preserve-all-semicolons
            ;;
-           ;; for :google-closure
-           ;;  :mode
+           ;; for :closure
+           ;;  :level
            javascript-compressor-options
 
            ;; preserve line breaks
@@ -152,7 +188,19 @@
     (.setJavaScriptCompressor
      (case javascript-compressor
        :yui nil
-       :google-closure (com.google.javascript.jscomp.Compiler.)))
+
+       :closure (let [compressor (ClosureJavaScriptCompressor.
+                                  (case (:level javascript-compressor-options)
+                                    :whitespace CompilationLevel/WHITESPACE_ONLY
+                                    :simple CompilationLevel/SIMPLE_OPTIMIZATIONS
+                                    :advanced CompilationLevel/ADVANCED_OPTIMIZATIONS
+                                    ))]
+                  (.setCustomExternsOnly compressor true)
+                  (.setExterns
+                   compressor
+                   (make-externs-source-files (:externs javascript-compressor-options)))
+                  compressor
+                  )))
     (.setEnabled true)
     (.setGenerateStatistics false)
     (.setPreserveLineBreaks preserve-line-breaks)
@@ -192,3 +240,13 @@
       (.compress html)))
 
 #_ (compress-html "<div  arg=\" foo \" >\n\n  test  </div>")
+
+(comment
+  (SourceFile/fromCode "externs.js" "")
+  (SourceFile/fromZipFile "externs.zip" (java.nio.charset.Charset/defaultCharset))
+  (SourceFile/fromFile "externs.js" (java.nio.charset.Charset/defaultCharset))
+
+  (java.nio.charset.Charset/defaultCharset)
+  (java.nio.charset.Charset/forName "UTF-16")
+
+  (clojure.java.io/input-stream (clojure.java.io/resource "externs.zip")))
