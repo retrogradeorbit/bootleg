@@ -11,6 +11,12 @@
     (is (= (process-hiccup-data [] "test/files" "(markdown \"simple.md\")")
            '([:h1 "Markdown support"]
              [:p "This is some simple markdown"])))
+    (is (= (process-hiccup-data [] "test/files" "(markdown \"complex.md\" :footnotes? :parse-meta?)")
+           '([:h1 "Markdown support"]
+             [:p "This is some more complex" [:a {:href "#fn-1", :id "fnref1"} [:sup "1"]] " markdown."]
+             [:p "The footnote will appear at the end. "]
+             [:ol {:class "footnotes"} [:li {:id "fn-1"} "Testing optional footnote feature." [:a {:href "#fnref1"} "↩"]]] [:p])
+           ))
     (is (= (process-hiccup-data [] "test/files" "(markdown \"simple.md\" :hickory-seq)")
            '({:type :element
               :attrs nil
