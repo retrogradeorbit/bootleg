@@ -11,8 +11,11 @@ ARCH=x86_64
 all: build/bootleg build/bootleg-static
 
 clean:
-	-rm -rf build target toolchain
+	-rm -rf build target
 	lein clean
+
+clean-full: clean
+	-rm -rf toolchain
 
 target/uberjar/bootleg-$(VERSION)-standalone.jar: $(SRC)
 	GRAALVM_HOME=$(GRAALVM) lein uberjar
@@ -68,8 +71,8 @@ copy-libs-to-resource:
 	-cp $(GRAALVM)/jre/lib/libsunec.dylib resources
 	-cp $(GRAALVM)/jre/lib/amd64/libsunec.so resources
 
-package-linux:
-	cd build && tar cvzf bootleg-$(VERSION)-linux-amd64.tgz bootleg
+package-linux: build/bootleg-static
+	cd build && mv bootleg-static bootleg && tar cvzf bootleg-$(VERSION)-linux-amd64.tgz bootleg
 	cp build/*.tgz ./
 	cp target/uberjar/bootleg-$(VERSION)-standalone.jar bootleg-$(VERSION).jar
 
