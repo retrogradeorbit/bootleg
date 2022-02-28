@@ -16,7 +16,6 @@
 
                  ;; minification
                  [com.github.hazendaz/htmlcompressor "1.7.3"]
-                 ;;[com.google.javascript/closure-compiler "v20220202"]
                  [com.yahoo.platform.yui/yuicompressor "2.4.8"]
 
                  ;; for clojure eval
