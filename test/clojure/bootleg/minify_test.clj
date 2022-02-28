@@ -129,6 +129,23 @@ p:
             {:compress-css true})
            "<style>h1,h2:font-family:sans-serif;font-weight:900;p:font-size:12pt;</style>"))
 
+    (is (= (compress-html
+            "<style>
+h1, h2:
+    font-family: sans-serif;
+    font-weight: 900;
+
+p:
+    font-size: 12pt;
+
+</style>
+"
+            {:compress-css true})
+           "<style>h1,h2:font-family:sans-serif;font-weight:900;p:font-size:12pt;</style>"))
+
+    ;;
+    ;; closure compiler
+    ;;
     (is (= (compress-html "<script type=\"text/javascript\">var foo;
 var bar=4;
 </script>
@@ -163,14 +180,7 @@ var bar=4;
                            :javascript-compressor :closure
                            :javascript-compressor-options
                            {:level :advanced
-                            :externs {:default false
-                                      #_#_ :files ["externs.js"
-                                              {:filename "externs2.js"
-                                               :encoding "UTF-8"}
-                                              "externs.zip"
-                                              {:filename "externs.zip"
-                                               :encoding "UTF-16"}]
-                                      #_#_ :content ["console={}; console.log={};"]}}})
+                            :externs {:default false}}})
            "<script type=\"text/javascript\">console.a(foobar());</script>"))
 
     (is (= (compress-html "<script type=\"text/javascript\">console.log(foobar());
@@ -180,11 +190,67 @@ var bar=4;
                            :javascript-compressor :closure
                            :javascript-compressor-options
                            {:level :advanced
-                            :externs {:default true}}})
+                            :externs {:default false
+                                      :files ["test/files/externs.js"]
+                                      }}})
            "<script type=\"text/javascript\">console.log(foobar());</script>"))
 
+    (is (= (compress-html "<script type=\"text/javascript\">console.log(foobar());
+console.warn(foobar());
+</script>
+ "
+                          {:compress-javascript true
+                           :javascript-compressor :closure
+                           :javascript-compressor-options
+                           {:level :advanced
+                            :externs {:default false
+                                      :files [{:filename "test/files/externs.js"
+                                               :encoding "UTF-8"}]
+                                      }}})
+           "<script type=\"text/javascript\">console.log(foobar());console.a(foobar());</script>"))
 
-    #_(is (= (compress-html "
+    (is (= (compress-html "<script type=\"text/javascript\">console.log(foobar());
+console.warn(foobar());
+</script>
+ "
+                          {:compress-javascript true
+                           :javascript-compressor :closure
+                           :javascript-compressor-options
+                           {:level :advanced
+                            :externs {:default false
+                                      :files [{:filename "test/files/externs.js"
+                                               :encoding "UTF-8"}
+                                              "test/files/externs2.js"]
+                                      }}})
+           "<script type=\"text/javascript\">console.log(foobar());console.warn(foobar());</script>"))
+
+    (is (= (compress-html "<script type=\"text/javascript\">console.log(foobar());
+console.warn(foobar());
+</script>
+ "
+                          {:compress-javascript true
+                           :javascript-compressor :closure
+                           :javascript-compressor-options
+                           {:level :advanced
+                            :externs {:default false
+                                      :files ["test/files/externs.zip"]
+                                      }}})
+           "<script type=\"text/javascript\">console.log(foobar());console.warn(foobar());</script>"))
+
+    (is (= (compress-html "<script type=\"text/javascript\">console.log(foobar());
+console.warn(foobar());
+</script>
+ "
+                          {:compress-javascript true
+                           :javascript-compressor :closure
+                           :javascript-compressor-options
+                           {:level :advanced
+                            :externs {:default false
+                                      :content ["console={};console.log={};console.warn={};"]
+                                      }}})
+           "<script type=\"text/javascript\">console.log(foobar());console.warn(foobar());</script>"))
+
+    (is (= (compress-html "
 <script type=\"text/javascript\">
         var i = 0; //comment
         i = i + 1;
@@ -213,21 +279,65 @@ var bar=4;
                           {:compress-javascript true
                            :javascript-compressor :closure
                            :javascript-compressor-options {:level :whitespace}})
-           "<script type=\"text/javascript\">var i=0,i=i+1;alert(i);</script> <script><![CDATA[var i=0,i=i+1;alert(i);]]></script> <pre>\n        <script>\n                var i = 0; //comment\n                i = i + 1;\n                alert(i);\n        </script>\n</pre> <script type=\"text/x-jquery-tmpl\"> <a> <b> </script> <script type=\"text/custom\">  var i=1@#$%^2   <a>     <!-- comment -->   <b>   </script>"))
+           "<script type=\"text/javascript\">var i=0;i=i+1;alert(i);</script> <script><![CDATA[var i=0;i=i+1;alert(i);]]></script> <pre>\n        <script>\n                var i = 0; //comment\n                i = i + 1;\n                alert(i);\n        </script>\n</pre> <script type=\"text/x-jquery-tmpl\"> <a> <b> </script> <script type=\"text/custom\">  var i=1@#$%^2   <a>     <!-- comment -->   <b>   </script>"))
+
+    ;; bad JS
+    (is (= (compress-html "<script type=\"text/javascript\">foo!bar;
+</script>
+ "
+                          {:compress-javascript true
+                           :javascript-compressor :closure
+                           :javascript-compressor-options
+                           {:level :simple}})
+           "<script type=\"text/javascript\">foo!bar;\n</script>"))
 
 
-    ;; (is (= (compress-html
-    ;;         ""
-    ;;         {})
-    ;;        ""))
+    ;;
+    ;; yui javascript minifier
+    ;;
+    (is (= (compress-html "<script type=\"text/javascript\">console.log(foobar());
+console.warn(foobar());
+</script>
+ "
+                          {:compress-javascript true
+                           :javascript-compressor :yui
+                           :javascript-compressor-options
+                           {}})
+           "<script type=\"text/javascript\">console.log(foobar());console.warn(foobar());</script>"))
 
-    ;; (is (= (compress-html
-    ;;         ""
-    ;;         {})
-    ;;        ""))
+    (is (= (compress-html "<script type=\"text/javascript\">function foo(arg1, arg2) { return arg1+arg2; }
+</script>
+ "
+                          {:compress-javascript true
+                           :javascript-compressor :yui
+                           :javascript-compressor-options
+                           {}})
+           "<script type=\"text/javascript\">function foo(b,a){return b+a};</script>"))
 
+    (is (= (compress-html "<script type=\"text/javascript\">function foo(arg1, arg2) { return arg1+arg2; }
+</script>
+ "
+                          {:compress-javascript true
+                           :javascript-compressor :yui
+                           :javascript-compressor-options
+                           {:no-munge true}})
+           "<script type=\"text/javascript\">function foo(arg1,arg2){return arg1+arg2};</script>"))
 
+    (is (= (compress-html "<script type=\"text/javascript\">function foo(arg1, arg2) { return arg1+arg2; }
+</script>
+ "
+                          {:compress-javascript true
+                           :javascript-compressor :yui
+                           :javascript-compressor-options
+                           {:preserve-all-semicolons true}})
+           "<script type=\"text/javascript\">function foo(b,a){return b+a;}</script>"))
 
-
-
-    ))
+    (is (= (compress-html "<script type=\"text/javascript\">function foo(arg1, arg2) { console.log(\"foo\"); return arg1+arg2; }
+</script>
+ "
+                          {:compress-javascript true
+                           :javascript-compressor :yui
+                           :javascript-compressor-options
+                           {:disable-optimizations true
+                            :line-break 1}})
+           "<script type=\"text/javascript\">function foo(b,a){console.log(\"foo\");\nreturn b+a\n};</script>"))))

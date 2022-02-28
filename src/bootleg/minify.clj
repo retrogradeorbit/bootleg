@@ -15,25 +15,26 @@
 
 
 (defn make-externs-source-files [{:keys [default files content] :as externs}]
-  (let [file-set (for [file files]
-                   (if (string? file)
-                     ;; string file definition
-                     (if (string/ends-with? file ".zip")
-                       (SourceFile/fromZipFile file (Charset/defaultCharset))
-                       (SourceFile/fromFile file (Charset/defaultCharset)))
+  (let [file-set (->> (for [file files]
+                       (if (string? file)
+                         ;; string file definition
+                         (if (string/ends-with? file ".zip")
+                           (SourceFile/fromZipFile file (Charset/defaultCharset))
+                           [(SourceFile/fromFile file (Charset/defaultCharset))])
 
-                     ;; hashmap file definition
-                     (if (string/ends-with? (:filename file) ".zip")
-                       (SourceFile/fromZipFile
-                        (:filename file)
-                        (if (:encoding file)
-                          (Charset/forName (:encoding file))
-                          (Charset/defaultCharset)))
-                       (SourceFile/fromFile
-                        (:filename file)
-                        (if (:encoding file)
-                          (Charset/forName (:encoding file))
-                          (Charset/defaultCharset))))))
+                         ;; hashmap file definition
+                         (if (string/ends-with? (:filename file) ".zip")
+                           (SourceFile/fromZipFile
+                            (:filename file)
+                            (if (:encoding file)
+                              (Charset/forName (:encoding file))
+                              (Charset/defaultCharset)))
+                           [(SourceFile/fromFile
+                             (:filename file)
+                             (if (:encoding file)
+                               (Charset/forName (:encoding file))
+                               (Charset/defaultCharset)))])))
+                     (apply concat))
         content-set (for [[n data] (map vector (range) content)]
                       (SourceFile/fromCode
                        (str "inline-extern-content-" n ".js")
@@ -59,15 +60,14 @@
 
            ;; the options for the javascript compressor chosen.
            ;; for :yui, hashmap with keys:
-           ;;  :css-line-break
-           ;;  :error-reporter
            ;;  :disable-optimizations
-           ;;  :js-line-break
-           ;;  :js-no-munge
-           ;;  :js-preserve-all-semicolons
+           ;;  :line-break
+           ;;  :no-munge
+           ;;  :preserve-all-semicolons
            ;;
            ;; for :closure
            ;;  :level
+           ;;  :externs
            javascript-compressor-options
 
            ;; preserve line breaks
@@ -173,12 +173,6 @@
          remove-surrounding-spaces nil
          simple-boolean-attributes false
          simple-doctype false
-         ;; yui-css-line-break -1
-         ;; yui-error-reporter nil
-         ;; yui-js-disable-optimizations false
-         ;; yui-js-line-break -1
-         ;; yui-js-no-munge false
-         ;; yui-js-preserve-all-semicolons false
          }}]
 
   (doto (HtmlCompressor.)
@@ -187,20 +181,20 @@
     (.setCompressJavaScript compress-javascript)
     (.setJavaScriptCompressor
      (case javascript-compressor
-       :yui nil
+       :yui (doto (YuiJavaScriptCompressor.)
+              (.setNoMunge (:no-munge javascript-compressor-options false))
+              (.setPreserveAllSemiColons (:preserve-all-semicolons javascript-compressor-options false))
+              (.setDisableOptimizations (:disable-optimizations javascript-compressor-options false))
+              (.setLineBreak (:line-break javascript-compressor-options -1)))
 
-       :closure (let [compressor (ClosureJavaScriptCompressor.
-                                  (case (:level javascript-compressor-options)
-                                    :whitespace CompilationLevel/WHITESPACE_ONLY
-                                    :simple CompilationLevel/SIMPLE_OPTIMIZATIONS
-                                    :advanced CompilationLevel/ADVANCED_OPTIMIZATIONS
-                                    ))]
-                  (.setCustomExternsOnly compressor true)
-                  (.setExterns
-                   compressor
-                   (make-externs-source-files (:externs javascript-compressor-options)))
-                  compressor
-                  )))
+       :closure (doto (ClosureJavaScriptCompressor.
+                       (case (:level javascript-compressor-options)
+                         :whitespace CompilationLevel/WHITESPACE_ONLY
+                         :simple CompilationLevel/SIMPLE_OPTIMIZATIONS
+                         :advanced CompilationLevel/ADVANCED_OPTIMIZATIONS
+                         ))
+                  (.setCustomExternsOnly true)
+                  (.setExterns (make-externs-source-files (:externs javascript-compressor-options))))))
     (.setEnabled true)
     (.setGenerateStatistics false)
     (.setPreserveLineBreaks preserve-line-breaks)
@@ -223,14 +217,7 @@
           (string/join ",")))
     (.setSimpleBooleanAttributes simple-boolean-attributes)
     (.setSimpleDoctype simple-doctype)
-
-    ;; (.setYuiCssLineBreak yui-css-line-break)
     ;; (.setYuiErrorReporter yui-error-reporter)
-    ;; (.setYuiJsDisableOptimizations yui-js-disable-optimizations)
-    ;; (.setYuiJsLineBreak yui-js-line-break)
-    ;; (.setYuiJsNoMunge yui-js-no-munge)
-    ;; (.setYuiJsPreserveAllSemiColons yui-js-preserve-all-semicolons)
-
     ))
 
 (defn compress-html [html & [config]]
