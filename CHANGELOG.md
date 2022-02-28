@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [Unreleased]
+- Support markdown-clj options (footnotes and reference links) - PR #76 thankyou Dominic Freeston
+- Static musl libc binary on linux
 
 ## [0.1.9] - 2020-05-27
 ### Added
