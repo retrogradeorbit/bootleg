@@ -17,6 +17,7 @@
                  ;; minification
                  [com.github.hazendaz/htmlcompressor "1.7.3"]
                  [com.yahoo.platform.yui/yuicompressor "2.4.8"]
+                 [org.slf4j/slf4j-simple "1.7.33"]
 
                  ;; for clojure eval
                  [org.babashka/sci "0.2.8"]

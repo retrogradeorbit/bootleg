@@ -1,6 +1,7 @@
 (ns bootleg.minify
   (:require [clojure.string :as string])
   (:import ;;com.yahoo.platform.yui.compressor.CssCompressor
+   [java.util.logging Level]
    [com.googlecode.htmlcompressor.compressor
     HtmlCompressor
     ClosureJavaScriptCompressor
@@ -10,7 +11,8 @@
     CompilerOptions
     SourceFile
     CompilerOptions$LanguageMode
-    CommandLineRunner]
+    CommandLineRunner
+    WarningLevel]
    [java.nio.charset Charset]))
 
 
@@ -185,7 +187,8 @@
               (.setNoMunge (:no-munge javascript-compressor-options false))
               (.setPreserveAllSemiColons (:preserve-all-semicolons javascript-compressor-options false))
               (.setDisableOptimizations (:disable-optimizations javascript-compressor-options false))
-              (.setLineBreak (:line-break javascript-compressor-options -1)))
+              (.setLineBreak (:line-break javascript-compressor-options -1))
+              (.setLoggingLevel Level/OFF))
 
        :closure (doto (ClosureJavaScriptCompressor.
                        (case (:level javascript-compressor-options)
@@ -194,7 +197,10 @@
                          :advanced CompilationLevel/ADVANCED_OPTIMIZATIONS
                          ))
                   (.setCustomExternsOnly true)
-                  (.setExterns (make-externs-source-files (:externs javascript-compressor-options))))))
+                  (.setExterns (make-externs-source-files (:externs javascript-compressor-options)))
+                  (.setLoggingLevel Level/OFF)
+                  ;;(.setWarningLevel WarningLevel/OFF)
+                  )))
     (.setEnabled true)
     (.setGenerateStatistics false)
     (.setPreserveLineBreaks preserve-line-breaks)

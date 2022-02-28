@@ -5,5 +5,16 @@
       {"pattern": "sunec.dll$"},
       {"pattern": "sunec.lib$"},
       {"pattern": "default-externs.js"}
+  ],
+  "bundles":[
+    {
+      "name":"com.google.javascript.jscomp.parsing.ParserConfig",
+      "locales":[""]
+    },
+    {
+      "name":"com.google.javascript.rhino.Messages",
+      "locales":[""]
+    }
   ]
+
 }
