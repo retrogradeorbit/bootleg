@@ -221,19 +221,19 @@
     ))
 
 (defn compress-html [html & [config]]
-  (-> config
-      (or {})
-      html-compressor
-      (.compress html)))
+  (let [compressor (-> config
+                       (or {})
+                       html-compressor)]
+    (.compress ^HtmlCompressor compressor html)))
+
+;; babashka call endpoint
+(defn compress-html*bb [html & [config]]
+  (compress-html
+   html
+   (if (:preserve-patterns config)
+     (update config :preserve-patterns (fn [ps] (mapv #(re-pattern %) ps)))
+     config)
+   )
+  )
 
 #_ (compress-html "<div  arg=\" foo \" >\n\n  test  </div>")
-
-(comment
-  (SourceFile/fromCode "externs.js" "")
-  (SourceFile/fromZipFile "externs.zip" (java.nio.charset.Charset/defaultCharset))
-  (SourceFile/fromFile "externs.js" (java.nio.charset.Charset/defaultCharset))
-
-  (java.nio.charset.Charset/defaultCharset)
-  (java.nio.charset.Charset/forName "UTF-16")
-
-  (clojure.java.io/input-stream (clojure.java.io/resource "externs.zip")))

@@ -14,6 +14,7 @@
             [bootleg.edn]
             [bootleg.file]
             [bootleg.enlive]
+            [bootleg.minify]
             [hickory.convert]
             [hickory.hiccup-utils]
             [hickory.render]
@@ -224,6 +225,7 @@
              (make-lookup bootleg.json)
              (make-lookup bootleg.edn)
              (make-lookup bootleg.file)
+             (make-lookup bootleg.minify)
 
              ;;enlive has HOFs
              (make-lookup bootleg.enlive)
@@ -728,6 +730,23 @@
                      (make-inlined-namespace-basic bootleg.json)
                      (make-inlined-namespace-basic bootleg.edn)
                      (make-inlined-namespace-basic bootleg.file)
+
+                     #_(make-inlined-namespace-basic bootleg.minify)
+                     {"name" "pod.retrogradeorbit.bootleg.minify"
+                      "vars"
+                      [
+                       {"name" "compress-html*bb"}
+                       {"name" "compress-html"
+                        "code" "(defn compress-html [html & [config]]
+(pod.retrogradeorbit.bootleg.minify/compress-html*bb
+  html
+  (if (:preserve-patterns config)
+    (update config :preserve-patterns (fn [ps] (mapv #(.pattern %) ps)))
+    config)))
+"}
+                              ]
+                      }
+
                      (make-inlined-namespace
                       net.cgrand.xml
                       (make-inlined-code-set
