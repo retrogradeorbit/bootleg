@@ -1,6 +1,6 @@
 GRAALVM = $(HOME)/graalvm-ce-java11-22.0.0.2
 JAVA_HOME = $(GRAALVM)
-PATH = $(GRAALVM)/bin:toolchain/x86_64-linux-musl-native/bin:$(shell echo $$PATH)
+PATH = $(GRAALVM)/bin:$(shell echo $$PATH)
 SRC = src/bootleg/core.clj
 VERSION = $(shell cat .meta/VERSION | xargs)
 CURRENT_DIR = $(shell pwd)
@@ -23,7 +23,6 @@ analyse:
 
 build/bootleg: target/uberjar/bootleg-$(VERSION)-standalone.jar
 	-mkdir build
-	export
 	$(GRAALVM)/bin/native-image \
 		-jar target/uberjar/bootleg-$(VERSION)-standalone.jar \
 		-H:Name=build/bootleg \
@@ -40,10 +39,9 @@ build/bootleg: target/uberjar/bootleg-$(VERSION)-standalone.jar
 		--no-server \
 		"-J-Xmx6g"
 
-build/bootleg-static: target/uberjar/bootleg-$(VERSION)-standalone.jar build-toolchain
+build/bootleg-static: target/uberjar/bootleg-$(VERSION)-standalone.jar toolchain
 	-mkdir build
-	export
-	$(GRAALVM)/bin/native-image \
+	PATH=toolchain/x86_64-linux-musl-native/bin:$$PATH $(GRAALVM)/bin/native-image \
 		-jar target/uberjar/bootleg-$(VERSION)-standalone.jar \
 		-H:Name=build/bootleg-static \
 		-H:+ReportExceptionStackTraces \
@@ -112,4 +110,4 @@ toolchain/$(ARCH)-linux-musl-native/lib/libz.a: build/zlib/zlib-$(ZLIB_VERSION)/
 
 libz: toolchain/$(ARCH)-linux-musl-native/lib/libz.a
 
-build-toolchain: musl libz
+toolchain: musl libz
