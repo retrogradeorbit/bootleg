@@ -489,7 +489,11 @@
      attr?
      every?+
      multi-attr-pred
+     is-first-segment?
      attr=
+     starts-with?
+     ends-with?
+     contains-substring?
      attr-starts
      attr-ends
      attr-contains
@@ -544,7 +548,8 @@
                   "xml" "pod.retrogradeorbit.net.cgrand.xml"
                   "str" "clojure.string"
                   }
-     :pre-declares ["pred"
+     :pre-declares ["select"
+                    "pred"
                     "substitute"
                     "at"
                     "mapknitv"
@@ -570,7 +575,11 @@
                 attr?
                 every?+
                 multi-attr-pred
+                is-first-segment?
                 attr=
+                starts-with?
+                ends-with?
+                contains-substring?
                 attr-starts
                 attr-ends
                 attr-contains
@@ -825,6 +834,7 @@
                        net.cgrand.xml
                        [
                         document?
+                        comment?
                         tag?
                         xml-zip]
                        {:ns-renames {"z" "clojure.zip"}
