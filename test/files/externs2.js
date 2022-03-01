@@ -1,0 +1,2 @@
+console={};
+console.warn={};
