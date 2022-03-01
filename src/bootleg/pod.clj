@@ -486,6 +486,7 @@
      after
      before
      substitute
+     attr?
      set-attr
      zip-select-fragments*
      select-fragments*
@@ -531,6 +532,7 @@
                 after
                 before
                 substitute
+                attr?
                 set-attr
                 zip-select-fragments*
                 select-fragments*
