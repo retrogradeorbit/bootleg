@@ -487,6 +487,41 @@
      before
      substitute
      attr?
+     every?+
+     multi-attr-pred
+     attr=
+     attr-starts
+     attr-ends
+     attr-contains
+     attr|=
+     root
+     nth?
+     nth-child
+     nth-last-child
+     filter-of-type
+     nth-of-type
+     nth-last-of-type
+     first-child
+     last-child
+     first-of-type
+     last-of-type
+     only-child
+     only-of-type
+     void
+     odd
+     even
+     select?
+     has
+     but-node
+     but
+     left
+     lefts
+     right
+     rights
+     any-node
+     this-node
+     text-node
+     comment-node
      set-attr
      zip-select-fragments*
      select-fragments*
@@ -533,6 +568,41 @@
                 before
                 substitute
                 attr?
+                every?+
+                multi-attr-pred
+                attr=
+                attr-starts
+                attr-ends
+                attr-contains
+                attr|=
+                root
+                nth?
+                nth-child
+                nth-last-child
+                filter-of-type
+                nth-of-type
+                nth-last-of-type
+                first-child
+                last-child
+                first-of-type
+                last-of-type
+                only-child
+                only-of-type
+                void
+                odd
+                even
+                select?
+                has
+                but-node
+                but
+                left
+                lefts
+                right
+                rights
+                any-node
+                this-node
+                text-node
+                comment-node
                 set-attr
                 zip-select-fragments*
                 select-fragments*
