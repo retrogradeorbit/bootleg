@@ -131,27 +131,6 @@
            ;; existing DOCTYPE declaration will be replaced with simple
            ;; <!DOCTYPE html> declaration.
            simple-doctype
-
-           ;; Tells Yahoo YUI Compressor to break lines after the specified number of symbols during CSS compression. pass in integer
-           ;; yui-css-line-break
-
-           ;; Sets ErrorReporter that YUI Compressor will use for reporting errors
-           ;; during JavaScript compression. If no ErrorReporter was provided
-           ;; YuiJavaScriptCompressor.DefaultErrorReporter will be used. which
-           ;; reports errors to *err*
-           ;;yui-error-reporter
-
-           ;; Tells Yahoo YUI Compressor to disable all the built-in micro optimizations during JavaScript compression.
-           ;; yui-js-disable-optimizations
-
-           ;; Tells Yahoo YUI Compressor to break lines after the specified number of symbols during JavaScript compression. pass in an integer
-           ;; yui-js-line-break
-
-           ;; Tells Yahoo YUI Compressor to only minify javascript without obfuscating local symbols.
-           ;; yui-js-no-munge
-
-           ;; Tells Yahoo YUI Compressor to preserve unnecessary semicolons during JavaScript compression.
-           ;; yui-js-preserve-all-semicolons
            ]
 
     ;; defaults
@@ -178,51 +157,52 @@
          }}]
 
   (doto (HtmlCompressor.)
-    (.setCompressCss compress-css)
+    (.setCompressCss (boolean compress-css))
     (.setCssCompressor nil)
-    (.setCompressJavaScript compress-javascript)
+    (.setCompressJavaScript (boolean compress-javascript))
     (.setJavaScriptCompressor
-     (case javascript-compressor
-       :yui (doto (YuiJavaScriptCompressor.)
-              (.setNoMunge (:no-munge javascript-compressor-options false))
-              (.setPreserveAllSemiColons (:preserve-all-semicolons javascript-compressor-options false))
-              (.setDisableOptimizations (:disable-optimizations javascript-compressor-options false))
-              (.setLineBreak (:line-break javascript-compressor-options -1))
-              (.setLoggingLevel Level/OFF))
+     (when compress-javascript
+       (case javascript-compressor
+         :yui (doto (YuiJavaScriptCompressor.)
+                (.setNoMunge (:no-munge javascript-compressor-options false))
+                (.setPreserveAllSemiColons (:preserve-all-semicolons javascript-compressor-options false))
+                (.setDisableOptimizations (:disable-optimizations javascript-compressor-options false))
+                (.setLineBreak (:line-break javascript-compressor-options -1))
+                ;;(.setLoggingLevel Level/OFF)
+                )
 
-       :closure (doto (ClosureJavaScriptCompressor.
-                       (case (:level javascript-compressor-options)
-                         :whitespace CompilationLevel/WHITESPACE_ONLY
-                         :simple CompilationLevel/SIMPLE_OPTIMIZATIONS
-                         :advanced CompilationLevel/ADVANCED_OPTIMIZATIONS
-                         ))
-                  (.setCustomExternsOnly true)
-                  (.setExterns (make-externs-source-files (:externs javascript-compressor-options)))
-                  (.setLoggingLevel Level/OFF)
-                  ;;(.setWarningLevel WarningLevel/OFF)
-                  )))
+         :closure (doto (ClosureJavaScriptCompressor.
+                         (case (:level javascript-compressor-options)
+                           :whitespace CompilationLevel/WHITESPACE_ONLY
+                           :simple CompilationLevel/SIMPLE_OPTIMIZATIONS
+                           :advanced CompilationLevel/ADVANCED_OPTIMIZATIONS
+                           ))
+                    (.setCustomExternsOnly true)
+                    (.setExterns (make-externs-source-files (:externs javascript-compressor-options)))
+                    ;;(.setLoggingLevel Level/OFF)
+                    ))))
     (.setEnabled true)
     (.setGenerateStatistics false)
-    (.setPreserveLineBreaks preserve-line-breaks)
+    (.setPreserveLineBreaks (boolean preserve-line-breaks))
     (.setPreservePatterns preserve-patterns)
-    (.setRemoveComments remove-comments)
-    (.setRemoveFormAttributes remove-form-attributes)
-    (.setRemoveHttpProtocol remove-http-protocol)
-    (.setRemoveHttpsProtocol remove-https-protocol)
-    (.setRemoveInputAttributes remove-input-attributes)
-    (.setRemoveIntertagSpaces remove-intertag-spaces)
-    (.setRemoveJavaScriptProtocol remove-javascript-protocol)
-    (.setRemoveLinkAttributes remove-link-attributes)
-    (.setRemoveMultiSpaces remove-multi-spaces)
-    (.setRemoveQuotes remove-quotes)
-    (.setRemoveScriptAttributes remove-script-attributes)
-    (.setRemoveStyleAttributes remove-style-attributes)
+    (.setRemoveComments (boolean remove-comments))
+    (.setRemoveFormAttributes (boolean remove-form-attributes))
+    (.setRemoveHttpProtocol (boolean remove-http-protocol))
+    (.setRemoveHttpsProtocol (boolean remove-https-protocol))
+    (.setRemoveInputAttributes (boolean remove-input-attributes))
+    (.setRemoveIntertagSpaces (boolean remove-intertag-spaces))
+    (.setRemoveJavaScriptProtocol (boolean remove-javascript-protocol))
+    (.setRemoveLinkAttributes (boolean remove-link-attributes))
+    (.setRemoveMultiSpaces (boolean remove-multi-spaces))
+    (.setRemoveQuotes (boolean remove-quotes))
+    (.setRemoveScriptAttributes (boolean remove-script-attributes))
+    (.setRemoveStyleAttributes (boolean remove-style-attributes))
     (.setRemoveSurroundingSpaces
      (->> remove-surrounding-spaces
           (map (comp str name))
           (string/join ",")))
-    (.setSimpleBooleanAttributes simple-boolean-attributes)
-    (.setSimpleDoctype simple-doctype)
+    (.setSimpleBooleanAttributes (boolean simple-boolean-attributes))
+    (.setSimpleDoctype (boolean simple-doctype))
     ;; (.setYuiErrorReporter yui-error-reporter)
     ))
 
