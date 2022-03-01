@@ -64,7 +64,7 @@
                :javascript-compressor :closure
                :javascript-compressor-options {:level :simple}
                :remove-comments true
-               :remove-multiple-spaces true
+               :remove-multi-spaces true
                }
               )
 
@@ -77,7 +77,7 @@
                :javascript-compressor :closure
                :javascript-compressor-options (if minify-js {:level :simple} {})
                :remove-comments minify-html
-               :remove-multiple-spaces minify-html
+               :remove-multi-spaces minify-html
                })
 
              :else
