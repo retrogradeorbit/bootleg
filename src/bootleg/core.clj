@@ -2,6 +2,7 @@
   (:require [bootleg.file :as file]
             [bootleg.utils :as utils]
             [bootleg.hiccup :as hiccup]
+            [bootleg.minify :as minify]
             [bootleg.config :as config]
             [bootleg.context :as context]
             [bootleg.pod :as pod]
@@ -18,6 +19,10 @@
    ["-v" "--version" "Print the version string and exit"]
    ["-e" "--evaluate CODE" "Pass in the hiccup to evaluate on the command line"]
    ["-d" "--data" "Output the rendered template as a clojure form instead of html"]
+   ["-m" "--minify" "When outputing html minify html, css <style> blocks and js <script> blocks"]
+   [nil  "--minify-html" "minify html in the output"]
+   [nil  "--minify-css" "minify css contained within <style> tags"]
+   [nil  "--minify-js" "minify javascript contained within <script> tags"]
    ["-o" "--output FILE" "Write the output to the specified file instead of stdout"]
    ["-t" "--traceback" "Print the full exception traceback"]
    ["-c" "--colour" "Print outputs in colour where appropriate"]
@@ -44,7 +49,40 @@
     (try
       (if (:data options)
         (-> result (utils/pprint {:writer out}))
-        (->> result utils/as-html (.write out)))
+        (let [html (utils/as-html result)
+              {:keys [minify minify-html minify-css minify-js]} options
+              ]
+          (.write
+           out
+           (cond
+             minify
+             (minify/compress-html
+              html
+              {
+               :compress-css true
+               :compress-javascript true
+               :javascript-compressor :closure
+               :javascript-compressor-options {:level :simple}
+               :remove-comments true
+               :remove-multiple-spaces true
+               }
+              )
+
+             (or minify-html minify-js minify-css)
+             (minify/compress-html
+              html
+              {
+               :compress-css minify-css
+               :compress-javascript minify-js
+               :javascript-compressor :closure
+               :javascript-compressor-options (if minify-js {:level :simple} {})
+               :remove-comments minify-html
+               :remove-multiple-spaces minify-html
+               })
+
+             :else
+             html)
+           )))
       (finally
         (if (:output options)
           (.close out)
