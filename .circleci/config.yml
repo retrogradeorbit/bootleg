@@ -41,7 +41,7 @@ jobs:
       - run:
           name: Run JVM tests
           command: |
-            lein test
+            make tests
       - save_cache:
           paths:
             - ~/.m2
