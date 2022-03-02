@@ -17,6 +17,9 @@ clean:
 clean-full: clean
 	-rm -rf toolchain
 
+uberjar:
+	lein uberjar
+
 target/uberjar/bootleg-$(VERSION)-standalone.jar: $(SRC)
 	GRAALVM_HOME=$(GRAALVM) lein uberjar
 
