@@ -26,6 +26,19 @@ jobs:
             chmod +x linux-install-1.10.1.447.sh
             sudo ./linux-install-1.10.1.447.sh
       - run:
+          name: Install native dev tools
+          command: |
+            sudo apt-get update
+            sudo apt-get -y install gcc zlib1g-dev make
+      - run:
+          name: Download GraalVM
+          command: |
+            cd ~
+            if ! [ -d graalvm-ce-java11-22.0.0.2 ]; then
+              curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.0.0.2/graalvm-ce-java11-linux-amd64-22.0.0.2.tar.gz
+              tar xzf graalvm-ce-java11-linux-amd64-22.0.0.2.tar.gz
+            fi
+      - run:
           name: Run JVM tests
           command: |
             lein test
