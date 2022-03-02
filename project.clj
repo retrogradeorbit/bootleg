@@ -29,9 +29,18 @@
                  ;; pod support
                  [nrepl/bencode "1.1.0"]
                  ]
+  :source-paths ["src"]
   :java-source-paths ["src/java" "sci-reflector/src-java"]
   :test-paths ["test/clojure"]
 
   :main ^:skip-aot bootleg.core
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+
+  :aot [bootleg.asciidocresolver]
+  :prep-tasks ["compile"]
+
+  :profiles {:uberjar {:aot :all
+                       :jvm-opts ["-Dclojure.compiler.direct-linking=true"
+                                  "-Dclojure.spec.skip-macros=true"
+                                  "-Djava.library.path=./"
+                                  ] }})

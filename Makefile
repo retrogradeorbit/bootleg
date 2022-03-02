@@ -34,13 +34,14 @@ build/bootleg: target/uberjar/bootleg-$(VERSION)-standalone.jar
 		-J-Dclojure.compiler.direct-linking=true \
 		-H:ConfigurationFileDirectories=graal-configs/ \
 		--initialize-at-build-time \
+		--language:js \
 		-H:Log=registerResource: \
 		-H:EnableURLProtocols=http,https \
 		--verbose \
 		--allow-incomplete-classpath \
 		--no-fallback \
 		--no-server \
-		"-J-Xmx6g"
+		"-J-Xmx8g"
 
 build/bootleg-static: target/uberjar/bootleg-$(VERSION)-standalone.jar toolchain
 	-mkdir build
@@ -52,6 +53,7 @@ build/bootleg-static: target/uberjar/bootleg-$(VERSION)-standalone.jar toolchain
 		-J-Dclojure.compiler.direct-linking=true \
 		-H:ConfigurationFileDirectories=graal-configs/ \
 		--initialize-at-build-time \
+		--language:js \
 		-H:Log=registerResource: \
 		-H:EnableURLProtocols=http,https \
 		--static \
@@ -60,7 +62,7 @@ build/bootleg-static: target/uberjar/bootleg-$(VERSION)-standalone.jar toolchain
 		--allow-incomplete-classpath \
 		--no-fallback \
 		--no-server \
-		"-J-Xmx6g"
+		"-J-Xmx8g"
 
 tests:
 	lein test
@@ -114,3 +116,7 @@ toolchain/$(ARCH)-linux-musl-native/lib/libz.a: build/zlib/zlib-$(ZLIB_VERSION)/
 libz: toolchain/$(ARCH)-linux-musl-native/lib/libz.a
 
 toolchain: musl libz
+
+bundle-npm-module-into-resources:
+	npm install
+	cp ./node_modules/@asciidoctor/core/dist/graalvm/asciidoctor.js resources

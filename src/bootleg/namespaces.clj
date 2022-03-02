@@ -4,12 +4,14 @@
             [bootleg.selmer :as selmer]
             [bootleg.markdown :as markdown]
             [bootleg.mustache :as mustache]
+            [bootleg.asciidoc :as asciidoc]
             [bootleg.html :as html]
             [bootleg.yaml :as yaml]
             [bootleg.json :as json]
             [bootleg.edn :as edn]
             [bootleg.glob :as glob]
             [bootleg.file :as file]
+            [bootleg.minify :as minify]
             [hickory.convert]
             [hickory.hiccup-utils]
             [hickory.render]
@@ -675,6 +677,10 @@
    'mustache mustache/mustache
    'html html/html
    'selmer selmer/selmer
+   'asciidoc asciidoc/asciidoc
+
+   ;; minification
+   'compress-html minify/compress-html
 
    ;; vars files
    'yaml yaml/yaml

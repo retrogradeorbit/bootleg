@@ -196,6 +196,12 @@
         "allPublicConstructors": true,
         "allPublicFields": true,
         "allPublicMethods": true
+    },
+    {
+        "name": "bootleg.asciidocresolver.Resolver",
+        "allPublicConstructors": true,
+        "allPublicFields": true,
+        "allPublicMethods": true
     }
 
 ]

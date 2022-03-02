@@ -4,6 +4,7 @@
       {"pattern": "libsunec.dylib$"},
       {"pattern": "sunec.dll$"},
       {"pattern": "sunec.lib$"},
+      {"pattern": "asciidoctor.js"},
       {"pattern": "default-externs.js"}
   ],
   "bundles":[

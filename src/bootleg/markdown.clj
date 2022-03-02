@@ -7,7 +7,7 @@
 (defn markdown
   "Converts markdown source (file name) to hiccup-seq (default, see options)
   available options:
-  
+
   :data - treat source as html string instead
 
   One of:
@@ -17,7 +17,7 @@
   :footnotes?
   :reference-links?
   :parse-meta? - will not return meta but can be used to strip it out at top of file"
-  
+
   [source & options]
   (let [flags (into #{} options)
         input (if (:data flags) source (slurp (file/path-relative source)))
