@@ -14,7 +14,18 @@ jobs:
         java-version: '11' # The JDK version to make available on the path.
         java-package: jdk # (jre, jdk, or jdk+fx) - defaults to jdk
         architecture: x64 # (x64 or x86) - defaults to x64
+    - name: Install native dev tools
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install gcc zlib1g-dev make
+    - name: Install graalvm
+      run: |
+        cd ~
+            if ! [ -d graalvm-ce-java11-22.0.0.2 ]; then
+              curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.0.0.2/graalvm-ce-java11-linux-amd64-22.0.0.2.tar.gz
+              tar xzf graalvm-ce-java11-linux-amd64-22.0.0.2.tar.gz
+            fi
     - name: Install dependencies
       run: lein deps
     - name: Run tests
-      run: lein test
+      run: make tests
