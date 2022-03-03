@@ -9,29 +9,6 @@
 
 (set! *warn-on-reflection* true)
 
-(def adoc "
-Book Title Goes Here
-====================
-Author's Name
-v1.0, 2003-12
-:doctype: book
-
-
-[dedication]
-Example Dedication
-------------------
-Optional dedication.
-
-This document is an AsciiDoc book skeleton containing briefly
-annotated example elements plus a couple of example index entries and
-footnotes.
-
-Books are normally used to generate DocBook markup and the titles of
-the preface, appendix, bibliography, glossary and index sections are
-significant ('specialsections').
-
-")
-
 (def context
   (->
    (Context/newBuilder (into-array ["js"]))
