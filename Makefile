@@ -7,8 +7,20 @@ CURRENT_DIR = $(shell pwd)
 MUSL_PREBUILT_TOOLCHAIN_VERSION=10.2.1
 ZLIB_VERSION=1.2.11
 ARCH=x86_64
+STATIC=false
+MUSL=false
+EXTRA_ARGS=
 
-all: build/bootleg build/bootleg-static
+ifeq ($(STATIC), true)
+	EXTRA_ARGS:=$(EXTRA_ARGS) --static
+endif
+
+ifeq ($(MUSL), true)
+	EXTRA_ARGS:=$(EXTRA_ARGS) -H:CCompilerOption=-Wl,-z,stack-size=1048576 --libc=musl
+	PATH:=toolchain/x86_64-linux-musl-native/bin:$(PATH)
+endif
+
+all: build/bootleg
 
 clean:
 	-rm -rf build target
@@ -21,7 +33,7 @@ uberjar:
 	lein uberjar
 
 target/uberjar/bootleg-$(VERSION)-standalone.jar: $(SRC)
-	GRAALVM_HOME=$(GRAALVM) lein uberjar
+	BOOTLEG_MUSL=$(MUSL) GRAALVM_HOME=$(GRAALVM) lein uberjar
 
 analyse:
 	$(GRAALVM)/bin/java -agentlib:native-image-agent=config-output-dir=config-dir \
@@ -44,28 +56,8 @@ build/bootleg: target/uberjar/bootleg-$(VERSION)-standalone.jar
 		--allow-incomplete-classpath \
 		--no-fallback \
 		--no-server \
-		"-J-Xmx8g"
-
-build/bootleg-static: target/uberjar/bootleg-$(VERSION)-standalone.jar toolchain
-	-mkdir build
-	PATH=toolchain/x86_64-linux-musl-native/bin:$$PATH $(GRAALVM)/bin/native-image \
-		-jar target/uberjar/bootleg-$(VERSION)-standalone.jar \
-		-H:Name=build/bootleg-static \
-		-H:+ReportExceptionStackTraces \
-		-J-Dclojure.spec.skip-macros=true \
-		-J-Dclojure.compiler.direct-linking=true \
-		-H:ConfigurationFileDirectories=graal-configs/ \
-		--initialize-at-build-time \
-		--language:js \
-		-H:Log=registerResource: \
-		-H:EnableURLProtocols=http,https \
-		--static \
-		--libc=musl \
-		--verbose \
-		--allow-incomplete-classpath \
-		--no-fallback \
-		--no-server \
-		"-J-Xmx8g"
+		"-J-Xmx8g" \
+		$(EXTRA_ARGS)
 
 tests:
 	lein test
@@ -76,8 +68,8 @@ copy-libs-to-resource:
 	-cp $(GRAALVM)/jre/lib/libsunec.dylib resources
 	-cp $(GRAALVM)/jre/lib/amd64/libsunec.so resources
 
-package-linux: build/bootleg-static
-	cd build && mv bootleg-static bootleg && tar cvzf bootleg-$(VERSION)-linux-amd64.tgz bootleg
+package-linux: toolchain build/bootleg
+	cd build && tar cvzf bootleg-$(VERSION)-linux-amd64.tgz bootleg
 	cp build/*.tgz ./
 	cp target/uberjar/bootleg-$(VERSION)-standalone.jar bootleg-$(VERSION).jar
 

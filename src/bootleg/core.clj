@@ -88,7 +88,7 @@
           (.close out)
           (.flush out))))))
 
-(defn -main
+(defn main
   "main entry point for site generation"
   [& args]
   (config/init!)
@@ -149,3 +149,18 @@
                           (utils/colour)))))
                     (throw e))))
               (System/exit 2))))))))
+
+(defmacro run [args]
+  ;; From babashka. See https://github.com/oracle/graal/issues/3398
+  (if (= "true" (System/getenv "BOOTLEG_MUSL")) ;; evaluated at compile time
+    `(let [v# (volatile! nil)
+           f# (fn []
+                (vreset! v# (apply main ~args)))]
+       (doto (Thread. nil f# "main")
+         (.start)
+         (.join))
+       @v#)
+    `(apply main ~args)))
+
+(defn -main [& args]
+  (System/exit (run args)))
