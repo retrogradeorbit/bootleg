@@ -15,6 +15,7 @@
             [bootleg.file]
             [bootleg.enlive]
             [bootleg.minify]
+            [bootleg.asciidoc]
             [hickory.convert]
             [hickory.hiccup-utils]
             [hickory.render]
@@ -226,6 +227,7 @@
              (make-lookup bootleg.edn)
              (make-lookup bootleg.file)
              (make-lookup bootleg.minify)
+             (make-lookup bootleg.asciidoc)
 
              ;;enlive has HOFs
              (make-lookup bootleg.enlive)
@@ -811,6 +813,7 @@
                      (make-inlined-namespace-basic bootleg.json)
                      (make-inlined-namespace-basic bootleg.edn)
                      (make-inlined-namespace-basic bootleg.file)
+                     (make-inlined-namespace-basic bootleg.asciidoc)
 
                      #_(make-inlined-namespace-basic bootleg.minify)
                      {"name" "pod.retrogradeorbit.bootleg.minify"
