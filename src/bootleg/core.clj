@@ -163,4 +163,5 @@
     `(apply main ~args)))
 
 (defn -main [& args]
-  (System/exit (run args)))
+  (run args)
+  (System/exit 0))
