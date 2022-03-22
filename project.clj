@@ -40,7 +40,6 @@
   :prep-tasks ["compile"]
 
   :profiles {:uberjar {:aot :all
-                       :jvm-opts ["-Dclojure.compiler.direct-linking=true"
-                                  "-Dclojure.spec.skip-macros=true"
+                       :jvm-opts ["-Dclojure.spec.skip-macros=true"
                                   "-Djava.library.path=./"
                                   ] }})
